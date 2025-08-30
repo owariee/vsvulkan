@@ -61,6 +61,14 @@ struct ComputeEffect {
 class VulkanEngine {
 public:
 
+	void draw_geometry(VkCommandBuffer cmd);
+
+	VkPipelineLayout _trianglePipelineLayout;
+	VkPipeline _trianglePipeline;
+
+	void init_triangle_pipeline();
+
+
 	std::vector<ComputeEffect> backgroundEffects;
 	int currentBackgroundEffect{ 0 };
 
