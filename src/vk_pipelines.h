@@ -42,4 +42,6 @@ public:
     void disable_depthtest();
 
     void set_shaders(VkShaderModule vertexShader, VkShaderModule fragmentShader);
+
+    void enable_depthtest(bool depthWriteEnable, VkCompareOp op);
 };

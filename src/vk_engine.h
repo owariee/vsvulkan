@@ -9,6 +9,8 @@
 
 #include "vk_pipelines.h"
 
+#include <vk_loader.h>
+
 
 constexpr unsigned int FRAME_OVERLAP = 2;
 
@@ -61,6 +63,27 @@ struct ComputeEffect {
 class VulkanEngine {
 public:
 
+	AllocatedImage _drawImage;
+	AllocatedImage _depthImage;
+
+	void init_default_data();
+
+	VkPipelineLayout _meshPipelineLayout;
+	VkPipeline _meshPipeline;
+
+	GPUMeshBuffers rectangle;
+
+	void init_mesh_pipeline();
+
+	std::vector<std::shared_ptr<MeshAsset>> testMeshes;
+
+	AllocatedBuffer create_buffer(size_t allocSize, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
+
+	void destroy_buffer(const AllocatedBuffer& buffer);
+
+	GPUMeshBuffers uploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
+
+
 	void draw_geometry(VkCommandBuffer cmd);
 
 	VkPipelineLayout _trianglePipelineLayout;
@@ -87,7 +110,6 @@ public:
 
 
 	//draw resources
-	AllocatedImage _drawImage;
 	VkExtent2D _drawExtent;
 
 	VmaAllocator _allocator;
