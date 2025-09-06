@@ -33,7 +33,7 @@ if(WIN32)
     )
 endif()
 
-add_executable(game initial.cpp)
+add_executable(game initial.cpp "vulkanrender.cpp" "vulkanrender.h")
 
 if(WIN32)
   set_target_properties(game PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
