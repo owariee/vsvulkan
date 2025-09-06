@@ -425,13 +425,175 @@ void VulkanDestroySwapchain(VulkanContext* vkContext) {
 }
 
 /*
+ * record commands into an command buffer
+ */
+void VulkanRecordCommandBuffer(
+    VulkanContext* vkContext,
+    VkCommandBuffer commandBuffer,
+    VkFramebuffer framebuffer,
+    std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda)
+{
+    VkCommandBufferBeginInfo beginInfo = {};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0; // Optional
+    beginInfo.pInheritanceInfo = NULL; // Only relevant for secondary command buffers
+
+    // Start recording commands
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    // Specify clear color (background)
+    VkClearValue clearColor = { .color = { {0.0f, 0.0f, 0.0f, 1.0f} } };
+
+    // Info about the render pass begin
+    VkRenderPassBeginInfo renderPassInfo = {};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = vkContext->renderPass;
+    renderPassInfo.framebuffer = framebuffer;
+    renderPassInfo.renderArea.offset = { 0, 0 };
+    renderPassInfo.renderArea.extent = vkContext->surfaceSize;
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearColor;
+
+    // Begin render pass
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+	commandsLambda(vkContext->surfaceSize, commandBuffer); // Call the provided lambda to record custom commands
+
+    // End the render pass
+    vkCmdEndRenderPass(commandBuffer);
+
+    // Finish recording commands
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to record command buffer!\n");
+        exit(1);
+    }
+}
+
+/*
+ * Records multiple command buffers for rendering.
+ */
+void VulkanRecordCommandBuffers(VulkanContext* vkContext)
+{
+    for (uint32_t i = 0; i < VK_REQUIRED_IMAGE_COUNT; i++) {
+        VulkanRecordCommandBuffer(vkContext, vkContext->commandBuffers[i], vkContext->swapchain.framebuffers[i], vkContext->commandsLambda);
+    }
+}
+
+/*
  * Recreates the swapchain, typically in response to window resizing.
  */
 void VulkanRecreateSwapchain(VulkanContext* vkContext) {
     vkDeviceWaitIdle(vkContext->device);
     VulkanDestroySwapchain(vkContext);
     VulkanCreateSwapchain(vkContext);
+    VulkanRecordCommandBuffers(vkContext);
     vkDeviceWaitIdle(vkContext->device);
+}
+
+/*
+ * Bind a new set of commands and records multiple command buffers for rendering.
+ */
+void VulkanBindCommandBuffers(VulkanContext* vkContext, std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda)
+{
+    vkContext->commandsLambda = commandsLambda;
+}
+
+/*
+ * Present queue
+ */
+VkResult VulkanQueuePresent(
+    VkQueue graphicsQueue,
+    VkSwapchainKHR swapchain,
+    VkSemaphore renderFinishedSemaphore,
+    uint32_t imageIndex)
+{
+    VkPresentInfoKHR presentInfo = {};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = &renderFinishedSemaphore;
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = &swapchain;
+    presentInfo.pImageIndices = &imageIndex;
+    return vkQueuePresentKHR(graphicsQueue, &presentInfo);
+}
+
+/*
+ * Submit command buffers to queue
+ */
+void VulkanSubmitCommandBuffer(
+    VkQueue graphicsQueue,
+    VkCommandBuffer* commandBuffers,
+    VkSemaphore imageAvailableSemaphore,
+    VkSemaphore renderFinishedSemaphore,
+    VkFence inFlightFence,
+    uint32_t imageIndex)
+{
+    // Submit recorded command buffer
+    VkSubmitInfo submitInfo = {};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkPipelineStageFlags waitStages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = &imageAvailableSemaphore;
+    submitInfo.pWaitDstStageMask = &waitStages;
+
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
+
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = &renderFinishedSemaphore;
+
+    vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence);
+}
+
+/*
+ * Acquire next swapchain image 
+ */
+uint32_t VulkanAcquireNextImage(VkDevice device, VkSwapchainKHR swapchain, VkSemaphore semaphore) {
+    uint32_t imageIndex;
+    VkResult result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, semaphore, VK_NULL_HANDLE, &imageIndex);
+    //CHECK_VULKAN_RESULT(result);
+    printf("Acquired image index: %u\n", imageIndex);
+    return imageIndex;
+}
+
+void VulkanDraw(VulkanContext* vkContext) {
+    vkWaitForFences(vkContext->device, 1, &vkContext->inFlightFence, VK_TRUE, UINT64_MAX);
+    vkResetFences(vkContext->device, 1, &vkContext->inFlightFence);
+
+    if (vkContext->shouldRecreateSwapchain) {
+        VulkanRecreateSwapchain(vkContext);
+        vkContext->shouldRecreateSwapchain = false;
+    }
+
+    VkSemaphore imageAvailableSemaphore = vkContext->imageAvailableSemaphores[vkContext->currentFrame];
+    VkSemaphore renderFinishedSemaphore = vkContext->renderFinishedSemaphores[vkContext->currentFrame];
+
+    // Acquire next image from swapchain
+    uint32_t imageIndex = VulkanAcquireNextImage(vkContext->device, vkContext->swapchain.instance, imageAvailableSemaphore);
+
+    VulkanRecordCommandBuffers(vkContext);
+
+    VulkanSubmitCommandBuffer(
+        vkContext->graphicsQueue,
+        vkContext->commandBuffers,
+        imageAvailableSemaphore,
+        renderFinishedSemaphore,
+        vkContext->inFlightFence,
+        imageIndex);
+
+    VkResult presentResult = VulkanQueuePresent(
+        vkContext->graphicsQueue,
+        vkContext->swapchain.instance,
+        renderFinishedSemaphore,
+        imageIndex);
+
+    if (presentResult == VK_ERROR_OUT_OF_DATE_KHR || presentResult == VK_SUBOPTIMAL_KHR) {
+        vkContext->shouldRecreateSwapchain = true;
+    }
+
+    // Advance to next frame
+    vkContext->currentFrame = (vkContext->currentFrame + 1) % vkContext->MAX_FRAMES_IN_FLIGHT;
 }
 
 void VulkanInit(VulkanContext* vkContext, std::function<void(VulkanContext* vkContext)> createSurface) {
@@ -448,6 +610,10 @@ void VulkanInit(VulkanContext* vkContext, std::function<void(VulkanContext* vkCo
     VulkanCreateSemaphores(vkContext->device, VK_REQUIRED_IMAGE_COUNT, vkContext->imageAvailableSemaphores);
 	createSurface(vkContext); // will set surface
     VulkanCreateSwapchain(vkContext);
+    vkContext->currentFrame = 0;
+    vkContext->MAX_FRAMES_IN_FLIGHT = VK_REQUIRED_IMAGE_COUNT;
+    vkContext->shouldRecreateSwapchain = false;
+    vkContext->commandsLambda = [=](VkExtent2D surfaceSize, VkCommandBuffer commandBuffer) {};
 }
 
 void VulkanShutdown(VulkanContext* vkContext) {

@@ -1,5 +1,9 @@
 #include "vulkanrender.h"
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_vulkan.h"
+
 SDL_Window* WindowInit(VkExtent2D swapchainExtent) {
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -26,140 +30,14 @@ VkSurfaceKHR VulkanCreateSurface(VkInstance instance, SDL_Window* window) {
 	return surface;
 }
 
-uint32_t VulkanAcquireNextImage(VkDevice device, VkSwapchainKHR swapchain, VkSemaphore semaphore) {
-	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, semaphore, VK_NULL_HANDLE, &imageIndex);
-	//CHECK_VULKAN_RESULT(result);
-	printf("Acquired image index: %u\n", imageIndex);
-	return imageIndex;
-}
-
 int32_t SDLHandleEvents() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
+		ImGui_ImplSDL2_ProcessEvent(&event);
 		if (event.type == SDL_QUIT) {
 			return -1;
 		}
 	}
-}
-
-void VulkanRecordCommandBuffer(VkCommandBuffer commandBuffer, VkRenderPass renderPass, VkFramebuffer framebuffer, VkExtent2D extent, VkPipeline pipeline, VkBuffer vertexBuffer, VkBuffer indexBuffer) {
-	VkCommandBufferBeginInfo beginInfo = {};
-	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	beginInfo.flags = 0; // Optional
-	beginInfo.pInheritanceInfo = NULL; // Only relevant for secondary command buffers
-
-	// Start recording commands
-	vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
-	// Specify clear color (background)
-	VkClearValue clearColor = { .color = { {0.0f, 0.0f, 0.0f, 1.0f} } };
-
-	// Info about the render pass begin
-	VkRenderPassBeginInfo renderPassInfo = {};
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassInfo.renderPass = renderPass;
-	renderPassInfo.framebuffer = framebuffer;
-	renderPassInfo.renderArea.offset = { 0, 0 };
-	renderPassInfo.renderArea.extent = extent;
-	renderPassInfo.clearValueCount = 1;
-	renderPassInfo.pClearValues = &clearColor;
-
-	// Begin render pass
-	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-	// Set viewport (the region of the framebuffer you want to draw to)
-	VkViewport viewport = {};
-	viewport.x = 0.0f;
-	viewport.y = 0.0f;
-	viewport.width = (float)extent.width;
-	viewport.height = (float)extent.height;
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
-	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-	// Set scissor (cut-off area, usually matches viewport)
-	VkRect2D scissor = {};
-	scissor.offset = { 0, 0 };
-	scissor.extent = extent;
-	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-	// Bind your graphics pipeline if you have one
-	if (pipeline != VK_NULL_HANDLE) {
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-	}
-
-	// **Bind your vertex buffer here**
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
-
-	vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-
-	// End the render pass
-	vkCmdEndRenderPass(commandBuffer);
-
-	// Finish recording commands
-	if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-		fprintf(stderr, "Failed to record command buffer!\n");
-		exit(1);
-	}
-}
-
-void VulkanRecordCommandBuffers(
-	VkCommandBuffer* commandBuffers,
-	VkFramebuffer* framebuffers,
-	VkRenderPass renderPass,
-	uint32_t count,
-	VkExtent2D extent,
-	VkPipeline pipeline,
-	VkBuffer vertexBuffer,
-	VkBuffer indexBuffer) 
-{
-	for (uint32_t i = 0; i < count; i++) { 
-		VulkanRecordCommandBuffer(commandBuffers[i], renderPass, framebuffers[i], extent, pipeline, vertexBuffer, indexBuffer);
-	}
-}
-
-void VulkanSubmitCommandBuffer(
-	VkQueue graphicsQueue,
-	VkCommandBuffer* commandBuffers,
-	VkSemaphore imageAvailableSemaphore,
-	VkSemaphore renderFinishedSemaphore,
-	VkFence inFlightFence,
-	uint32_t imageIndex)
-{
-	// Submit recorded command buffer
-	VkSubmitInfo submitInfo = {};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-	VkPipelineStageFlags waitStages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = &imageAvailableSemaphore;
-	submitInfo.pWaitDstStageMask = &waitStages;
-
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
-
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = &renderFinishedSemaphore;
-
-	vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence);
-}
-
-VkResult VulkanQueuePresent(
-	VkQueue graphicsQueue,
-	VkSwapchainKHR swapchain,
-	VkSemaphore renderFinishedSemaphore,
-	uint32_t imageIndex)
-{
-	VkPresentInfoKHR presentInfo = {};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = &renderFinishedSemaphore;
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = &swapchain;
-	presentInfo.pImageIndices = &imageIndex;
-	return vkQueuePresentKHR(graphicsQueue, &presentInfo);
 }
 
 VkShaderModule VulkanLoadShaderModule(VkDevice device, const char* filepath) {
@@ -470,26 +348,55 @@ int main(int argc, char* argv[]) {
 	VulkanInit(&vkContext, [window](VulkanContext* ctx) {
 		ctx->surface = VulkanCreateSurface(ctx->instance, window);
 		});
-	//VkInstance instance = VulkanCreateInstance();
-	//VkPhysicalDevice physicalDevice = VulkanSelectPhysicalDevice(instance);
-	//VkDevice device = VulkanCreateLogicalDevice(physicalDevice);
-
-	//VkExtent2D swapchainExtent = { 1280, 720 };
-	//SDL_Window* window = WindowInit(swapchainExtent);
-	//vkContext.surface = VulkanCreateSurface(vkContext.instance, window);
-	//vkContext.surfaceSize = swapchainExtent;
-	//VulkanCreateSwapchain(&vkContext);
-
-	//VkSwapchainKHR swapchain = VulkanCreateSwapchain(vkContext.device, surface, swapchainExtent);
-	//uint32_t swapchainImageCount;
-	//VkImage* swapchainImages = VulkanGetSwapchainImages(vkContext.device, swapchain, &swapchainImageCount);
-	//VkImageView* swapchainImageViews = VulkanCreateImageViews(vkContext.device, swapchainImages, swapchainImageCount);
-	//VkRenderPass renderPass = VulkanCreateRenderPass(vkContext.device, VK_FORMAT_R8G8B8A8_UNORM);
-	//VkFramebuffer* framebuffers = VulkanCreateFramebuffers(vkContext.device, vkContext.renderPass, swapchainImageViews, swapchainExtent, swapchainImageCount);
-	//VkCommandPool commandPool = VulkanCreateCommandPool(device, 0); // we usually only need one command pool
-	//VkCommandBuffer* commandBuffers = VulkanAllocateCommandBuffers(vkContext.device, vkContext.commandPool, swapchainImageCount); // we need one command buffer per framebuffer
 	
-	
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // optional
+	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;       // optional
+	ImGui_ImplSDL2_InitForVulkan(window);
+	VkDescriptorPoolSize pool_sizes[] = { { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+	{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+	{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+	{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+	{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+	{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+	{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+	{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+	{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 } };
+	VkDescriptorPoolCreateInfo pool_info = {};
+	pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+	pool_info.maxSets = 1000;
+	pool_info.poolSizeCount = (uint32_t)std::size(pool_sizes);
+	pool_info.pPoolSizes = pool_sizes;
+	VkDescriptorPool imguiPool;
+	CHECK_VULKAN_RESULT(vkCreateDescriptorPool(vkContext.device, &pool_info, nullptr, &imguiPool));
+	ImGui_ImplVulkan_InitInfo init_info = {};
+	init_info.RenderPass = vkContext.renderPass;
+	init_info.Instance = vkContext.instance;
+	init_info.PhysicalDevice = vkContext.physicalDevice;
+	init_info.Device = vkContext.device;
+	init_info.QueueFamily = vkContext.queueFamilyIndex;
+	init_info.Queue = vkContext.graphicsQueue;
+	init_info.PipelineCache = VK_NULL_HANDLE;
+	init_info.DescriptorPool = imguiPool; // create a pool with IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE
+	init_info.MinImageCount = VK_REQUIRED_IMAGE_COUNT;
+	init_info.ImageCount = VK_REQUIRED_IMAGE_COUNT;
+	init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+	init_info.Allocator = nullptr;
+	//dynamic rendering parameters for imgui to use
+	init_info.PipelineRenderingCreateInfo = { .sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO };
+	init_info.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
+	VkFormat pipelineformat = VK_FORMAT_R8G8B8A8_UNORM;
+	init_info.PipelineRenderingCreateInfo.pColorAttachmentFormats = &pipelineformat;
+	init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+	ImGui_ImplVulkan_Init(&init_info);
+	ImGui_ImplVulkan_CreateFontsTexture();
+
 	// Define triangle vertices and indices
 	Vertex triangleVertices[] = {
 		{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // bottom-center, red
@@ -506,71 +413,100 @@ int main(int argc, char* argv[]) {
 	VkDeviceMemory indexBufferMemory;
 	VkBuffer indexBuffer = CreateIndexBuffer(vkContext.device, vkContext.physicalDevice, indices, sizeof(indices), &indexBufferMemory);
 	
-	
-	
-	
 	VkPipelineLayout pipelineLayout; // we need this later to destroy the pipeline layout
 	VkPipeline graphicsPipeline = VulkanCreateGraphicsPipeline(vkContext.device, vkContext.physicalDevice, vkContext.renderPass, vertexBuffer, indexBuffer, &pipelineLayout);
-	VulkanRecordCommandBuffers(vkContext.commandBuffers, vkContext.swapchain.framebuffers, vkContext.renderPass, VK_REQUIRED_IMAGE_COUNT, swapchainExtent, graphicsPipeline, vertexBuffer, indexBuffer);
-	//uint32_t queueFamilyIndex = VulkanGetGraphicsQueueFamilyIndex(physicalDevice);
-	//VkQueue graphicsQueue = VulkanGetGraphicsQueue(device, queueFamilyIndex);
-	//VkFence inFlightFence = VulkanCreateFence(vkContext.device, false); // this fence is used to wait until a frame is finished rendering before starting a new one
-	//VkSemaphore* renderFinishedSemaphores = VulkanCreateSemaphores(vkContext.device, swapchainImageCount);
-	//VkSemaphore* imagesAvailableSemaphores = VulkanCreateSemaphores(vkContext.device, swapchainImageCount);
+	auto commandBufferSetup = [=](VkExtent2D surfaceSize, VkCommandBuffer commandBuffer) {
+		// Set viewport (the region of the framebuffer you want to draw to)
+		VkViewport viewport = {};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)surfaceSize.width;
+		viewport.height = (float)surfaceSize.height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-	uint32_t currentFrame = 0;
-	const uint32_t MAX_FRAMES_IN_FLIGHT = VK_REQUIRED_IMAGE_COUNT;
-	bool shouldRecreateSwapchain = false;
+		// Set scissor (cut-off area, usually matches viewport)
+		VkRect2D scissor = {};
+		scissor.offset = { 0, 0 };
+		scissor.extent = surfaceSize;
+		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+		// Bind your graphics pipeline if you have one
+		if (graphicsPipeline != VK_NULL_HANDLE) {
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+		}
+
+		// **Bind your vertex buffer here**
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
+
+		vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+
+		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
+	};
+	VulkanBindCommandBuffers(&vkContext, commandBufferSetup);
+
+	//uint32_t currentFrame = 0;
+	//const uint32_t MAX_FRAMES_IN_FLIGHT = VK_REQUIRED_IMAGE_COUNT;
+	//bool shouldRecreateSwapchain = false;
 
 	while (1) {
 		if (SDLHandleEvents() < 0) break;
-		vkWaitForFences(vkContext.device, 1, &vkContext.inFlightFence, VK_TRUE, UINT64_MAX);
-		vkResetFences(vkContext.device, 1, &vkContext.inFlightFence);
 
-		if (shouldRecreateSwapchain) {
-			VulkanRecreateSwapchain(&vkContext);
-			// Rerecord command buffers after new swapchain is created!
-			VulkanRecordCommandBuffers(
-				vkContext.commandBuffers,
-				vkContext.swapchain.framebuffers,
-				vkContext.renderPass,
-				VK_REQUIRED_IMAGE_COUNT,
-				vkContext.surfaceSize,
-				graphicsPipeline,
-				vertexBuffer,
-				indexBuffer
-			);
-			shouldRecreateSwapchain = false;
-		}
+		// imgui new frame
+		ImGui_ImplVulkan_NewFrame();
+		ImGui_ImplSDL2_NewFrame();
+		ImGui::NewFrame();
 
-		VkSemaphore imageAvailableSemaphore = vkContext.imageAvailableSemaphores[currentFrame];
-		VkSemaphore renderFinishedSemaphore = vkContext.renderFinishedSemaphores[currentFrame];
+		//some imgui UI to test
+		ImGui::ShowDemoWindow();
 
-		// Acquire next image from swapchain
-		uint32_t imageIndex = VulkanAcquireNextImage(vkContext.device, vkContext.swapchain.instance, imageAvailableSemaphore);
-		
-		VulkanSubmitCommandBuffer(
-			vkContext.graphicsQueue,
-			vkContext.commandBuffers,
-			imageAvailableSemaphore,
-			renderFinishedSemaphore,
-			vkContext.inFlightFence,
-			imageIndex);
+		//make imgui calculate internal draw structures
+		ImGui::Render();
 
-		VkResult presentResult = VulkanQueuePresent(
-			vkContext.graphicsQueue,
-			vkContext.swapchain.instance,
-			renderFinishedSemaphore,
-			imageIndex);
+		VulkanDraw(&vkContext);
 
-		if (presentResult == VK_ERROR_OUT_OF_DATE_KHR || presentResult == VK_SUBOPTIMAL_KHR) {
-			shouldRecreateSwapchain = true;
-		}
+		//vkWaitForFences(vkContext.device, 1, &vkContext.inFlightFence, VK_TRUE, UINT64_MAX);
+		//vkResetFences(vkContext.device, 1, &vkContext.inFlightFence);
 
-		// Advance to next frame
-		currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+		//if (shouldRecreateSwapchain) {
+		//	VulkanRecreateSwapchain(&vkContext);
+		//	// Rerecord command buffers after new swapchain is created!
+		//	VulkanRecordCommandBuffers(&vkContext, commandBufferSetup);
+		//	shouldRecreateSwapchain = false;
+		//}
 
-		SDL_Delay(16); // Simulate ~60 FPS
+		//VkSemaphore imageAvailableSemaphore = vkContext.imageAvailableSemaphores[currentFrame];
+		//VkSemaphore renderFinishedSemaphore = vkContext.renderFinishedSemaphores[currentFrame];
+
+		//// Acquire next image from swapchain
+		//uint32_t imageIndex = VulkanAcquireNextImage(vkContext.device, vkContext.swapchain.instance, imageAvailableSemaphore);
+
+		//VulkanRecordCommandBuffers(&vkContext, commandBufferSetup);
+		//
+		//VulkanSubmitCommandBuffer(
+		//	vkContext.graphicsQueue,
+		//	vkContext.commandBuffers,
+		//	imageAvailableSemaphore,
+		//	renderFinishedSemaphore,
+		//	vkContext.inFlightFence,
+		//	imageIndex);
+
+		//VkResult presentResult = VulkanQueuePresent(
+		//	vkContext.graphicsQueue,
+		//	vkContext.swapchain.instance,
+		//	renderFinishedSemaphore,
+		//	imageIndex);
+
+		//if (presentResult == VK_ERROR_OUT_OF_DATE_KHR || presentResult == VK_SUBOPTIMAL_KHR) {
+		//	shouldRecreateSwapchain = true;
+		//}
+
+		//// Advance to next frame
+		//currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+
+		//SDL_Delay(16); // Simulate ~60 FPS
 	}
 
 	vkDeviceWaitIdle(vkContext.device);
@@ -583,25 +519,16 @@ int main(int argc, char* argv[]) {
 	vkDestroyPipeline(vkContext.device, graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(vkContext.device, pipelineLayout, nullptr);
 
+	ImGui_ImplVulkan_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+	vkDestroyDescriptorPool(vkContext.device, imguiPool, nullptr);
 
-	//VulkanDestroySemaphores(vkContext.device, renderFinishedSemaphores, swapchainImageCount);
-	//VulkanDestroySemaphores(vkContext.device, imagesAvailableSemaphores, swapchainImageCount);
-	//vkDestroyFence(vkContext.device, inFlightFence, nullptr);
-	//VulkanDestroyCommandBuffers(vkContext.device, vkContext.commandPool, commandBuffers, swapchainImageCount);
-	//vkDestroyCommandPool(device, commandPool, nullptr);
-	//VulkanDestroyFramebuffers(vkContext.device, framebuffers, swapchainImageCount);
-	//vkDestroyRenderPass(vkContext.device, vkContext.renderPass, nullptr);
-	//VulkanDestroyImageViews(vkContext.device, swapchainImageViews, swapchainImageCount);
-	//free(swapchainImages);
-	//vkDestroySwapchainKHR(vkContext.device, swapchain, nullptr);
 	SDL_DestroyWindow(window);
 	VulkanShutdown(&vkContext);
-	//vkDestroyDevice(device, nullptr);
-	//vkDestroyInstance(instance, nullptr);
 	return 0;
 }
 
 //Uniform buffers(e.g., for MVP transforms)
 //Descriptor sets for textures or more complex shaders
 //Depth buffer if you move beyond 2D rendering
-//Swapchain recreation for window resizing

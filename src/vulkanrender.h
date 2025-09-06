@@ -57,8 +57,13 @@ typedef struct {
     VkSurfaceKHR surface;
     VkExtent2D surfaceSize;
 	VulkanSwapchain swapchain;
+    uint32_t currentFrame;
+    uint32_t MAX_FRAMES_IN_FLIGHT;
+    bool shouldRecreateSwapchain;
+    std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda;
 } VulkanContext;
 
 void VulkanInit(VulkanContext* vkContext, std::function<void(VulkanContext* vkContext)> createSurface);
 void VulkanShutdown(VulkanContext* vkContext);
-void VulkanRecreateSwapchain(VulkanContext* vkContext);
+void VulkanDraw(VulkanContext* vkContext);
+void VulkanBindCommandBuffers(VulkanContext* vkContext, std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda);
