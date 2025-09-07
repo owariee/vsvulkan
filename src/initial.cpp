@@ -2,6 +2,10 @@
 #include "imguiloader.h"
 #include "sdlwindow.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/mat4x4.hpp>
+
 //int EngineSDLVulkanStart(std::function<void(VulkanContext* vkContext)> initLambda, std::function<void(SDL_Event* event)> eventLambda, std::function<void(VulkanContext* vkContext)> logicLambda, std::function<void(void)> imguiLambda) {
 //	SDL_Window* window = SDLWindowInit("Vulkan Engine", 1280, 720, (SDL_WindowFlags)(SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE));
 //
@@ -117,6 +121,7 @@ typedef struct {
     int32_t indexBufferId;
     int32_t instanceBufferId;
     int32_t pipelineIndex;
+    glm::mat4 projection;
     std::vector<QuadInstance> quads;
 } InstancedRenderer;
 
@@ -148,7 +153,12 @@ InstancedRenderer RendererInstanced(VulkanContext* vkContext) {
         VulkanCreateVertexAttribute(vertexInputDesc, 1, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(QuadInstance, pos));
         VulkanCreateVertexAttribute(vertexInputDesc, 1, 2, VK_FORMAT_R32G32_SFLOAT, offsetof(QuadInstance, size));
         VulkanCreateVertexAttribute(vertexInputDesc, 1, 3, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(QuadInstance, color));
+        VulkanCreatePushConstant(vertexInputDesc, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4));
+        VulkanCreateDescriptorSetLayoutBinding(vertexInputDesc, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT);
     });
+
+    //iRenderer.projection = glm::ortho(0.0f, (float)vkContext->surfaceSize.width, 0.0f, (float)vkContext->surfaceSize.height);
+    iRenderer.projection = glm::ortho(-1.0f, (float)vkContext->surfaceSize.width / (float)vkContext->surfaceSize.height, -1.0f, 1.0f);
 
     return iRenderer;
 }
@@ -164,6 +174,15 @@ void RendererInstancedCmd(const InstancedRenderer* iRenderer, const VulkanContex
     vkCmdBindVertexBuffers(commandBuffer, 0, 2, vertexBuffers, offsets);
     vkCmdBindIndexBuffer(commandBuffer, vkContext->buffers[iRenderer->indexBufferId]->buffer, 0, VK_INDEX_TYPE_UINT16);
 
+    vkCmdPushConstants(
+        commandBuffer,
+        vkContext->pipelines[iRenderer->pipelineIndex]->layout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(glm::mat4),
+        &iRenderer->projection
+    );
+
     // Draw all quads in one call
     vkCmdDrawIndexed(commandBuffer, 6, iRenderer->maxQuads, 0, 0, 0);
 }
@@ -174,6 +193,19 @@ void RendererInstancedStart(InstancedRenderer* iRenderer) {
 
 void RendererInstancedEnd(InstancedRenderer* iRenderer, VulkanContext* vkContext) {
     VulkanUpdateVertexBuffer(vkContext, iRenderer->instanceBufferId, iRenderer->quads.data(), iRenderer->quads.size() * sizeof(QuadInstance));
+    //iRenderer->projection = glm::ortho(0.0f, (float)vkContext->surfaceSize.width, 0.0f, (float)vkContext->surfaceSize.height);
+
+    float width = (float)vkContext->surfaceSize.width / (float)vkContext->surfaceSize.height;
+    float height = 1.0f;
+
+    if (width < 1.0f)
+    {
+        width = 1.0f;
+        height = (float)vkContext->surfaceSize.height / (float)vkContext->surfaceSize.width;
+    }
+
+    iRenderer->projection = glm::ortho(-width, width, -height, height);
+    printf("Surface size: %u %u\n", vkContext->surfaceSize.width, vkContext->surfaceSize.height);
 }
 
 int main(int argc, char* argv[]) {
@@ -220,7 +252,7 @@ int main(int argc, char* argv[]) {
     InstancedRenderer iRenderer = RendererInstanced(&vkContext);
 
     // Create commands
-    VulkanBindCommandBuffers(&vkContext, [=](VkExtent2D surfaceSize, VkCommandBuffer commandBuffer) {
+    VulkanBindCommandBuffers(&vkContext, [&](VkExtent2D surfaceSize, VkCommandBuffer commandBuffer) {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
             vkContext.pipelines[pipelineIndex]->pipeline);
 
@@ -233,21 +265,74 @@ int main(int argc, char* argv[]) {
         // draw 6 indices = 2 triangles = rectangle
         vkCmdDrawIndexed(commandBuffer, 6, 1, 0, 0, 0);
 
-        RendererInstancedCmd(&iRenderer, &vkContext, commandBuffer);
         ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
-    });
+        RendererInstancedCmd(&iRenderer, &vkContext, commandBuffer);
+        });
 
-    float pos = -0.2f;
+
+    //float pos = -0.2f;
 
 	while (1) {
         RendererInstancedStart(&iRenderer);
 
-        pos += 0.00005f;
+        //pos += 0.00005f;
 
-        iRenderer.quads.push_back({ { pos, -0.5f }, { 0.4f, 0.4f }, {1,0,0,1} }); // example rectangle
-        iRenderer.quads.push_back({ {  0.3f,  0.0f }, { 0.2f, 0.3f }, {0,1,0,1} }); // another rectangle
-        iRenderer.quads.push_back({ { -0.6f, -0.5f }, { 0.5f, 0.5f }, {0,0,1,1} }); // example rectangle
-        iRenderer.quads.push_back({ {  0.0f,  0.0f }, { 0.3f, 0.4f }, {0,1,1,1} }); // another rectangle
+        //iRenderer.quads.push_back({ { pos, -0.5f }, { 0.4f, 0.4f }, {1,0,0,1} }); // example rectangle
+        //iRenderer.quads.push_back({ {  0.3f,  0.0f }, { 0.2f, 0.3f }, {0,1,0,1} }); // another rectangle
+        //iRenderer.quads.push_back({ { -0.6f, -0.5f }, { 0.5f, 0.5f }, {0,0,1,1} }); // example rectangle
+        //iRenderer.quads.push_back({ {  0.0f,  0.0f }, { 0.3f, 0.4f }, {0,1,1,1} }); // another rectangle
+
+
+        float widthRatio = (float)vkContext.surfaceSize.width / (float)vkContext.surfaceSize.height;
+        float heightRatio = 1.0f;
+
+        if (widthRatio < 1.0f)
+        {
+            widthRatio = 1.0f;
+            heightRatio = (float)vkContext.surfaceSize.height / (float)vkContext.surfaceSize.width;
+        }
+
+
+        float virtualWidthRatio = (float)1920 / (float)1080;
+        float virtualHeightRatio = 1.0f;
+
+        //iRenderer.quads.push_back({ { -widthRatio, -heightRatio }, { (float)vkContext.surfaceSize.width, (float)vkContext.surfaceSize.height }, {1,1,1,1} }); // example rectangle
+        //iRenderer.quads.push_back({ { -virtualWidthRatio, -heightRatio }, { (float)virtualWidthRatio*2, (float)vkContext.surfaceSize.height }, {0,0,0,1} }); // example rectangle
+
+
+        iRenderer.quads.push_back({ { -widthRatio, -heightRatio }, { (float)widthRatio - virtualWidthRatio, (float)heightRatio*2 }, {1,1,1,1} }); // example rectangle
+        iRenderer.quads.push_back({ { virtualWidthRatio, -heightRatio }, { (float)widthRatio - virtualWidthRatio, (float)heightRatio*2 }, {1,1,1,1} }); // example rectangle
+
+        iRenderer.quads.push_back({ { -widthRatio, -heightRatio }, { (float)widthRatio*2, (float)heightRatio - virtualHeightRatio }, {1,1,1,1} }); // example rectangle
+        iRenderer.quads.push_back({ { -widthRatio, virtualHeightRatio }, { (float)widthRatio*2, (float)heightRatio - virtualHeightRatio }, {1,1,1,1} }); // example rectangle
+
+
+        //widthRatio == width
+        //virtualWidthRatio == x
+
+        //virtualWidthRatio * width = widthRatio * x
+        //(virtualWidthRatio * width) / widthRatio = x
+
+        if (widthRatio > virtualWidthRatio) {
+            printf("Real game resolution width limited %f %f\n", (virtualWidthRatio * (float)vkContext.surfaceSize.width) / widthRatio, (float)vkContext.surfaceSize.height);
+        }
+
+        if (heightRatio > virtualHeightRatio) {
+            printf("Real game resolution height limited %f %f\n", (float)vkContext.surfaceSize.width, (virtualHeightRatio* (float)vkContext.surfaceSize.height) / heightRatio);
+        }
+
+
+      
+
+        //iRenderer.quads.push_back({ { virtualWidthRatio, -heightRatio }, { (float)widthRatio - virtualWidthRatio, (float)heightRatio * 2 }, {1,1,1,1} }); // example rectangle
+
+        //iRenderer.quads.push_back({ { -virtualWidthRatio, -heightRatio }, { (float)virtualWidthRatio * 2, (float)vkContext.surfaceSize.height }, {0,0,0,1} }); // example rectangle
+
+
+        iRenderer.quads.push_back({ { 0.0f, 0.0f }, { 1.0f, 1.0f }, {1,0,0,1} }); // example rectangle
+        //iRenderer.quads.push_back({ {  0.3f,  0.0f }, { 0.2f, 0.3f }, {0,1,0,1} }); // another rectangle
+        //iRenderer.quads.push_back({ { -0.6f, -0.5f }, { 0.5f, 0.5f }, {0,0,1,1} }); // example rectangle
+        //iRenderer.quads.push_back({ {  0.0f,  0.0f }, { 0.3f, 0.4f }, {0,1,1,1} }); // another rectangle
 
         RendererInstancedEnd(&iRenderer, &vkContext);
         //rectVertices[0].pos[1] -= 0.001f;
