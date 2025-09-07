@@ -457,6 +457,22 @@ void VulkanRecordCommandBuffer(
     // Begin render pass
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+    //// Set viewport (the region of the framebuffer you want to draw to)
+    VkViewport viewport = {};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = (float)vkContext->surfaceSize.width;
+    viewport.height = (float)vkContext->surfaceSize.height;
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+    // Set scissor (cut-off area, usually matches viewport)
+    VkRect2D scissor = {};
+    scissor.offset = { 0, 0 };
+    scissor.extent = vkContext->surfaceSize;
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
 	commandsLambda(vkContext->surfaceSize, commandBuffer); // Call the provided lambda to record custom commands
 
     // End the render pass
@@ -557,6 +573,397 @@ uint32_t VulkanAcquireNextImage(VkDevice device, VkSwapchainKHR swapchain, VkSem
     return imageIndex;
 }
 
+/*
+ * load shader module from file 
+ */
+VkShaderModule VulkanLoadShaderModule(VkDevice device, const char* filepath) {
+    // Open the file
+    FILE* file = fopen(filepath, "rb");
+    if (!file) {
+        fprintf(stderr, "Failed to open shader file: %s\n", filepath);
+        return VK_NULL_HANDLE;
+    }
+
+    // Get file size
+    fseek(file, 0, SEEK_END);
+    long filesize = ftell(file);
+    rewind(file);
+
+    // Allocate buffer and read file
+    char* buffer = (char*)malloc(filesize);
+    if (fread(buffer, 1, filesize, file) != filesize) {
+        fprintf(stderr, "Failed to read shader file: %s\n", filepath);
+        fclose(file);
+        free(buffer);
+        return VK_NULL_HANDLE;
+    }
+    fclose(file);
+
+    // Create shader module
+    VkShaderModuleCreateInfo createInfo = {
+        .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+        .codeSize = (size_t)filesize,
+        .pCode = (const uint32_t*)buffer
+    };
+
+    VkShaderModule shaderModule;
+    VkResult result = vkCreateShaderModule(device, &createInfo, NULL, &shaderModule);
+    free(buffer);
+
+    if (result != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create shader module from %s\n", filepath);
+        return VK_NULL_HANDLE;
+    }
+
+    return shaderModule;
+}
+
+/*
+ * create shader stage
+ */
+VkPipelineShaderStageCreateInfo VulkanCreateShaderStage(VkDevice device, const char* filePath, VkShaderStageFlagBits stage, VkShaderModule* shaderModuleOut) {
+    VkShaderModule shaderModule = VulkanLoadShaderModule(device, filePath);
+    if (shaderModule == VK_NULL_HANDLE) {
+        fprintf(stderr, "Failed to create shader module for %s\n", filePath);
+        exit(EXIT_FAILURE); // Or handle error gracefully
+    }
+
+    VkPipelineShaderStageCreateInfo shaderStageInfo = {};
+    shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    shaderStageInfo.stage = stage;
+    shaderStageInfo.module = shaderModule;
+    shaderStageInfo.pName = "main";
+
+    *shaderModuleOut = shaderModule;
+
+    return shaderStageInfo;
+}
+
+/*
+ * create pipeline from 2 shaders 
+ */
+int32_t VulkanCreateGraphicsPipeline(
+    VulkanContext* vkContext,
+    const char* shaderBaseName,
+    std::function<void(VertexInputDescription* vertexInputDescription)> vertexInputDescriptionLambda)
+{
+    // Load shaders
+    char vertShaderPath[256];
+    char fragShaderPath[256];
+
+    snprintf(vertShaderPath, sizeof(vertShaderPath), "../shaders/%s.vert.spv", shaderBaseName);
+    snprintf(fragShaderPath, sizeof(fragShaderPath), "../shaders/%s.frag.spv", shaderBaseName);
+
+    VkShaderModule vertShaderModule;
+    VkShaderModule fragShaderModule;
+    VkPipelineShaderStageCreateInfo vertShader = VulkanCreateShaderStage(vkContext->device, vertShaderPath, VK_SHADER_STAGE_VERTEX_BIT, &vertShaderModule);
+    VkPipelineShaderStageCreateInfo fragShader = VulkanCreateShaderStage(vkContext->device, fragShaderPath, VK_SHADER_STAGE_FRAGMENT_BIT, &fragShaderModule);
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShader, fragShader };
+
+    // Setup vertex input state with these descriptions
+    VertexInputDescription vertexInputDescription;
+    vertexInputDescriptionLambda(&vertexInputDescription);
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(vertexInputDescription.bindings.size());
+    vertexInputInfo.pVertexBindingDescriptions = vertexInputDescription.bindings.data();
+    vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertexInputDescription.attributes.size());
+    vertexInputInfo.pVertexAttributeDescriptions = vertexInputDescription.attributes.data();
+
+    // --- Rest of the pipeline creation code ---
+    // inputAssembly, viewport, rasterizer, etc. as before, just replace vertexInputInfo pointer in pipelineInfo
+
+    // [Include or copy your previous pipeline creation code here, but use the new vertexInputInfo]
+
+    // For brevity, here's an example for pipeline creation with updated vertexInputInfo:
+
+    // Input assembly (triangle list)
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+    // Viewport, rasterizer, multisampling, color blending as before (use your existing setup)...
+
+    // Pipeline layout creation (no descriptors or push constants for now)
+    VkPipelineLayout pipelineLayout;
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 0;
+    pipelineLayoutInfo.pSetLayouts = NULL;
+    pipelineLayoutInfo.pushConstantRangeCount = 0;
+    pipelineLayoutInfo.pPushConstantRanges = NULL;
+
+    if (vkCreatePipelineLayout(vkContext->device, &pipelineLayoutInfo, NULL, &pipelineLayout) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create pipeline layout!\n");
+        return -1;
+    }
+
+    // Viewport and scissor setup
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = NULL;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = NULL;
+
+    VkDynamicState dynamicStates[] = {
+    VK_DYNAMIC_STATE_VIEWPORT,
+    VK_DYNAMIC_STATE_SCISSOR
+    };
+
+    VkPipelineDynamicStateCreateInfo dynamicState = {};
+    dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicState.dynamicStateCount = 2;
+    dynamicState.pDynamicStates = dynamicStates;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+    rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    rasterizer.depthBiasEnable = VK_FALSE;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+        VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.blendEnable = VK_FALSE;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.pDynamicState = &dynamicState;
+    pipelineInfo.layout = pipelineLayout;
+    pipelineInfo.renderPass = vkContext->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    VkPipeline graphicsPipeline;
+    if (vkCreateGraphicsPipelines(vkContext->device, VK_NULL_HANDLE, 1, &pipelineInfo, NULL, &graphicsPipeline) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create graphics pipeline!\n");
+        vkDestroyPipelineLayout(vkContext->device, pipelineLayout, NULL);
+        return -1;
+    }
+
+    vkDestroyShaderModule(vkContext->device, vertShaderModule, nullptr);
+    vkDestroyShaderModule(vkContext->device, fragShaderModule, nullptr);
+
+    VulkanPipeline pipelineBuffer;
+    pipelineBuffer.layout = pipelineLayout;
+    pipelineBuffer.pipeline = graphicsPipeline;
+    size_t index = vkContext->pipelines.size();
+    vkContext->pipelines.push_back(pipelineBuffer);
+
+    return index;
+}
+
+/*
+ * Delete all available pipelines
+ */
+void VulkanDeletePipelines(VulkanContext* vkContext) {
+    // Iterate and process existing pipelines
+    for (size_t i = 0; i < vkContext->pipelines.size(); ++i) {
+        if (vkContext->pipelines[i]) {
+            vkDestroyPipeline(vkContext->device, vkContext->pipelines[i]->pipeline, nullptr);
+            vkDestroyPipelineLayout(vkContext->device, vkContext->pipelines[i]->layout, nullptr);
+        }
+    }
+}
+
+/*
+ * Delete all available buffers
+ */
+void VulkanDeleteBuffers(VulkanContext* vkContext) {
+    // Iterate and process existing pipelines
+    for (size_t i = 0; i < vkContext->buffers.size(); ++i) {
+        if (vkContext->buffers[i]) {
+            vkDestroyBuffer(vkContext->device, vkContext->buffers[i]->buffer, nullptr);
+            vkFreeMemory(vkContext->device, vkContext->buffers[i]->memory, nullptr);
+        }
+    }
+}
+
+/*
+ * Create vertex buffer
+ */
+int32_t VulkanCreateVertexBuffer(VulkanContext* vkContext, const void* vertexData, VkDeviceSize size) {
+    VkDeviceMemory outMemory;
+    VkBufferCreateInfo bufferInfo = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .size = size,
+        .usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE
+    };
+
+    VkBuffer vertexBuffer;
+    if (vkCreateBuffer(vkContext->device, &bufferInfo, NULL, &vertexBuffer) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create vertex buffer\n");
+        return -1;
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(vkContext->device, vertexBuffer, &memRequirements);
+
+    uint32_t memoryTypeIndex = 0;
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(vkContext->physicalDevice, &memProperties);
+
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if ((memRequirements.memoryTypeBits & (1 << i)) &&
+            (memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) &&
+            (memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+            memoryTypeIndex = i;
+            break;
+        }
+    }
+
+    VkMemoryAllocateInfo allocInfo = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .allocationSize = memRequirements.size,
+        .memoryTypeIndex = memoryTypeIndex
+    };
+
+    if (vkAllocateMemory(vkContext->device, &allocInfo, NULL, &outMemory) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to allocate vertex buffer memory\n");
+        vkDestroyBuffer(vkContext->device, vertexBuffer, NULL);
+        return -1;
+    }
+
+    vkBindBufferMemory(vkContext->device, vertexBuffer, outMemory, 0);
+
+    void* data;
+    vkMapMemory(vkContext->device, outMemory, 0, size, 0, &data);
+    memcpy(data, vertexData, (size_t)size);
+    vkUnmapMemory(vkContext->device, outMemory);
+
+
+    VulkanBuffer bufferTemp;
+    bufferTemp.buffer = vertexBuffer;
+    bufferTemp.memory = outMemory;
+    size_t index = vkContext->buffers.size();
+    vkContext->buffers.push_back(bufferTemp);
+
+    return index;
+}
+
+/*
+ * Create index buffer
+ */
+int32_t CreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDeviceSize size) {
+    VkDeviceMemory outMemory;
+    VkBufferCreateInfo bufferInfo = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .size = size,
+        .usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE
+    };
+
+    VkBuffer indexBuffer;
+    if (vkCreateBuffer(vkContext->device, &bufferInfo, NULL, &indexBuffer) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create index buffer\n");
+        return -1;
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(vkContext->device, indexBuffer, &memRequirements);
+
+    uint32_t memoryTypeIndex = 0;
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(vkContext->physicalDevice, &memProperties);
+
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if ((memRequirements.memoryTypeBits & (1 << i)) &&
+            (memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) &&
+            (memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+            memoryTypeIndex = i;
+            break;
+        }
+    }
+
+    VkMemoryAllocateInfo allocInfo = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .allocationSize = memRequirements.size,
+        .memoryTypeIndex = memoryTypeIndex
+    };
+
+    if (vkAllocateMemory(vkContext->device, &allocInfo, NULL, &outMemory) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to allocate index buffer memory\n");
+        vkDestroyBuffer(vkContext->device, indexBuffer, NULL);
+        return -1;
+    }
+
+    vkBindBufferMemory(vkContext->device, indexBuffer, outMemory, 0);
+
+    void* data;
+    vkMapMemory(vkContext->device, outMemory, 0, size, 0, &data);
+    memcpy(data, indexData, (size_t)size);
+    vkUnmapMemory(vkContext->device, outMemory);
+
+    VulkanBuffer bufferTemp;
+    bufferTemp.buffer = indexBuffer;
+    bufferTemp.memory = outMemory;
+    size_t index = vkContext->buffers.size();
+    vkContext->buffers.push_back(bufferTemp);
+
+    return index;
+}
+
+/*
+ * creates an attribute description
+ */
+void VulkanCreateVertexAttribute(
+    VertexInputDescription* vertexInputDescription,
+    uint32_t binding,
+    uint32_t location,
+    VkFormat format,
+    uint32_t offset) 
+{
+    VkVertexInputAttributeDescription attributeDescription;
+    attributeDescription.binding = binding;
+    attributeDescription.location = location;
+    attributeDescription.format = format;
+    attributeDescription.offset = offset;
+    vertexInputDescription->attributes.push_back(attributeDescription);
+}
+
+/*
+ * creates an binding description
+ */
+void VulkanCreateVertexBinding(
+    VertexInputDescription* vertexInputDescription,
+    uint32_t binding,
+    uint32_t stride,
+    VkVertexInputRate inputRate)
+{
+    VkVertexInputBindingDescription bindingDescription;
+    bindingDescription.binding = binding;
+    bindingDescription.stride = stride;
+    bindingDescription.inputRate = inputRate;
+    vertexInputDescription->bindings.push_back(bindingDescription);
+}
+
 void VulkanDraw(VulkanContext* vkContext) {
     vkWaitForFences(vkContext->device, 1, &vkContext->inFlightFence, VK_TRUE, UINT64_MAX);
     vkResetFences(vkContext->device, 1, &vkContext->inFlightFence);
@@ -596,7 +1003,7 @@ void VulkanDraw(VulkanContext* vkContext) {
     vkContext->currentFrame = (vkContext->currentFrame + 1) % vkContext->MAX_FRAMES_IN_FLIGHT;
 }
 
-void VulkanInit(VulkanContext* vkContext, std::function<void(VulkanContext* vkContext)> createSurface) {
+void VulkanInit(VulkanContext* vkContext, std::function<VkSurfaceKHR(VulkanContext* vkContext)> createSurface) {
     vkContext->instance = VulkanCreateInstance();
     vkContext->physicalDevice = VulkanSelectPhysicalDevice(vkContext->instance);
     vkContext->device = VulkanCreateLogicalDevice(vkContext->physicalDevice);
@@ -608,7 +1015,7 @@ void VulkanInit(VulkanContext* vkContext, std::function<void(VulkanContext* vkCo
     vkContext->inFlightFence = VulkanCreateFence(vkContext->device, false);
     VulkanCreateSemaphores(vkContext->device, VK_REQUIRED_IMAGE_COUNT, vkContext->renderFinishedSemaphores);
     VulkanCreateSemaphores(vkContext->device, VK_REQUIRED_IMAGE_COUNT, vkContext->imageAvailableSemaphores);
-	createSurface(vkContext); // will set surface
+	vkContext->surface = createSurface(vkContext);
     VulkanCreateSwapchain(vkContext);
     vkContext->currentFrame = 0;
     vkContext->MAX_FRAMES_IN_FLIGHT = VK_REQUIRED_IMAGE_COUNT;
@@ -617,6 +1024,8 @@ void VulkanInit(VulkanContext* vkContext, std::function<void(VulkanContext* vkCo
 }
 
 void VulkanShutdown(VulkanContext* vkContext) {
+    VulkanDeleteBuffers(vkContext);
+    VulkanDeletePipelines(vkContext);
 	VulkanDestroySwapchain(vkContext);
     vkDestroySurfaceKHR(vkContext->instance, vkContext->surface, nullptr);
     VulkanDestroySemaphores(vkContext->device, vkContext->renderFinishedSemaphores, VK_REQUIRED_IMAGE_COUNT);

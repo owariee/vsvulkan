@@ -19,9 +19,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <functional>
-#define SDL_MAIN_HANDLED
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_vulkan.h>
+#include <vector>
+#include <optional>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
@@ -34,6 +33,21 @@
         } while (0)
 
 #define VK_REQUIRED_IMAGE_COUNT 4
+
+typedef struct {
+    std::vector<VkVertexInputBindingDescription> bindings;
+    std::vector<VkVertexInputAttributeDescription> attributes;
+} VertexInputDescription;
+
+typedef struct {
+    VkDeviceMemory memory;
+    VkBuffer buffer;
+} VulkanBuffer;
+
+typedef struct {
+    VkPipeline pipeline;
+    VkPipelineLayout layout;
+} VulkanPipeline;
 
 typedef struct {
     VkSwapchainKHR instance;
@@ -61,9 +75,32 @@ typedef struct {
     uint32_t MAX_FRAMES_IN_FLIGHT;
     bool shouldRecreateSwapchain;
     std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda;
+    std::vector<std::optional<VulkanPipeline>> pipelines;
+    std::vector<std::optional<VulkanBuffer>> buffers;
 } VulkanContext;
 
-void VulkanInit(VulkanContext* vkContext, std::function<void(VulkanContext* vkContext)> createSurface);
+void VulkanInit(VulkanContext* vkContext, std::function<VkSurfaceKHR(VulkanContext* vkContext)> createSurface);
 void VulkanShutdown(VulkanContext* vkContext);
 void VulkanDraw(VulkanContext* vkContext);
 void VulkanBindCommandBuffers(VulkanContext* vkContext, std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda);
+
+int32_t VulkanCreateGraphicsPipeline(
+    VulkanContext* vkContext,
+    const char* shaderBaseName,
+    std::function<void(VertexInputDescription* vertexInputDescription)> vertexInputDescriptionLambda);
+
+int32_t VulkanCreateVertexBuffer(VulkanContext* vkContext, const void* vertexData, VkDeviceSize size);
+int32_t CreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDeviceSize size);
+
+void VulkanCreateVertexAttribute(
+    VertexInputDescription* vertexInputDescription,
+    uint32_t binding,
+    uint32_t location,
+    VkFormat format,
+    uint32_t offset);
+
+void VulkanCreateVertexBinding(
+    VertexInputDescription* vertexInputDescription,
+    uint32_t binding,
+    uint32_t stride,
+    VkVertexInputRate inputRate);
