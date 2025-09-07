@@ -33,7 +33,7 @@ if(WIN32)
     )
 endif()
 
-add_executable(game initial.cpp "vulkanrender.cpp" "vulkanrender.h")
+add_executable(game initial.cpp "vulkanrender.cpp" "vulkanrender.h" "imguiloader.cpp" "imguiloader.h" "sdlwindow.cpp" "sdlwindow.h")
 
 if(WIN32)
   set_target_properties(game PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
