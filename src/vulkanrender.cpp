@@ -687,13 +687,22 @@ int32_t VulkanCreateGraphicsPipeline(
     // Viewport, rasterizer, multisampling, color blending as before (use your existing setup)...
 
     // Pipeline layout creation (no descriptors or push constants for now)
+    VkDescriptorSetLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = static_cast<uint32_t>(vertexInputDescription.layoutBinding.size());
+    layoutInfo.pBindings = vertexInputDescription.layoutBinding.data();
+
+    VkDescriptorSetLayout descriptorSetLayout;
+    VkResult result = vkCreateDescriptorSetLayout(vkContext->device, &layoutInfo, nullptr, &descriptorSetLayout);
+    CHECK_VULKAN_RESULT(result);
+
     VkPipelineLayout pipelineLayout;
     VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 0;
-    pipelineLayoutInfo.pSetLayouts = NULL;
-    pipelineLayoutInfo.pushConstantRangeCount = 0;
-    pipelineLayoutInfo.pPushConstantRanges = NULL;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+    pipelineLayoutInfo.pushConstantRangeCount = static_cast<uint32_t>(vertexInputDescription.constantRange.size());
+    pipelineLayoutInfo.pPushConstantRanges = vertexInputDescription.constantRange.data();
 
     if (vkCreatePipelineLayout(vkContext->device, &pipelineLayoutInfo, NULL, &pipelineLayout) != VK_SUCCESS) {
         fprintf(stderr, "Failed to create pipeline layout!\n");
@@ -773,6 +782,7 @@ int32_t VulkanCreateGraphicsPipeline(
     VulkanPipeline pipelineBuffer;
     pipelineBuffer.layout = pipelineLayout;
     pipelineBuffer.pipeline = graphicsPipeline;
+    pipelineBuffer.descriptorSetLayout = descriptorSetLayout;
     size_t index = vkContext->pipelines.size();
     vkContext->pipelines.push_back(pipelineBuffer);
 
@@ -786,6 +796,7 @@ void VulkanDeletePipelines(VulkanContext* vkContext) {
     // Iterate and process existing pipelines
     for (size_t i = 0; i < vkContext->pipelines.size(); ++i) {
         if (vkContext->pipelines[i]) {
+            vkDestroyDescriptorSetLayout(vkContext->device, vkContext->pipelines[i]->descriptorSetLayout, nullptr);
             vkDestroyPipeline(vkContext->device, vkContext->pipelines[i]->pipeline, nullptr);
             vkDestroyPipelineLayout(vkContext->device, vkContext->pipelines[i]->layout, nullptr);
         }
@@ -802,6 +813,58 @@ void VulkanDeleteBuffers(VulkanContext* vkContext) {
             vkDestroyBuffer(vkContext->device, vkContext->buffers[i]->buffer, nullptr);
             vkFreeMemory(vkContext->device, vkContext->buffers[i]->memory, nullptr);
         }
+    }
+}
+
+/*
+ * Delete a specific buffer by index
+ */
+void VulkanDeleteBuffer(VulkanContext* vkContext, uint32_t index) {
+    if (index >= vkContext->buffers.size()) {
+        fprintf(stderr, "VulkanDeleteBuffer: invalid index %zu\n", index);
+        return;
+    }
+
+    auto& optBuffer = vkContext->buffers[index];
+    if (optBuffer.has_value()) {
+        VulkanBuffer& buf = optBuffer.value();
+
+        if (buf.buffer != VK_NULL_HANDLE) {
+            vkDestroyBuffer(vkContext->device, buf.buffer, nullptr);
+            buf.buffer = VK_NULL_HANDLE;
+        }
+        if (buf.memory != VK_NULL_HANDLE) {
+            vkFreeMemory(vkContext->device, buf.memory, nullptr);
+            buf.memory = VK_NULL_HANDLE;
+        }
+
+        optBuffer.reset(); // remove from vector
+    }
+}
+
+/*
+ * Delete a specific pipeline by index
+ */
+void VulkanDeletePipeline(VulkanContext* vkContext, uint32_t index) {
+    if (index >= vkContext->pipelines.size()) {
+        fprintf(stderr, "VulkanDeletePipeline: invalid index %zu\n", index);
+        return;
+    }
+
+    auto& optPipeline = vkContext->pipelines[index];
+    if (optPipeline.has_value()) {
+        VulkanPipeline& pipeline = optPipeline.value();
+
+        if (pipeline.pipeline != VK_NULL_HANDLE) {
+            vkDestroyPipeline(vkContext->device, pipeline.pipeline, nullptr);
+            pipeline.pipeline = VK_NULL_HANDLE;
+        }
+        if (pipeline.layout != VK_NULL_HANDLE) {
+            vkDestroyPipelineLayout(vkContext->device, pipeline.layout, nullptr);
+            pipeline.layout = VK_NULL_HANDLE;
+        }
+
+        optPipeline.reset(); // mark slot as empty
     }
 }
 
@@ -853,11 +916,13 @@ int32_t VulkanCreateVertexBuffer(VulkanContext* vkContext, const void* vertexDat
 
     vkBindBufferMemory(vkContext->device, vertexBuffer, outMemory, 0);
 
-    void* data;
-    vkMapMemory(vkContext->device, outMemory, 0, size, 0, &data);
-    memcpy(data, vertexData, (size_t)size);
-    vkUnmapMemory(vkContext->device, outMemory);
-
+    if (vertexData != NULL)
+    {
+        void* data;
+        vkMapMemory(vkContext->device, outMemory, 0, size, 0, &data);
+        memcpy(data, vertexData, (size_t)size);
+        vkUnmapMemory(vkContext->device, outMemory);
+    }
 
     VulkanBuffer bufferTemp;
     bufferTemp.buffer = vertexBuffer;
@@ -866,6 +931,18 @@ int32_t VulkanCreateVertexBuffer(VulkanContext* vkContext, const void* vertexDat
     vkContext->buffers.push_back(bufferTemp);
 
     return index;
+}
+
+/*
+ * Update vertex buffer
+ */
+void VulkanUpdateVertexBuffer(VulkanContext* vkContext, int32_t bufferId, const void* vertexData, VkDeviceSize size) {
+    VulkanBuffer& buf = *vkContext->buffers[bufferId];
+
+    void* data;
+    vkMapMemory(vkContext->device, buf.memory, 0, size, 0, &data);
+    memcpy(data, vertexData, (size_t)size);
+    vkUnmapMemory(vkContext->device, buf.memory);
 }
 
 /*
@@ -962,6 +1039,41 @@ void VulkanCreateVertexBinding(
     bindingDescription.stride = stride;
     bindingDescription.inputRate = inputRate;
     vertexInputDescription->bindings.push_back(bindingDescription);
+}
+
+/*
+ * creates an push constant
+ */
+void VulkanCreatePushConstant(
+    VertexInputDescription* vertexInputDescription,
+    VkShaderStageFlags stageFlags,
+    uint32_t offset,
+    uint32_t size)
+{
+    VkPushConstantRange pushConstant{};
+    pushConstant.stageFlags = stageFlags; // e.g., VK_SHADER_STAGE_VERTEX_BIT
+    pushConstant.offset = offset;         // must be multiple of 4
+    pushConstant.size = size;             // must be <= device limits
+    vertexInputDescription->constantRange.push_back(pushConstant);
+}
+
+/*
+ * creates a descriptor set layout binding
+ */
+void VulkanCreateDescriptorSetLayoutBinding(
+    VertexInputDescription* vertexInputDescription,
+    uint32_t binding,
+    VkDescriptorType descriptorType,
+    uint32_t descriptorCount,
+    VkShaderStageFlags stageFlags)
+{
+    VkDescriptorSetLayoutBinding layoutBinding{};
+    layoutBinding.binding = binding;
+    layoutBinding.descriptorType = descriptorType;
+    layoutBinding.descriptorCount = descriptorCount; // e.g. 1 for single UBO, >1 for arrays
+    layoutBinding.stageFlags = stageFlags;           // e.g. VK_SHADER_STAGE_VERTEX_BIT
+    layoutBinding.pImmutableSamplers = nullptr;      // only used for immutable samplers
+    vertexInputDescription->layoutBinding.push_back(layoutBinding);
 }
 
 void VulkanDraw(VulkanContext* vkContext) {

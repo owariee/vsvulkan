@@ -37,6 +37,8 @@
 typedef struct {
     std::vector<VkVertexInputBindingDescription> bindings;
     std::vector<VkVertexInputAttributeDescription> attributes;
+    std::vector<VkDescriptorSetLayoutBinding> layoutBinding;
+    std::vector<VkPushConstantRange> constantRange;
 } VertexInputDescription;
 
 typedef struct {
@@ -47,6 +49,7 @@ typedef struct {
 typedef struct {
     VkPipeline pipeline;
     VkPipelineLayout layout;
+    VkDescriptorSetLayout descriptorSetLayout;
 } VulkanPipeline;
 
 typedef struct {
@@ -104,3 +107,21 @@ void VulkanCreateVertexBinding(
     uint32_t binding,
     uint32_t stride,
     VkVertexInputRate inputRate);
+
+void VulkanDeleteBuffer(VulkanContext* vkContext, uint32_t index);
+void VulkanDeletePipeline(VulkanContext* vkContext, uint32_t index);
+
+void VulkanCreatePushConstant(
+    VertexInputDescription* vertexInputDescription,
+    VkShaderStageFlags stageFlags,
+    uint32_t offset,
+    uint32_t size);
+
+void VulkanCreateDescriptorSetLayoutBinding(
+    VertexInputDescription* vertexInputDescription,
+    uint32_t binding,
+    VkDescriptorType descriptorType,
+    uint32_t descriptorCount,
+    VkShaderStageFlags stageFlags);
+
+void VulkanUpdateVertexBuffer(VulkanContext* vkContext, int32_t bufferId, const void* vertexData, VkDeviceSize size);
