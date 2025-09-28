@@ -1,9 +1,37 @@
+﻿/**
+ * @file    vulkanrender.cpp
+ * @brief   Vulkan rendering module implementation.
+ *
+ * @details  This file contains all the necessary Vulkan functions needed in 
+ *          order to operate an Vulkan Renderer. This is capable of Shader,
+ *          Textures, Buffers, and all other necessary Vulkan objects.
+ *
+ * @author  João Gabriel Sabatini
+ * @date    2025-09-27
+ * @version 1.0
+ *
+ * @copyright
+ *          Proprietary License, any use of this code is subject to
+ *          charges and restrictions set forth by its author.
+ *
+ * @note    Optional: You can add @note, @warning, or @todo tags here.
+ *
+ * @see     vulkanrender.h
+ */
+
 #include "vulkanrender.h"
 
-/*
- * Creates a Vulkan instance with required extensions and validation layers.
+#include <spirv_reflect.h>
+#include <stdexcept>
+#include <fstream>
+#include <string>
+#include <iostream>
+
+/**
+ * @brief Creates a Vulkan instance with required extensions and validation layers.
+ * @return VkInstance The created Vulkan instance.
  */
-VkInstance VulkanCreateInstance() {
+static VkInstance VulkanCreateInstance() {
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Vulkan App";
@@ -38,10 +66,11 @@ VkInstance VulkanCreateInstance() {
     return instance;
 }
 
-/*
- * Selects first physical device (GPU) from the available devices.
+/**
+ * @brief Selects first physical device (GPU) from the available devices.
+ * @return VkPhysicalDevice The selected physical device.
  */
-VkPhysicalDevice VulkanSelectPhysicalDevice(VkInstance instance) {
+static VkPhysicalDevice VulkanSelectPhysicalDevice(VkInstance instance) {
     // Query the number of physical devices:
     uint32_t count;
     vkEnumeratePhysicalDevices(instance, &count, nullptr);
@@ -57,10 +86,11 @@ VkPhysicalDevice VulkanSelectPhysicalDevice(VkInstance instance) {
     return physicalDevice;
 }
 
-/*
- * Select first queue family that supports graphics operations.
+/**
+ * @brief Select first queue family that supports graphics operations.
+ * @return uint32_t The index of the selected queue family.
  */
-uint32_t VulkanGetGraphicsQueueFamilyIndex(VkPhysicalDevice physicalDevice) {
+static uint32_t VulkanGetGraphicsQueueFamilyIndex(VkPhysicalDevice physicalDevice) {
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
     VkQueueFamilyProperties* queueFamilies = new VkQueueFamilyProperties[queueFamilyCount];
@@ -76,11 +106,11 @@ uint32_t VulkanGetGraphicsQueueFamilyIndex(VkPhysicalDevice physicalDevice) {
     return i;
 }
 
-/*
- * Creates a logical device from the selected physical device.
+/**
+ * @brief Creates a logical device from the selected physical device.
+ * @return VkDevice The created logical device.
  */
-VkDevice VulkanCreateLogicalDevice(VkPhysicalDevice physicalDevice)
-{
+static VkDevice VulkanCreateLogicalDevice(VkPhysicalDevice physicalDevice) {
     float priority = 1.0f;
 
     VkDeviceQueueCreateInfo queue_create_info = {};
@@ -104,20 +134,21 @@ VkDevice VulkanCreateLogicalDevice(VkPhysicalDevice physicalDevice)
     return device;
 }
 
-/*
- * Retrieves the graphics queue from the logical device.
+/**
+ * @brief Retrieves the graphics queue from the logical device.
+ * @return VkQueue The graphics queue.
  */
-VkQueue VulkanGetGraphicsQueue(VkDevice device, uint32_t queueFamilyIndex)
-{
+static VkQueue VulkanGetGraphicsQueue(VkDevice device, uint32_t queueFamilyIndex) {
     VkQueue queue;
     vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
     return queue;
 }
 
-/*
- * Creates a command pool for allocating command buffers.
+/**
+ * @brief Creates a command pool for allocating command buffers.
+ * @return VkCommandPool The created command pool.
  */
-VkCommandPool VulkanCreateCommandPool(VkDevice device, uint32_t queueFamilyIndex) {
+static VkCommandPool VulkanCreateCommandPool(VkDevice device, uint32_t queueFamilyIndex) {
     VkCommandPoolCreateInfo poolInfo = {};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.queueFamilyIndex = queueFamilyIndex;
@@ -130,10 +161,11 @@ VkCommandPool VulkanCreateCommandPool(VkDevice device, uint32_t queueFamilyIndex
     return commandPool;
 }
 
-/*
- * Creates a simple render pass with one color attachment.
+/**
+ * @brief Creates a simple render pass with one color attachment.
+ * @return VkRenderPass The created render pass.
  */
-VkRenderPass VulkanCreateRenderPass(VkDevice device, VkFormat format) {
+static VkRenderPass VulkanCreateRenderPass(VkDevice device, VkFormat format) {
     VkAttachmentDescription colorAttachment = {};
     colorAttachment.format = format;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -164,10 +196,11 @@ VkRenderPass VulkanCreateRenderPass(VkDevice device, VkFormat format) {
     return renderPass;
 }
 
-/*
- * Allocates a single command buffer from the command pool.
+/**
+ * @brief Allocates a single command buffer from the command pool.
+ * @return VkCommandBuffer The allocated command buffer.
  */
-VkCommandBuffer VulkanAllocateCommandBuffer(VkDevice device, VkCommandPool commandPool) {
+static VkCommandBuffer VulkanAllocateCommandBuffer(VkDevice device, VkCommandPool commandPool) {
     VkCommandBufferAllocateInfo allocInfo = {};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = commandPool;
@@ -181,26 +214,29 @@ VkCommandBuffer VulkanAllocateCommandBuffer(VkDevice device, VkCommandPool comma
     return commandBuffer;
 }
 
-/*
- * Allocates multiple command buffers from the command pool.
+/**
+ * @brief Allocates multiple command buffers from the command pool.
+ * @note This is used so you dont have to allocate one command buffer per Swapchain image manually.
+ * @return VkCommandBuffer* An array of allocated command buffers.
  */
-void VulkanAllocateCommandBuffers(VkDevice device, VkCommandPool commandPool, VkCommandBuffer* commandBuffers, uint32_t count) {
+static void VulkanAllocateCommandBuffers(VkDevice device, VkCommandPool commandPool, VkCommandBuffer* commandBuffers, uint32_t count) {
     for (uint32_t i = 0; i < count; i++) {
         commandBuffers[i] = VulkanAllocateCommandBuffer(device, commandPool);
     }
 }
 
-/*
- * Frees multiple command buffers and releases their memory.
+/**
+ * @brief Frees multiple command buffers and releases their memory.
  */
-void VulkanDestroyCommandBuffers(VkDevice device, VkCommandPool commandPool, VkCommandBuffer* commandBuffers, uint32_t count) {
+static void VulkanDestroyCommandBuffers(VkDevice device, VkCommandPool commandPool, VkCommandBuffer* commandBuffers, uint32_t count) {
     vkFreeCommandBuffers(device, commandPool, count, commandBuffers);
 }
 
-/*
- * Creates a binary semaphore for GPU synchronization.
+/**
+ * @brief Creates a binary semaphore for GPU synchronization.
+ * @return VkSemaphore The created semaphore.
  */
-VkSemaphore VulkanCreateSemaphore(VkDevice device) {
+static VkSemaphore VulkanCreateSemaphore(VkDevice device) {
     VkSemaphoreCreateInfo semaphoreInfo = {};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
     VkSemaphore semaphore;
@@ -209,28 +245,29 @@ VkSemaphore VulkanCreateSemaphore(VkDevice device) {
     return semaphore;
 }
 
-/*
- * Creates multiple semaphores for synchronizing rendering operations.
+/**
+ * @brief Creates multiple semaphores for synchronizing rendering operations.
  */
-void VulkanCreateSemaphores(VkDevice device, uint32_t swapchainImageCount, VkSemaphore* semaphores) {
+static void VulkanCreateSemaphores(VkDevice device, uint32_t swapchainImageCount, VkSemaphore* semaphores) {
     for (uint32_t i = 0; i < swapchainImageCount; ++i) {
         semaphores[i] = VulkanCreateSemaphore(device);
     }
 }
 
-/*
- * Destroys multiple semaphores and releases their memory.
+/**
+ * @brief Destroys multiple semaphores and releases their memory.
  */
-void VulkanDestroySemaphores(VkDevice device, VkSemaphore* semaphores, uint32_t count) {
+static void VulkanDestroySemaphores(VkDevice device, VkSemaphore* semaphores, uint32_t count) {
     for (uint32_t i = 0; i < count; i++) {
         vkDestroySemaphore(device, semaphores[i], nullptr);
     }
 }
 
-/*
- * Creates a fence for CPU-GPU synchronization.
+/**
+ * @brief Creates a fence for CPU-GPU synchronization.
+ * @return VkFence The created fence.
  */
-VkFence VulkanCreateFence(VkDevice device, bool signaled) {
+static VkFence VulkanCreateFence(VkDevice device, bool signaled) {
     VkFence fence;
     VkFenceCreateInfo fenceInfo = {};
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -242,10 +279,11 @@ VkFence VulkanCreateFence(VkDevice device, bool signaled) {
     return fence;
 }
 
-/*
- * Creates a swapchain for presenting images to the surface.
+/**
+ * @brief Creates a swapchain for presenting images to the surface.
+ * @return VkSwapchainKHR The created swapchain.
  */
-VkSwapchainKHR VulkanCreateSwapchainInstance(VkDevice device, VkSurfaceKHR surface, VkExtent2D extent) {
+static VkSwapchainKHR VulkanCreateSwapchainInstance(VkDevice device, VkSurfaceKHR surface, VkExtent2D extent) {
     VkSwapchainCreateInfoKHR createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     createInfo.surface = surface;
@@ -266,10 +304,11 @@ VkSwapchainKHR VulkanCreateSwapchainInstance(VkDevice device, VkSurfaceKHR surfa
     return swapchain;
 }
 
-/*
- * Retrieves the images from the swapchain.
+/**
+ * @brief Retrieves the images from the swapchain.
+ * @return VkImage* An array of swapchain images.
  */
-VkImage* VulkanGetSwapchainImages(VkDevice device, VkSwapchainKHR swapchain, uint32_t* imageCountOut, VkImage* swapchainImages) {
+static VkImage* VulkanGetSwapchainImages(VkDevice device, VkSwapchainKHR swapchain, uint32_t* imageCountOut, VkImage* swapchainImages) {
     uint32_t imageCount;
     vkGetSwapchainImagesKHR(device, swapchain, &imageCount, nullptr); // Get count
     printf("Swapchain image count: %u\n", imageCount);
@@ -278,10 +317,11 @@ VkImage* VulkanGetSwapchainImages(VkDevice device, VkSwapchainKHR swapchain, uin
     return swapchainImages;
 }
 
-/*
- * Creates a 2D image view for the given image and format.
+/**
+ * @brief Creates a 2D image view for the given image and format.
+ * @return VkImageView The created image view.
  */
-VkImageView VulkanCreateImageView(VkDevice device, VkImage image, VkFormat format) {
+static VkImageView VulkanCreateImageView(VkDevice device, VkImage image, VkFormat format) {
     VkImageViewCreateInfo viewInfo = {};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = image;
@@ -304,19 +344,20 @@ VkImageView VulkanCreateImageView(VkDevice device, VkImage image, VkFormat forma
     return imageView;
 }
 
-/*
- * Creates image views for all swapchain images.
+/**
+ * @brief Creates image views for all swapchain images.
  */
-void VulkanCreateImageViews(VkDevice device, VkImage* swapchainImages, uint32_t swapchainImageCount, VkImageView* swapchainImageViews) {
+static void VulkanCreateImageViews(VkDevice device, VkImage* swapchainImages, uint32_t swapchainImageCount, VkImageView* swapchainImageViews) {
     for (uint32_t i = 0; i < swapchainImageCount; i++) {
         swapchainImageViews[i] = VulkanCreateImageView(device, swapchainImages[i], VK_FORMAT_R8G8B8A8_UNORM);
     }
 }
 
-/*
- * Creates a framebuffer for the given render pass and image view.
+/**
+ * @brief Creates a framebuffer for the given render pass and image view.
+ * @return VkFramebuffer The created framebuffer.
  */
-VkFramebuffer VulkanCreateFramebuffer(VkDevice device, VkRenderPass renderPass, VkImageView imageView, VkExtent2D extent) {
+static VkFramebuffer VulkanCreateFramebuffer(VkDevice device, VkRenderPass renderPass, VkImageView imageView, VkExtent2D extent) {
     VkFramebufferCreateInfo framebufferInfo = {};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     framebufferInfo.renderPass = renderPass;
@@ -333,37 +374,38 @@ VkFramebuffer VulkanCreateFramebuffer(VkDevice device, VkRenderPass renderPass, 
     return framebuffer;
 }
 
-/*
- * Creates framebuffers for all swapchain image views.
+/**
+ * @brief Creates framebuffers for all swapchain image views.
  */
-void VulkanCreateFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView* imageViews, VkExtent2D extent, uint32_t count, VkFramebuffer* framebuffers) {
+static void VulkanCreateFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView* imageViews, VkExtent2D extent, uint32_t count, VkFramebuffer* framebuffers) {
     for (uint32_t i = 0; i < count; i++) {
         framebuffers[i] = VulkanCreateFramebuffer(device, renderPass, imageViews[i], extent);
     }
 }
 
-/*
- * Destroys multiple image views and releases their memory.
+/**
+ * @brief Destroys multiple image views and releases their memory.
  */
-void VulkanDestroyImageViews(VkDevice device, VkImageView* imageViews, uint32_t count) {
+static void VulkanDestroyImageViews(VkDevice device, VkImageView* imageViews, uint32_t count) {
     for (uint32_t i = 0; i < count; i++) {
         vkDestroyImageView(device, imageViews[i], nullptr);
     }
 }
 
-/*
- * Destroys multiple framebuffers and releases their memory.
+/**
+ * @brief Destroys multiple framebuffers and releases their memory.
  */
-void VulkanDestroyFramebuffers(VkDevice device, VkFramebuffer* framebuffers, uint32_t count) {
+static void VulkanDestroyFramebuffers(VkDevice device, VkFramebuffer* framebuffers, uint32_t count) {
     for (uint32_t i = 0; i < count; i++) {
         vkDestroyFramebuffer(device, framebuffers[i], nullptr);
     }
 }
 
-/*
- * Determines the appropriate swapchain extent based on surface capabilities.
+/**
+ * @brief Determines the appropriate swapchain extent based on surface capabilities.
+ * @return VkExtent2D The determined swapchain extent.
  */
-VkExtent2D GetSurfaceExtent(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
+static VkExtent2D GetSurfaceExtent(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
     VkSurfaceCapabilitiesKHR surfaceCapabilities;
     VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities);
     if (result != VK_SUCCESS) {
@@ -403,10 +445,10 @@ VkExtent2D GetSurfaceExtent(VkPhysicalDevice physicalDevice, VkSurfaceKHR surfac
     }
 }
 
-/*
- * Creates the swapchain and its associated resources.
+/**
+ * @brief Creates the swapchain and its associated resources.
  */
-void VulkanCreateSwapchain(VulkanContext* vkContext) {
+static void VulkanCreateSwapchain(VulkanContext* vkContext) {
     uint32_t swapchainImageCount;
 	vkContext->surfaceSize = GetSurfaceExtent(vkContext->physicalDevice, vkContext->surface);
     vkContext->swapchain.instance = VulkanCreateSwapchainInstance(vkContext->device, vkContext->surface, vkContext->surfaceSize);
@@ -415,19 +457,20 @@ void VulkanCreateSwapchain(VulkanContext* vkContext) {
     VulkanCreateFramebuffers(vkContext->device, vkContext->renderPass, vkContext->swapchain.imageViews, vkContext->surfaceSize, VK_REQUIRED_IMAGE_COUNT, vkContext->swapchain.framebuffers);
 }
 
-/*
- * Destroys the swapchain and its associated resources.
+/**
+ * @brief Destroys the swapchain and its associated resources.
  */
-void VulkanDestroySwapchain(VulkanContext* vkContext) {
+static void VulkanDestroySwapchain(VulkanContext* vkContext) {
     VulkanDestroyFramebuffers(vkContext->device, vkContext->swapchain.framebuffers, VK_REQUIRED_IMAGE_COUNT);
     VulkanDestroyImageViews(vkContext->device, vkContext->swapchain.imageViews, VK_REQUIRED_IMAGE_COUNT);
     vkDestroySwapchainKHR(vkContext->device, vkContext->swapchain.instance, nullptr);
 }
 
-/*
- * record commands into an command buffer
+/**
+ * @brief Record commands into an command buffer.
+ * @todo Make this function accepts an vector of lambdas to record multiple sets of commmands.
  */
-void VulkanRecordCommandBuffer(
+static void VulkanRecordCommandBuffer(
     VulkanContext* vkContext,
     VkCommandBuffer commandBuffer,
     VkFramebuffer framebuffer,
@@ -485,20 +528,19 @@ void VulkanRecordCommandBuffer(
     }
 }
 
-/*
- * Records multiple command buffers for rendering.
+/**
+ * @brief Records multiple command buffers for rendering.
  */
-void VulkanRecordCommandBuffers(VulkanContext* vkContext)
-{
+static void VulkanRecordCommandBuffers(VulkanContext* vkContext) {
     for (uint32_t i = 0; i < VK_REQUIRED_IMAGE_COUNT; i++) {
         VulkanRecordCommandBuffer(vkContext, vkContext->commandBuffers[i], vkContext->swapchain.framebuffers[i], vkContext->commandsLambda);
     }
 }
 
-/*
- * Recreates the swapchain, typically in response to window resizing.
+/**
+ * @brief Recreates the swapchain, typically in response to window resizing.
  */
-void VulkanRecreateSwapchain(VulkanContext* vkContext) {
+static void VulkanRecreateSwapchain(VulkanContext* vkContext) {
     vkDeviceWaitIdle(vkContext->device);
     VulkanDestroySwapchain(vkContext);
     VulkanCreateSwapchain(vkContext);
@@ -506,18 +548,18 @@ void VulkanRecreateSwapchain(VulkanContext* vkContext) {
     vkDeviceWaitIdle(vkContext->device);
 }
 
-/*
- * Bind a new set of commands and records multiple command buffers for rendering.
+/**
+ * @brief Bind a new set of commands and records multiple command buffers for rendering.
  */
-void VulkanBindCommandBuffers(VulkanContext* vkContext, std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda)
-{
+void VulkanBindCommandBuffers(VulkanContext* vkContext, std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda) {
     vkContext->commandsLambda = commandsLambda;
 }
 
-/*
- * Present queue
+/**
+ * @brief Present queue.
+ * @result VkResult Result of the presentation operation.
  */
-VkResult VulkanQueuePresent(
+static VkResult VulkanQueuePresent(
     VkQueue graphicsQueue,
     VkSwapchainKHR swapchain,
     VkSemaphore renderFinishedSemaphore,
@@ -533,10 +575,10 @@ VkResult VulkanQueuePresent(
     return vkQueuePresentKHR(graphicsQueue, &presentInfo);
 }
 
-/*
- * Submit command buffers to queue
+/**
+ * @brief Submit command buffers to queue.
  */
-void VulkanSubmitCommandBuffer(
+static void VulkanSubmitCommandBuffer(
     VkQueue graphicsQueue,
     VkCommandBuffer* commandBuffers,
     VkSemaphore imageAvailableSemaphore,
@@ -562,10 +604,11 @@ void VulkanSubmitCommandBuffer(
     vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence);
 }
 
-/*
- * Acquire next swapchain image 
+/**
+ * @brief Acquire next swapchain image.
+ * @return uint32_t The index of the acquired image.
  */
-uint32_t VulkanAcquireNextImage(VkDevice device, VkSwapchainKHR swapchain, VkSemaphore semaphore) {
+static uint32_t VulkanAcquireNextImage(VkDevice device, VkSwapchainKHR swapchain, VkSemaphore semaphore) {
     uint32_t imageIndex;
     VkResult result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, semaphore, VK_NULL_HANDLE, &imageIndex);
     //CHECK_VULKAN_RESULT(result);
@@ -573,10 +616,11 @@ uint32_t VulkanAcquireNextImage(VkDevice device, VkSwapchainKHR swapchain, VkSem
     return imageIndex;
 }
 
-/*
- * load shader module from file 
+/**
+ * @brief Load shader module from file.
+ * @return VkShaderModule The created shader module.
  */
-VkShaderModule VulkanLoadShaderModule(VkDevice device, const char* filepath) {
+static VkShaderModule VulkanLoadShaderModule(VkDevice device, const char* filepath) {
     // Open the file
     FILE* file = fopen(filepath, "rb");
     if (!file) {
@@ -618,10 +662,11 @@ VkShaderModule VulkanLoadShaderModule(VkDevice device, const char* filepath) {
     return shaderModule;
 }
 
-/*
- * create shader stage
+/**
+ * @brief Create shader stage.
+ * @return VkPipelineShaderStageCreateInfo The created shader stage info.
  */
-VkPipelineShaderStageCreateInfo VulkanCreateShaderStage(VkDevice device, const char* filePath, VkShaderStageFlagBits stage, VkShaderModule* shaderModuleOut) {
+static VkPipelineShaderStageCreateInfo VulkanCreateShaderStage(VkDevice device, const char* filePath, VkShaderStageFlagBits stage, VkShaderModule* shaderModuleOut) {
     VkShaderModule shaderModule = VulkanLoadShaderModule(device, filePath);
     if (shaderModule == VK_NULL_HANDLE) {
         fprintf(stderr, "Failed to create shader module for %s\n", filePath);
@@ -639,8 +684,10 @@ VkPipelineShaderStageCreateInfo VulkanCreateShaderStage(VkDevice device, const c
     return shaderStageInfo;
 }
 
-/*
- * create pipeline from 2 shaders 
+/**
+ * @brief Create pipeline from 2 shaders.
+ * @note The vertex input description is provided via a lambda function.
+ * @return int32_t 0 on success, -1 on failure.
  */
 int32_t VulkanCreateGraphicsPipeline(
     VulkanContext* vkContext,
@@ -789,10 +836,10 @@ int32_t VulkanCreateGraphicsPipeline(
     return index;
 }
 
-/*
- * Delete all available pipelines
+/**
+ * @brief Delete all available pipelines.
  */
-void VulkanDeletePipelines(VulkanContext* vkContext) {
+static void VulkanDeletePipelines(VulkanContext* vkContext) {
     // Iterate and process existing pipelines
     for (size_t i = 0; i < vkContext->pipelines.size(); ++i) {
         if (vkContext->pipelines[i]) {
@@ -803,10 +850,10 @@ void VulkanDeletePipelines(VulkanContext* vkContext) {
     }
 }
 
-/*
- * Delete all available buffers
+/**
+ * @brief Delete all available buffers
  */
-void VulkanDeleteBuffers(VulkanContext* vkContext) {
+static void VulkanDeleteBuffers(VulkanContext* vkContext) {
     // Iterate and process existing pipelines
     for (size_t i = 0; i < vkContext->buffers.size(); ++i) {
         if (vkContext->buffers[i]) {
@@ -816,8 +863,8 @@ void VulkanDeleteBuffers(VulkanContext* vkContext) {
     }
 }
 
-/*
- * Delete a specific buffer by index
+/**
+ * @brief Delete a specific buffer by index.
  */
 void VulkanDeleteBuffer(VulkanContext* vkContext, uint32_t index) {
     if (index >= vkContext->buffers.size()) {
@@ -842,8 +889,8 @@ void VulkanDeleteBuffer(VulkanContext* vkContext, uint32_t index) {
     }
 }
 
-/*
- * Delete a specific pipeline by index
+/**
+ * @brief Delete a specific pipeline by index.
  */
 void VulkanDeletePipeline(VulkanContext* vkContext, uint32_t index) {
     if (index >= vkContext->pipelines.size()) {
@@ -868,8 +915,9 @@ void VulkanDeletePipeline(VulkanContext* vkContext, uint32_t index) {
     }
 }
 
-/*
- * Create vertex buffer
+/**
+ * @brief Create vertex buffer.
+ * @return int32_t Index of the created buffer, or -1 on failure.
  */
 int32_t VulkanCreateVertexBuffer(VulkanContext* vkContext, const void* vertexData, VkDeviceSize size) {
     VkDeviceMemory outMemory;
@@ -933,8 +981,8 @@ int32_t VulkanCreateVertexBuffer(VulkanContext* vkContext, const void* vertexDat
     return index;
 }
 
-/*
- * Update vertex buffer
+/**
+ * @brief Update vertex buffer.
  */
 void VulkanUpdateVertexBuffer(VulkanContext* vkContext, int32_t bufferId, const void* vertexData, VkDeviceSize size) {
     VulkanBuffer& buf = *vkContext->buffers[bufferId];
@@ -945,8 +993,9 @@ void VulkanUpdateVertexBuffer(VulkanContext* vkContext, int32_t bufferId, const 
     vkUnmapMemory(vkContext->device, buf.memory);
 }
 
-/*
- * Create index buffer
+/**
+ * @brief Create index buffer.
+ * @return int32_t Index of the created buffer, or -1 on failure.
  */
 int32_t CreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDeviceSize size) {
     VkDeviceMemory outMemory;
@@ -1007,8 +1056,8 @@ int32_t CreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDev
     return index;
 }
 
-/*
- * creates an attribute description
+/**
+ * @brief Creates an attribute description.
  */
 void VulkanCreateVertexAttribute(
     VertexInputDescription* vertexInputDescription,
@@ -1025,8 +1074,8 @@ void VulkanCreateVertexAttribute(
     vertexInputDescription->attributes.push_back(attributeDescription);
 }
 
-/*
- * creates an binding description
+/**
+ * @brief Creates an binding description.
  */
 void VulkanCreateVertexBinding(
     VertexInputDescription* vertexInputDescription,
@@ -1041,14 +1090,14 @@ void VulkanCreateVertexBinding(
     vertexInputDescription->bindings.push_back(bindingDescription);
 }
 
-/*
- * creates an push constant
+/**
+ * @brief Creates an push constant.
  */
 void VulkanCreatePushConstant(
     VertexInputDescription* vertexInputDescription,
     VkShaderStageFlags stageFlags,
     uint32_t offset,
-    uint32_t size)
+    uint32_t size) 
 {
     VkPushConstantRange pushConstant{};
     pushConstant.stageFlags = stageFlags; // e.g., VK_SHADER_STAGE_VERTEX_BIT
@@ -1057,8 +1106,8 @@ void VulkanCreatePushConstant(
     vertexInputDescription->constantRange.push_back(pushConstant);
 }
 
-/*
- * creates a descriptor set layout binding
+/**
+ * @brief Creates a descriptor set layout binding.
  */
 void VulkanCreateDescriptorSetLayoutBinding(
     VertexInputDescription* vertexInputDescription,
@@ -1076,6 +1125,270 @@ void VulkanCreateDescriptorSetLayoutBinding(
     vertexInputDescription->layoutBinding.push_back(layoutBinding);
 }
 
+
+/**
+ * @brief Setup a pipeline with a given shader base name.
+ * @return int32_t Index of the created pipeline, or -1 on failure.
+ */
+int32_t VulkanSetupPipeline(VulkanContext* vkContext, const char *shaderBasename, PipelineDescription *pipelineDesc) {
+    auto vertexInputDescLambda = [=](VertexInputDescription* vertexInputDesc) {
+        VulkanCreateVertexBinding(vertexInputDesc, 0, pipelineDesc->perVertexStride, VK_VERTEX_INPUT_RATE_VERTEX);
+        VulkanCreateVertexBinding(vertexInputDesc, 1, pipelineDesc->perInstanceStride, VK_VERTEX_INPUT_RATE_INSTANCE);
+
+        // setup vertex attributes
+        for (const auto& input : pipelineDesc->vertexInputs) {
+            VulkanCreateVertexAttribute(vertexInputDesc, input.rate == VULKAN_RATE_PER_VERTEX ? 0 : 1, input.location, (VkFormat)input.format, input.offset);
+        }
+
+		// setup push constants
+        for (const auto& pc : pipelineDesc->pushConstants) {
+            for(const auto& stage : pc.stages) {
+                if (stage != VULKAN_STAGE_VERTEX && stage != VULKAN_STAGE_FRAGMENT) {
+                    fprintf(stderr, "Unsupported push constant stage %d\n", stage);
+                    continue;
+                }
+                VulkanCreatePushConstant(vertexInputDesc, stage, pc.offset, pc.size);
+			}
+		}
+
+		// setup descriptor set layouts
+        for (const auto& ds : pipelineDesc->descriptorSets) {
+            for (const auto& binding : ds.bindings) {
+                for (const auto& stage : binding.stages) {
+                    if (stage != VULKAN_STAGE_VERTEX && stage != VULKAN_STAGE_FRAGMENT) {
+                        fprintf(stderr, "Unsupported descriptor set layout binding stage %d\n", stage);
+                        continue;
+                    }
+                    VulkanCreateDescriptorSetLayoutBinding(vertexInputDesc, binding.binding, (VkDescriptorType)binding.type, binding.count, stage);
+                }
+            }
+		}
+    };
+
+    return VulkanCreateGraphicsPipeline(vkContext, shaderBasename, vertexInputDescLambda);
+}
+
+/**
+ * @brief Convert SPIR-V state into VulkanStage.
+ * @return VulkanStage The corresponding VulkanStage value.
+ */
+static inline VulkanStage ToVulkanStage(SpvReflectShaderStageFlagBits stage) {
+    switch (stage) {
+        case SPV_REFLECT_SHADER_STAGE_VERTEX_BIT: return VULKAN_STAGE_VERTEX;
+        case SPV_REFLECT_SHADER_STAGE_FRAGMENT_BIT: return VULKAN_STAGE_FRAGMENT;
+        default: return VULKAN_STAGE_NONE;
+    }
+}
+
+/**
+ * @brief Convert SPIR-V state into VulkanDescriptorSetType.
+ * @return VulkanDescriptorSetType The corresponding VulkanDescriptorSetType value.
+ */
+static inline VulkanDescriptorSetType ToDescriptorType(SpvReflectDescriptorType t) {
+    switch (t) {
+        case SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER: return VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        default: throw std::runtime_error("Unsupported descriptor type");
+    }
+}
+
+/**
+ * @brief Load SPIR-V binary from file.
+ * @return std::vector<uint32_t> The loaded SPIR-V binary data.
+ */
+static std::vector<uint32_t> LoadSPV(const std::string& path) {
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
+    if (!file) throw std::runtime_error("Failed to open SPIR-V file");
+
+    size_t size = file.tellg();
+    file.seekg(0);
+
+    if (size % 4 != 0) throw std::runtime_error("Invalid SPIR-V size");
+
+    std::vector<uint32_t> buffer(size / 4);
+    file.read(reinterpret_cast<char*>(buffer.data()), size);
+    return buffer;
+}
+
+// Reflect push constants from a single module and merge
+void ReflectPushConstantsModule(
+    const std::string& spv_path,
+    std::unordered_map<uint32_t, VulkanPushConstantEntry>& mergedPCs
+) {
+    auto spirv = LoadSPV(spv_path);
+    SpvReflectShaderModule module;
+    if (spvReflectCreateShaderModule(spirv.size() * sizeof(uint32_t), spirv.data(), &module) != SPV_REFLECT_RESULT_SUCCESS)
+        throw std::runtime_error("Failed to create SPIRV reflection module");
+
+    uint32_t count = 0;
+    spvReflectEnumeratePushConstantBlocks(&module, &count, nullptr);
+    std::vector<SpvReflectBlockVariable*> blocks(count);
+    spvReflectEnumeratePushConstantBlocks(&module, &count, blocks.data());
+
+    for (auto* block : blocks) {
+        auto it = mergedPCs.find(block->offset);
+        if (it != mergedPCs.end()) {
+            // Already exists: merge stages
+            it->second.stages.push_back(ToVulkanStage(module.shader_stage));
+        }
+        else {
+            VulkanPushConstantEntry e;
+            e.offset = block->offset;
+            e.size = block->size;
+            e.stages = { ToVulkanStage(module.shader_stage) };
+            mergedPCs[block->offset] = e;
+        }
+    }
+
+    spvReflectDestroyShaderModule(&module);
+}
+
+// Merge vertex + fragment push constants
+std::vector<VulkanPushConstantEntry> VulkanProducePushConstants(
+    const std::string& vert_spv,
+    const std::string& frag_spv
+) {
+    std::unordered_map<uint32_t, VulkanPushConstantEntry> mergedPCs;
+
+    ReflectPushConstantsModule(vert_spv, mergedPCs);
+    ReflectPushConstantsModule(frag_spv, mergedPCs);
+
+    // Convert map to vector
+    std::vector<VulkanPushConstantEntry> pcs;
+    for (auto& kv : mergedPCs) {
+        pcs.push_back(std::move(kv.second));
+    }
+
+    return pcs;
+}
+
+// Reflect a single SPIR-V module and populate descriptor set info
+void ReflectSPVModule(const std::string& spv_path, std::unordered_map<uint32_t, VulkanDescriptorSetEntry>& mergedSets, VulkanStage stage) {
+    auto spirv = LoadSPV(spv_path);
+    SpvReflectShaderModule module;
+    if (spvReflectCreateShaderModule(spirv.size() * sizeof(uint32_t), spirv.data(), &module) != SPV_REFLECT_RESULT_SUCCESS)
+        throw std::runtime_error("Failed to create SPIRV reflection module");
+
+    uint32_t set_count = 0;
+    spvReflectEnumerateDescriptorSets(&module, &set_count, nullptr);
+    std::vector<SpvReflectDescriptorSet*> set_ptrs(set_count);
+    spvReflectEnumerateDescriptorSets(&module, &set_count, set_ptrs.data());
+
+    for (auto* set : set_ptrs) {
+        VulkanDescriptorSetEntry& entry = mergedSets[set->set];
+        entry.set = set->set;
+
+        for (uint32_t i = 0; i < set->binding_count; ++i) {
+            const auto* b = set->bindings[i];
+            auto it = std::find_if(entry.bindings.begin(), entry.bindings.end(),
+                [&](const VulkanDescriptorSetEntryBinding& eb) { return eb.binding == b->binding; });
+
+            if (it != entry.bindings.end()) {
+                // Already exists: merge stages
+                it->stages.push_back(stage);
+            }
+            else {
+                VulkanDescriptorSetEntryBinding binding;
+                binding.binding = b->binding;
+                binding.count = b->count;
+                binding.type = ToDescriptorType(b->descriptor_type);
+                binding.stages = { stage };
+                entry.bindings.push_back(binding);
+            }
+        }
+    }
+
+    spvReflectDestroyShaderModule(&module);
+}
+
+// Merge vertex and fragment SPIR-V reflection
+std::vector<VulkanDescriptorSetEntry> VulkanProduceDescriptorSet(const std::string& vert_spv, const std::string& frag_spv) {
+    std::unordered_map<uint32_t, VulkanDescriptorSetEntry> mergedSets;
+
+    ReflectSPVModule(vert_spv, mergedSets, VULKAN_STAGE_VERTEX);
+    ReflectSPVModule(frag_spv, mergedSets, VULKAN_STAGE_FRAGMENT);
+
+    // Convert map to vector
+    std::vector<VulkanDescriptorSetEntry> sets;
+    for (auto& kv : mergedSets) {
+        sets.push_back(std::move(kv.second));
+    }
+    return sets;
+}
+
+inline const char* VulkanFormatToString(VulkanFormat f) {
+    switch (f) {
+    case VULKAN_FORMAT_R32G32_SFLOAT:       return "R32G32_SFLOAT";
+    case VULKAN_FORMAT_R32G32B32_SFLOAT:    return "R32G32B32_SFLOAT";
+    case VULKAN_FORMAT_R32G32B32A32_SFLOAT: return "R32G32B32A32_SFLOAT";
+    default: return "UNKNOWN_FORMAT";
+    }
+}
+
+inline const char* VertexRateToString(VertexRate r) {
+    switch (r) {
+    case VULKAN_RATE_PER_VERTEX: return "PER_VERTEX";
+    case VULKAN_RATE_PER_INSTANCE: return "PER_INSTANCE";
+    default: return "UNKNOWN_RATE";
+    }
+}
+
+inline const char* VulkanStageToString(VulkanStage s) {
+    switch (s) {
+    case VULKAN_STAGE_NONE: return "NONE";
+    case VULKAN_STAGE_VERTEX: return "VERTEX";
+    case VULKAN_STAGE_FRAGMENT: return "FRAGMENT";
+    default: return "UNKNOWN_STAGE";
+    }
+}
+
+inline const char* DescriptorTypeToString(VulkanDescriptorSetType t) {
+    switch (t) {
+    case VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER: return "UNIFORM_BUFFER";
+    default: return "UNKNOWN_DESCRIPTOR";
+    }
+}
+
+void PrintPipelineDescription(const PipelineDescription& pd) {
+    std::cout << "PipelineDescription {\n";
+    std::cout << "  perVertexStride: " << pd.perVertexStride << "\n";
+    std::cout << "  perInstanceStride: " << pd.perInstanceStride << "\n";
+
+    std::cout << "  vertexInputs:\n";
+    for (const auto& v : pd.vertexInputs) {
+        std::cout << "    location " << v.location
+            << ", format: " << VulkanFormatToString(v.format)
+            << ", offset: " << v.offset
+            << ", rate: " << VertexRateToString(v.rate) << "\n";
+    }
+
+    std::cout << "  pushConstants:\n";
+    for (const auto& pc : pd.pushConstants) {
+        std::cout << "    offset: " << pc.offset
+            << ", size: " << pc.size
+            << ", stages: ";
+        for (auto stage : pc.stages) std::cout << VulkanStageToString(stage) << " ";
+        std::cout << "\n";
+    }
+
+    std::cout << "  descriptorSets:\n";
+    for (const auto& ds : pd.descriptorSets) {
+        std::cout << "    set: " << ds.set << "\n";
+        for (const auto& b : ds.bindings) {
+            std::cout << "      binding: " << b.binding
+                << ", type: " << DescriptorTypeToString(b.type)
+                << ", count: " << b.count
+                << ", stages: ";
+            for (auto stage : b.stages) std::cout << VulkanStageToString(stage) << " ";
+            std::cout << "\n";
+        }
+    }
+
+    std::cout << "}\n";
+}
+
+/**
+ * @brief Main draw function to be called every frame.
+ */
 void VulkanDraw(VulkanContext* vkContext) {
     vkWaitForFences(vkContext->device, 1, &vkContext->inFlightFence, VK_TRUE, UINT64_MAX);
     vkResetFences(vkContext->device, 1, &vkContext->inFlightFence);
@@ -1115,6 +1428,9 @@ void VulkanDraw(VulkanContext* vkContext) {
     vkContext->currentFrame = (vkContext->currentFrame + 1) % vkContext->MAX_FRAMES_IN_FLIGHT;
 }
 
+/**
+ * @brief Initializes the Vulkan context.
+ */
 void VulkanInit(VulkanContext* vkContext, std::function<VkSurfaceKHR(VulkanContext* vkContext)> createSurface) {
     vkContext->instance = VulkanCreateInstance();
     vkContext->physicalDevice = VulkanSelectPhysicalDevice(vkContext->instance);
@@ -1135,6 +1451,9 @@ void VulkanInit(VulkanContext* vkContext, std::function<VkSurfaceKHR(VulkanConte
     vkContext->commandsLambda = [=](VkExtent2D surfaceSize, VkCommandBuffer commandBuffer) {};
 }
 
+/**
+ * @brief Shuts down the Vulkan context and releases all resources.
+ */
 void VulkanShutdown(VulkanContext* vkContext) {
     VulkanDeleteBuffers(vkContext);
     VulkanDeletePipelines(vkContext);

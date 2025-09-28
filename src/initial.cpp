@@ -145,17 +145,39 @@ InstancedRenderer RendererInstanced(VulkanContext* vkContext) {
     iRenderer.maxQuads = 10000;
     iRenderer.instanceBufferId = VulkanCreateVertexBuffer(vkContext, NULL, 10000 * sizeof(QuadInstance));
 
+    PipelineDescription pipelineDesc = {
+        .perVertexStride = sizeof(Vertex),
+        .perInstanceStride = sizeof(QuadInstance),
+        .vertexInputs = {
+            {.location = 0, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(Vertex, pos),           .rate = VULKAN_RATE_PER_VERTEX },
+            {.location = 1, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(QuadInstance, pos),     .rate = VULKAN_RATE_PER_INSTANCE },
+            {.location = 2, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(QuadInstance, size),    .rate = VULKAN_RATE_PER_INSTANCE },
+            {.location = 3, .format = VULKAN_FORMAT_R32G32B32A32_SFLOAT, .offset = offsetof(QuadInstance, color),   .rate = VULKAN_RATE_PER_INSTANCE }
+        },
+        .pushConstants = {
+            {.offset = 0, .size = sizeof(glm::mat4), .stages = { VULKAN_STAGE_VERTEX } }
+        },
+        .descriptorSets = {
+            {
+                .set = 0,
+                .bindings = {
+                    {.binding = 0, .type = VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .count = 1, .stages = { VULKAN_STAGE_VERTEX } }
+                }
+            }
+        },
+    };
+
+    PrintPipelineDescription(pipelineDesc);
+
+    PipelineDescription pipelineDescTest = {
+        .pushConstants = VulkanProducePushConstants("../shaders/2d.vert.spv", "../shaders/2d.frag.spv"),
+		.descriptorSets = VulkanProduceDescriptorSet("../shaders/2d.vert.spv", "../shaders/2d.frag.spv"),
+    };
+
+    PrintPipelineDescription(pipelineDescTest);
+
     // create pipeline
-    iRenderer.pipelineIndex = VulkanCreateGraphicsPipeline(vkContext, "2d", [=](VertexInputDescription* vertexInputDesc) {
-        VulkanCreateVertexBinding(vertexInputDesc, 0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX);      // unit quad
-        VulkanCreateVertexAttribute(vertexInputDesc, 0, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, pos));
-        VulkanCreateVertexBinding(vertexInputDesc, 1, sizeof(QuadInstance), VK_VERTEX_INPUT_RATE_INSTANCE); // per-instance
-        VulkanCreateVertexAttribute(vertexInputDesc, 1, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(QuadInstance, pos));
-        VulkanCreateVertexAttribute(vertexInputDesc, 1, 2, VK_FORMAT_R32G32_SFLOAT, offsetof(QuadInstance, size));
-        VulkanCreateVertexAttribute(vertexInputDesc, 1, 3, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(QuadInstance, color));
-        VulkanCreatePushConstant(vertexInputDesc, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4));
-        VulkanCreateDescriptorSetLayoutBinding(vertexInputDesc, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT);
-    });
+	iRenderer.pipelineIndex = VulkanSetupPipeline(vkContext, "2d", &pipelineDesc);
 
     //iRenderer.projection = glm::ortho(0.0f, (float)vkContext->surfaceSize.width, 0.0f, (float)vkContext->surfaceSize.height);
     iRenderer.projection = glm::ortho(-1.0f, (float)vkContext->surfaceSize.width / (float)vkContext->surfaceSize.height, -1.0f, 1.0f);

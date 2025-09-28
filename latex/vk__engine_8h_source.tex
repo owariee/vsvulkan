@@ -1,0 +1,190 @@
+\doxysection{vk\+\_\+engine.\+h}
+\hypertarget{vk__engine_8h_source}{}\label{vk__engine_8h_source}\index{src/vk\_engine.h@{src/vk\_engine.h}}
+\mbox{\hyperlink{vk__engine_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ vulkan\_guide.h\ :\ Include\ file\ for\ standard\ system\ include\ files,}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ or\ project\ specific\ include\ files.}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <\mbox{\hyperlink{vk__types_8h}{vk\_types.h}}>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{vk__descriptors_8h}{vk\_descriptors.h}}"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{vk__pipelines_8h}{vk\_pipelines.h}}"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <\mbox{\hyperlink{vk__loader_8h}{vk\_loader.h}}>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{vk__engine_8h_a10ae962afdbd2c033a5c3af07aea14c2}{FRAME\_OVERLAP}}\ =\ 2;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_deletion_queue}{DeletionQueue}}}
+\DoxyCodeLine{00018\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ std::deque<std::function<void()>>\ \mbox{\hyperlink{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8}{deletors}};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{struct_deletion_queue_a0295d7e726c90e226e46bf5ec26d5214}{push\_function}}(std::function<\textcolor{keywordtype}{void}()>\&\&\ function)\ \{}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8}{deletors}}.push\_back(function);}
+\DoxyCodeLine{00023\ \ \ \ \ \}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{struct_deletion_queue_ad8258e84b869dbf3800178a61cc51cb3}{flush}}()\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ reverse\ iterate\ the\ deletion\ queue\ to\ execute\ all\ the\ functions}}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\ it\ =\ \mbox{\hyperlink{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8}{deletors}}.rbegin();\ it\ !=\ \mbox{\hyperlink{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8}{deletors}}.rend();\ it++)\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ (*it)();\ \textcolor{comment}{//call\ functors}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8}{deletors}}.clear();}
+\DoxyCodeLine{00032\ \ \ \ \ \}}
+\DoxyCodeLine{00033\ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_frame_data}{FrameData}}\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ VkSemaphore\ \mbox{\hyperlink{struct_frame_data_aab25fa2b65e6e60a8f6e64a14bbb6d6c}{\_swapchainSemaphore}},\ \mbox{\hyperlink{struct_frame_data_a383e503475e5ebda98abe12d2f31d9a3}{\_renderSemaphore}};}
+\DoxyCodeLine{00038\ \ \ \ \ VkFence\ \mbox{\hyperlink{struct_frame_data_af1c1a353cca71e2c370f7b9d46962daf}{\_renderFence}};}
+\DoxyCodeLine{00039\ \ \ \ \ VkCommandPool\ \mbox{\hyperlink{struct_frame_data_afd2882c300350dd131bd9d0a631613af}{\_commandPool}};}
+\DoxyCodeLine{00040\ \ \ \ \ VkCommandBuffer\ \mbox{\hyperlink{struct_frame_data_a0f7ce63c6449cafff984ccfaf99964d4}{\_mainCommandBuffer}};}
+\DoxyCodeLine{00041\ \ \ \ \ \mbox{\hyperlink{struct_deletion_queue}{DeletionQueue}}\ \mbox{\hyperlink{struct_frame_data_aca8a4d6ba793aa45bee87a83dca1a2e7}{\_deletionQueue}};}
+\DoxyCodeLine{00042\ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_compute_push_constants}{ComputePushConstants}}\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ glm::vec4\ \mbox{\hyperlink{struct_compute_push_constants_af1b14859e4a196ab2313734dde81428a}{data1}};}
+\DoxyCodeLine{00046\ \ \ \ \ glm::vec4\ \mbox{\hyperlink{struct_compute_push_constants_aaa6359f4ea37d85e40f2881ef732826b}{data2}};}
+\DoxyCodeLine{00047\ \ \ \ \ glm::vec4\ \mbox{\hyperlink{struct_compute_push_constants_a5035e7701b815f7e95c3fd525b6e075e}{data3}};}
+\DoxyCodeLine{00048\ \ \ \ \ glm::vec4\ \mbox{\hyperlink{struct_compute_push_constants_ad1b7e85d855000abe4f3c62ca6b9e85e}{data4}};}
+\DoxyCodeLine{00049\ \};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_compute_effect}{ComputeEffect}}\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{struct_compute_effect_abddbf819b22623f6a100da0296f22c79}{name}};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ VkPipeline\ \mbox{\hyperlink{struct_compute_effect_ae88c49abeaebead8e1886f771f49fdfe}{pipeline}};}
+\DoxyCodeLine{00055\ \ \ \ \ VkPipelineLayout\ \mbox{\hyperlink{struct_compute_effect_a03d2cd14a02f2d2e86ec6618299eab78}{layout}};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \mbox{\hyperlink{struct_compute_push_constants}{ComputePushConstants}}\ \mbox{\hyperlink{struct_compute_effect_a8f0ff7eafb00783dbcc2a31a344a424f}{data}};}
+\DoxyCodeLine{00058\ \};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_vulkan_engine}{VulkanEngine}}\ \{}
+\DoxyCodeLine{00064\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \mbox{\hyperlink{struct_allocated_image}{AllocatedImage}}\ \mbox{\hyperlink{class_vulkan_engine_ad332e0c9421b787d1805a642c6a04c70}{\_drawImage}};}
+\DoxyCodeLine{00067\ \ \ \ \ \mbox{\hyperlink{struct_allocated_image}{AllocatedImage}}\ \mbox{\hyperlink{class_vulkan_engine_a20eff0d0f15bd84d364edb01d8cb340d}{\_depthImage}};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a28d106eebcc881ddc6a30209c11a9626}{init\_default\_data}}();}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ VkPipelineLayout\ \mbox{\hyperlink{class_vulkan_engine_aa5dde64bb4ba44551f8caf3a67b33a97}{\_meshPipelineLayout}};}
+\DoxyCodeLine{00072\ \ \ \ \ VkPipeline\ \mbox{\hyperlink{class_vulkan_engine_a3a8a4dabc7acf435338bc616e3a0b5ee}{\_meshPipeline}};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \mbox{\hyperlink{struct_g_p_u_mesh_buffers}{GPUMeshBuffers}}\ \mbox{\hyperlink{class_vulkan_engine_a61857cc8e56755ee8ecfb895e6df832f}{rectangle}};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_aa30cfd394a7d1e8c85eae177147aa871}{init\_mesh\_pipeline}}();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ std::vector<std::shared\_ptr<MeshAsset>>\ \mbox{\hyperlink{class_vulkan_engine_ae2c73ed644888961513ff22a7644725d}{testMeshes}};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \mbox{\hyperlink{struct_allocated_buffer}{AllocatedBuffer}}\ \mbox{\hyperlink{class_vulkan_engine_a4b0f500e007bea934c26d5372b79906b}{create\_buffer}}(\textcolor{keywordtype}{size\_t}\ allocSize,\ VkBufferUsageFlags\ usage,\ VmaMemoryUsage\ memoryUsage);}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a0382ae4f6a156c0fa0b6356840f40a80}{destroy\_buffer}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_allocated_buffer}{AllocatedBuffer}}\&\ buffer);}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \mbox{\hyperlink{struct_g_p_u_mesh_buffers}{GPUMeshBuffers}}\ \mbox{\hyperlink{class_vulkan_engine_a2eef35ed3cc46cf090af65c68dc63243}{uploadMesh}}(std::span<uint32\_t>\ indices,\ std::span<Vertex>\ vertices);}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_ac58d3ff4cf72ba822722b39e4552d711}{draw\_geometry}}(VkCommandBuffer\ cmd);}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ VkPipelineLayout\ \mbox{\hyperlink{class_vulkan_engine_a5f53603360ad1d4f6f4ecf01acc7860f}{\_trianglePipelineLayout}};}
+\DoxyCodeLine{00090\ \ \ \ \ VkPipeline\ \mbox{\hyperlink{class_vulkan_engine_a967ac2e931dcfbf746fcef2239549b28}{\_trianglePipeline}};}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a2c7471314592ff6adc0c12ef13204e54}{init\_triangle\_pipeline}}();}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ std::vector<ComputeEffect>\ \mbox{\hyperlink{class_vulkan_engine_a5c9b5403d18a160c2e3d57b7b981204b}{backgroundEffects}};}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_vulkan_engine_ab690c6553e6e196fef597af561655527}{currentBackgroundEffect}}\{\ 0\ \};}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ VkFence\ \mbox{\hyperlink{class_vulkan_engine_ac238e3c8dd8ceef2593828c25f9c6532}{\_immFence}};}
+\DoxyCodeLine{00100\ \ \ \ \ VkCommandBuffer\ \mbox{\hyperlink{class_vulkan_engine_ad2f38e852d4cb1820da1b9d60ab38568}{\_immCommandBuffer}};}
+\DoxyCodeLine{00101\ \ \ \ \ VkCommandPool\ \mbox{\hyperlink{class_vulkan_engine_a3bb1ce4d610c0318e013638c807bd920}{\_immCommandPool}};}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ }
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \mbox{\hyperlink{struct_descriptor_allocator}{DescriptorAllocator}}\ \mbox{\hyperlink{class_vulkan_engine_ac515cf094697d32603a71e535df05f71}{globalDescriptorAllocator}};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ VkDescriptorSet\ \mbox{\hyperlink{class_vulkan_engine_adcf4fd54a9568717d52fc711b1ff8593}{\_drawImageDescriptors}};}
+\DoxyCodeLine{00109\ \ \ \ \ VkDescriptorSetLayout\ \mbox{\hyperlink{class_vulkan_engine_a510b5529eca5876823392263a245f45e}{\_drawImageDescriptorLayout}};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{comment}{//draw\ resources}}
+\DoxyCodeLine{00113\ \ \ \ \ VkExtent2D\ \mbox{\hyperlink{class_vulkan_engine_acdf79fe860137de04a46809a804094e4}{\_drawExtent}};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ VmaAllocator\ \mbox{\hyperlink{class_vulkan_engine_a75d08cfc1400cc46c7649b0041b0e0fc}{\_allocator}};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \mbox{\hyperlink{struct_deletion_queue}{DeletionQueue}}\ \mbox{\hyperlink{class_vulkan_engine_ab1707a6b3122db0d0fce56c13999367b}{\_mainDeletionQueue}};}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \ \ \mbox{\hyperlink{struct_frame_data}{FrameData}}\ \mbox{\hyperlink{class_vulkan_engine_a43719b6bfc0dfb7b725e254b46716815}{\_frames}}[\mbox{\hyperlink{vk__engine_8h_a10ae962afdbd2c033a5c3af07aea14c2}{FRAME\_OVERLAP}}];}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ \mbox{\hyperlink{struct_frame_data}{FrameData}}\&\ \mbox{\hyperlink{class_vulkan_engine_aeed786878d329b6eaf10ee7291e3fe20}{get\_current\_frame}}()\ \{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_vulkan_engine_a43719b6bfc0dfb7b725e254b46716815}{\_frames}}[\mbox{\hyperlink{class_vulkan_engine_acbacb0e89bba12ea169c900bbf74a23e}{\_frameNumber}}\ \%\ \mbox{\hyperlink{vk__engine_8h_a10ae962afdbd2c033a5c3af07aea14c2}{FRAME\_OVERLAP}}];\ \};}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ VkQueue\ \mbox{\hyperlink{class_vulkan_engine_a6b240d37948c2d5fa2cf071468c3bd4b}{\_graphicsQueue}};}
+\DoxyCodeLine{00124\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{class_vulkan_engine_a3ce453b78ccf4ffdd19c2e64fb5a6ac7}{\_graphicsQueueFamily}};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_vulkan_engine_a59d1bdeb91fc7a6b072dd41db890f317}{\_isInitialized}}\{\ \textcolor{keyword}{false}\ \};}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_vulkan_engine_acbacb0e89bba12ea169c900bbf74a23e}{\_frameNumber}}\ \{0\};}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_vulkan_engine_a7ea6c84cfa0904c039f91d9ff31370c0}{stop\_rendering}}\{\ \textcolor{keyword}{false}\ \};}
+\DoxyCodeLine{00129\ \ \ \ \ VkExtent2D\ \mbox{\hyperlink{class_vulkan_engine_a1b355560c30d73de48d86023dcdea5f4}{\_windowExtent}}\{\ 1700\ ,\ 900\ \};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{struct\ }SDL\_Window*\ \mbox{\hyperlink{class_vulkan_engine_aa5a118f5dea4f6c804c8c60acf388472}{\_window}}\{\ \textcolor{keyword}{nullptr}\ \};}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_vulkan_engine}{VulkanEngine}}\&\ \mbox{\hyperlink{class_vulkan_engine_aac690da9ffba122c6f145e27fda36e05}{Get}}();}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{comment}{//initializes\ everything\ in\ the\ engine}}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_ab1500594ae7da8af82e9a0a49210b026}{init}}();}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{comment}{//shuts\ down\ the\ engine}}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a6499244520219781f646186a70ee2ed2}{cleanup}}();}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{comment}{//draw\ loop}}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_aa54645a6c026210ef19dc0b4d7faf3c6}{draw}}();}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{comment}{//run\ main\ loop}}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a3ddaa008322d233c76969ba0a72b1aa5}{run}}();}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/\ omitted\ -\/-\/-\/}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \ \ VkInstance\ \mbox{\hyperlink{class_vulkan_engine_a85897f1180282b72d30b55dda1fe1045}{\_instance}};\textcolor{comment}{//\ Vulkan\ library\ handle}}
+\DoxyCodeLine{00150\ \ \ \ \ VkDebugUtilsMessengerEXT\ \mbox{\hyperlink{class_vulkan_engine_a2273023af0b77c5a57ece90e7294834b}{\_debug\_messenger}};\textcolor{comment}{//\ Vulkan\ debug\ output\ handle}}
+\DoxyCodeLine{00151\ \ \ \ \ VkPhysicalDevice\ \mbox{\hyperlink{class_vulkan_engine_a5d533c792641fc73c7834c46074c25cd}{\_chosenGPU}};\textcolor{comment}{//\ GPU\ chosen\ as\ the\ default\ device}}
+\DoxyCodeLine{00152\ \ \ \ \ VkDevice\ \mbox{\hyperlink{class_vulkan_engine_ab3856636bf2bd4805f72b852c2163f10}{\_device}};\ \textcolor{comment}{//\ Vulkan\ device\ for\ commands}}
+\DoxyCodeLine{00153\ \ \ \ \ VkSurfaceKHR\ \mbox{\hyperlink{class_vulkan_engine_ac5f5f041d67a7983769cc80255bead65}{\_surface}};\textcolor{comment}{//\ Vulkan\ window\ surface}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ VkSwapchainKHR\ \mbox{\hyperlink{class_vulkan_engine_ac17fb4ee4cf0de62648debe8e4b05130}{\_swapchain}};}
+\DoxyCodeLine{00156\ \ \ \ \ VkFormat\ \mbox{\hyperlink{class_vulkan_engine_a5e5a8b61e55df8eeffd820988e40e73e}{\_swapchainImageFormat}};}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ std::vector<VkImage>\ \mbox{\hyperlink{class_vulkan_engine_a4f951e6fd307b7d08b28ef643be7e4fb}{\_swapchainImages}};}
+\DoxyCodeLine{00159\ \ \ \ \ std::vector<VkImageView>\ \mbox{\hyperlink{class_vulkan_engine_a80ebb2acd6e6e88efaf9c7245c59079c}{\_swapchainImageViews}};}
+\DoxyCodeLine{00160\ \ \ \ \ VkExtent2D\ \mbox{\hyperlink{class_vulkan_engine_ae2b5b9f37a4dd77e909d6a87c3290885}{\_swapchainExtent}};}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ \ \ VkPipeline\ \mbox{\hyperlink{class_vulkan_engine_a656044cc262a32f92926d5c63b5edcbf}{\_gradientPipeline}};}
+\DoxyCodeLine{00163\ \ \ \ \ VkPipelineLayout\ \mbox{\hyperlink{class_vulkan_engine_a0b8a40b8565cc5e4dce1477451ec9758}{\_gradientPipelineLayout}};}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_add07ae792339ef143c88dd43f0950f1d}{immediate\_submit}}(std::function<\textcolor{keywordtype}{void}(VkCommandBuffer\ cmd)>\&\&\ function);}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_ae4a08e7df2c57dd13c3bb8c815b3fe58}{init\_imgui}}();}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_af262e114b73ef955bb7861c0f4aa1a9f}{init\_pipelines}}();}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a1f276aea8f7810d4c5c83993cba60e3d}{init\_background\_pipelines}}();}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_ab1d54a608ae92d18acd07d8234d3a926}{init\_descriptors}}();}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a8183d015e9861a5170f6997583e2e9cf}{init\_vulkan}}();}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_acd05e8a088e7140788b18d76d79eddff}{init\_swapchain}}();}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a424a87ff1618f85968dd7f717af5eadd}{init\_commands}}();}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a0640fb305c88719fa1597302d4fea252}{init\_sync\_structures}}();}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a8fa06b71855e7523bf1396113459e438}{draw\_background}}(VkCommandBuffer\ cmd);}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a6c26027ee4c5718834f384a5f98818ce}{create\_swapchain}}(uint32\_t\ width,\ uint32\_t\ height);}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_acd06acde0f8dfc506b15326bb44e5580}{destroy\_swapchain}}();}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_vulkan_engine_a4722624822d917dad006b10c15a32c9d}{draw\_imgui}}(VkCommandBuffer\ cmd,\ VkImageView\ targetImageView);}
+\DoxyCodeLine{00184\ \};}
+
+\end{DoxyCode}

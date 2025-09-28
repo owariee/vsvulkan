@@ -1,0 +1,209 @@
+\doxysection{Pipeline\+Builder Class Reference}
+\hypertarget{class_pipeline_builder}{}\label{class_pipeline_builder}\index{PipelineBuilder@{PipelineBuilder}}
+
+
+{\ttfamily \#include $<$vk\+\_\+pipelines.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_pipeline_builder_a08bb82589a05c27fdde547e4a53c8a16}{Pipeline\+Builder}} ()
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a10f1778c78c6b0d4c6b2b92b13b2191b}{clear}} ()
+\item 
+Vk\+Pipeline \mbox{\hyperlink{class_pipeline_builder_aa62a1c5bb1247d3267f9bf3818fe584d}{build\+\_\+pipeline}} (Vk\+Device device)
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a35156e7bff9884f3d2ef9fc8a502d101}{set\+\_\+input\+\_\+topology}} (Vk\+Primitive\+Topology topology)
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a13eac544e398950047f96f102de79709}{set\+\_\+polygon\+\_\+mode}} (Vk\+Polygon\+Mode mode)
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a827de5d5fb2630b97618939fb818795c}{set\+\_\+cull\+\_\+mode}} (Vk\+Cull\+Mode\+Flags cull\+Mode, Vk\+Front\+Face front\+Face)
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a1821dd5fc13bd7d27d20a33c7e33574a}{set\+\_\+multisampling\+\_\+none}} ()
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a04c3f041b7e89dbcbb46178db91cd996}{disable\+\_\+blending}} ()
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_ab0740c98f459604b35b7e41491e72503}{set\+\_\+color\+\_\+attachment\+\_\+format}} (Vk\+Format format)
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a74724ba1c332456e9312f6b593c7fcb4}{set\+\_\+depth\+\_\+format}} (Vk\+Format format)
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a7d793453bd5497f394216562a4fd228d}{disable\+\_\+depthtest}} ()
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a3f8049849d1749d1e466f3ae9ddb9b2c}{set\+\_\+shaders}} (Vk\+Shader\+Module vertex\+Shader, Vk\+Shader\+Module fragment\+Shader)
+\item 
+void \mbox{\hyperlink{class_pipeline_builder_a1408ccfa339ca73906ba16cca628dd32}{enable\+\_\+depthtest}} (bool depth\+Write\+Enable, Vk\+Compare\+Op op)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ Vk\+Pipeline\+Shader\+Stage\+Create\+Info $>$ \mbox{\hyperlink{class_pipeline_builder_a67aa642c13dc5c0a1eb901bd2d47051d}{\+\_\+shader\+Stages}}
+\item 
+Vk\+Pipeline\+Input\+Assembly\+State\+Create\+Info \mbox{\hyperlink{class_pipeline_builder_a9c96fd4cfd4451053618317e8dc2742d}{\+\_\+input\+Assembly}}
+\item 
+Vk\+Pipeline\+Rasterization\+State\+Create\+Info \mbox{\hyperlink{class_pipeline_builder_a08020325183ad1d38da46c6df00d5f56}{\+\_\+rasterizer}}
+\item 
+Vk\+Pipeline\+Color\+Blend\+Attachment\+State \mbox{\hyperlink{class_pipeline_builder_aa6733f7766a65f0aa7d78807b33da630}{\+\_\+color\+Blend\+Attachment}}
+\item 
+Vk\+Pipeline\+Multisample\+State\+Create\+Info \mbox{\hyperlink{class_pipeline_builder_abbd337208ef05b087f450185fa2cde2e}{\+\_\+multisampling}}
+\item 
+Vk\+Pipeline\+Layout \mbox{\hyperlink{class_pipeline_builder_a27a3416b889bde0dcce7c28bbb15ed46}{\+\_\+pipeline\+Layout}}
+\item 
+Vk\+Pipeline\+Depth\+Stencil\+State\+Create\+Info \mbox{\hyperlink{class_pipeline_builder_a9ad4350c6c2916fe6d8735646e6b3268}{\+\_\+depth\+Stencil}}
+\item 
+Vk\+Pipeline\+Rendering\+Create\+Info \mbox{\hyperlink{class_pipeline_builder_a15beb7114c2a59de1d8022dcc9d8219a}{\+\_\+render\+Info}}
+\item 
+Vk\+Format \mbox{\hyperlink{class_pipeline_builder_a8a163243157a769336a712d8df4fd2ff}{\+\_\+color\+Attachmentformat}}
+\end{DoxyCompactItemize}
+
+
+\label{doc-constructors}
+\Hypertarget{class_pipeline_builder_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_pipeline_builder_a08bb82589a05c27fdde547e4a53c8a16}\index{PipelineBuilder@{PipelineBuilder}!PipelineBuilder@{PipelineBuilder}}
+\index{PipelineBuilder@{PipelineBuilder}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{PipelineBuilder()}{PipelineBuilder()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a08bb82589a05c27fdde547e4a53c8a16} 
+Pipeline\+Builder\+::\+Pipeline\+Builder (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\label{doc-func-members}
+\Hypertarget{class_pipeline_builder_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_pipeline_builder_aa62a1c5bb1247d3267f9bf3818fe584d}\index{PipelineBuilder@{PipelineBuilder}!build\_pipeline@{build\_pipeline}}
+\index{build\_pipeline@{build\_pipeline}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{build\_pipeline()}{build\_pipeline()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_aa62a1c5bb1247d3267f9bf3818fe584d} 
+Vk\+Pipeline Pipeline\+Builder\+::build\+\_\+pipeline (\begin{DoxyParamCaption}\item[{Vk\+Device}]{device}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a10f1778c78c6b0d4c6b2b92b13b2191b}\index{PipelineBuilder@{PipelineBuilder}!clear@{clear}}
+\index{clear@{clear}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a10f1778c78c6b0d4c6b2b92b13b2191b} 
+void Pipeline\+Builder\+::clear (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a04c3f041b7e89dbcbb46178db91cd996}\index{PipelineBuilder@{PipelineBuilder}!disable\_blending@{disable\_blending}}
+\index{disable\_blending@{disable\_blending}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{disable\_blending()}{disable\_blending()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a04c3f041b7e89dbcbb46178db91cd996} 
+void Pipeline\+Builder\+::disable\+\_\+blending (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a7d793453bd5497f394216562a4fd228d}\index{PipelineBuilder@{PipelineBuilder}!disable\_depthtest@{disable\_depthtest}}
+\index{disable\_depthtest@{disable\_depthtest}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{disable\_depthtest()}{disable\_depthtest()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a7d793453bd5497f394216562a4fd228d} 
+void Pipeline\+Builder\+::disable\+\_\+depthtest (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a1408ccfa339ca73906ba16cca628dd32}\index{PipelineBuilder@{PipelineBuilder}!enable\_depthtest@{enable\_depthtest}}
+\index{enable\_depthtest@{enable\_depthtest}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{enable\_depthtest()}{enable\_depthtest()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a1408ccfa339ca73906ba16cca628dd32} 
+void Pipeline\+Builder\+::enable\+\_\+depthtest (\begin{DoxyParamCaption}\item[{bool}]{depth\+Write\+Enable}{, }\item[{Vk\+Compare\+Op}]{op}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_ab0740c98f459604b35b7e41491e72503}\index{PipelineBuilder@{PipelineBuilder}!set\_color\_attachment\_format@{set\_color\_attachment\_format}}
+\index{set\_color\_attachment\_format@{set\_color\_attachment\_format}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{set\_color\_attachment\_format()}{set\_color\_attachment\_format()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_ab0740c98f459604b35b7e41491e72503} 
+void Pipeline\+Builder\+::set\+\_\+color\+\_\+attachment\+\_\+format (\begin{DoxyParamCaption}\item[{Vk\+Format}]{format}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a827de5d5fb2630b97618939fb818795c}\index{PipelineBuilder@{PipelineBuilder}!set\_cull\_mode@{set\_cull\_mode}}
+\index{set\_cull\_mode@{set\_cull\_mode}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{set\_cull\_mode()}{set\_cull\_mode()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a827de5d5fb2630b97618939fb818795c} 
+void Pipeline\+Builder\+::set\+\_\+cull\+\_\+mode (\begin{DoxyParamCaption}\item[{Vk\+Cull\+Mode\+Flags}]{cull\+Mode}{, }\item[{Vk\+Front\+Face}]{front\+Face}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a74724ba1c332456e9312f6b593c7fcb4}\index{PipelineBuilder@{PipelineBuilder}!set\_depth\_format@{set\_depth\_format}}
+\index{set\_depth\_format@{set\_depth\_format}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{set\_depth\_format()}{set\_depth\_format()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a74724ba1c332456e9312f6b593c7fcb4} 
+void Pipeline\+Builder\+::set\+\_\+depth\+\_\+format (\begin{DoxyParamCaption}\item[{Vk\+Format}]{format}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a35156e7bff9884f3d2ef9fc8a502d101}\index{PipelineBuilder@{PipelineBuilder}!set\_input\_topology@{set\_input\_topology}}
+\index{set\_input\_topology@{set\_input\_topology}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{set\_input\_topology()}{set\_input\_topology()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a35156e7bff9884f3d2ef9fc8a502d101} 
+void Pipeline\+Builder\+::set\+\_\+input\+\_\+topology (\begin{DoxyParamCaption}\item[{Vk\+Primitive\+Topology}]{topology}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a1821dd5fc13bd7d27d20a33c7e33574a}\index{PipelineBuilder@{PipelineBuilder}!set\_multisampling\_none@{set\_multisampling\_none}}
+\index{set\_multisampling\_none@{set\_multisampling\_none}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{set\_multisampling\_none()}{set\_multisampling\_none()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a1821dd5fc13bd7d27d20a33c7e33574a} 
+void Pipeline\+Builder\+::set\+\_\+multisampling\+\_\+none (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a13eac544e398950047f96f102de79709}\index{PipelineBuilder@{PipelineBuilder}!set\_polygon\_mode@{set\_polygon\_mode}}
+\index{set\_polygon\_mode@{set\_polygon\_mode}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{set\_polygon\_mode()}{set\_polygon\_mode()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a13eac544e398950047f96f102de79709} 
+void Pipeline\+Builder\+::set\+\_\+polygon\+\_\+mode (\begin{DoxyParamCaption}\item[{Vk\+Polygon\+Mode}]{mode}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_pipeline_builder_a3f8049849d1749d1e466f3ae9ddb9b2c}\index{PipelineBuilder@{PipelineBuilder}!set\_shaders@{set\_shaders}}
+\index{set\_shaders@{set\_shaders}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{set\_shaders()}{set\_shaders()}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a3f8049849d1749d1e466f3ae9ddb9b2c} 
+void Pipeline\+Builder\+::set\+\_\+shaders (\begin{DoxyParamCaption}\item[{Vk\+Shader\+Module}]{vertex\+Shader}{, }\item[{Vk\+Shader\+Module}]{fragment\+Shader}{}\end{DoxyParamCaption})}
+
+
+
+\label{doc-variable-members}
+\Hypertarget{class_pipeline_builder_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_pipeline_builder_a8a163243157a769336a712d8df4fd2ff}\index{PipelineBuilder@{PipelineBuilder}!\_colorAttachmentformat@{\_colorAttachmentformat}}
+\index{\_colorAttachmentformat@{\_colorAttachmentformat}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_colorAttachmentformat}{\_colorAttachmentformat}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a8a163243157a769336a712d8df4fd2ff} 
+Vk\+Format Pipeline\+Builder\+::\+\_\+color\+Attachmentformat}
+
+\Hypertarget{class_pipeline_builder_aa6733f7766a65f0aa7d78807b33da630}\index{PipelineBuilder@{PipelineBuilder}!\_colorBlendAttachment@{\_colorBlendAttachment}}
+\index{\_colorBlendAttachment@{\_colorBlendAttachment}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_colorBlendAttachment}{\_colorBlendAttachment}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_aa6733f7766a65f0aa7d78807b33da630} 
+Vk\+Pipeline\+Color\+Blend\+Attachment\+State Pipeline\+Builder\+::\+\_\+color\+Blend\+Attachment}
+
+\Hypertarget{class_pipeline_builder_a9ad4350c6c2916fe6d8735646e6b3268}\index{PipelineBuilder@{PipelineBuilder}!\_depthStencil@{\_depthStencil}}
+\index{\_depthStencil@{\_depthStencil}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_depthStencil}{\_depthStencil}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a9ad4350c6c2916fe6d8735646e6b3268} 
+Vk\+Pipeline\+Depth\+Stencil\+State\+Create\+Info Pipeline\+Builder\+::\+\_\+depth\+Stencil}
+
+\Hypertarget{class_pipeline_builder_a9c96fd4cfd4451053618317e8dc2742d}\index{PipelineBuilder@{PipelineBuilder}!\_inputAssembly@{\_inputAssembly}}
+\index{\_inputAssembly@{\_inputAssembly}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_inputAssembly}{\_inputAssembly}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a9c96fd4cfd4451053618317e8dc2742d} 
+Vk\+Pipeline\+Input\+Assembly\+State\+Create\+Info Pipeline\+Builder\+::\+\_\+input\+Assembly}
+
+\Hypertarget{class_pipeline_builder_abbd337208ef05b087f450185fa2cde2e}\index{PipelineBuilder@{PipelineBuilder}!\_multisampling@{\_multisampling}}
+\index{\_multisampling@{\_multisampling}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_multisampling}{\_multisampling}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_abbd337208ef05b087f450185fa2cde2e} 
+Vk\+Pipeline\+Multisample\+State\+Create\+Info Pipeline\+Builder\+::\+\_\+multisampling}
+
+\Hypertarget{class_pipeline_builder_a27a3416b889bde0dcce7c28bbb15ed46}\index{PipelineBuilder@{PipelineBuilder}!\_pipelineLayout@{\_pipelineLayout}}
+\index{\_pipelineLayout@{\_pipelineLayout}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_pipelineLayout}{\_pipelineLayout}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a27a3416b889bde0dcce7c28bbb15ed46} 
+Vk\+Pipeline\+Layout Pipeline\+Builder\+::\+\_\+pipeline\+Layout}
+
+\Hypertarget{class_pipeline_builder_a08020325183ad1d38da46c6df00d5f56}\index{PipelineBuilder@{PipelineBuilder}!\_rasterizer@{\_rasterizer}}
+\index{\_rasterizer@{\_rasterizer}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_rasterizer}{\_rasterizer}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a08020325183ad1d38da46c6df00d5f56} 
+Vk\+Pipeline\+Rasterization\+State\+Create\+Info Pipeline\+Builder\+::\+\_\+rasterizer}
+
+\Hypertarget{class_pipeline_builder_a15beb7114c2a59de1d8022dcc9d8219a}\index{PipelineBuilder@{PipelineBuilder}!\_renderInfo@{\_renderInfo}}
+\index{\_renderInfo@{\_renderInfo}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_renderInfo}{\_renderInfo}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a15beb7114c2a59de1d8022dcc9d8219a} 
+Vk\+Pipeline\+Rendering\+Create\+Info Pipeline\+Builder\+::\+\_\+render\+Info}
+
+\Hypertarget{class_pipeline_builder_a67aa642c13dc5c0a1eb901bd2d47051d}\index{PipelineBuilder@{PipelineBuilder}!\_shaderStages@{\_shaderStages}}
+\index{\_shaderStages@{\_shaderStages}!PipelineBuilder@{PipelineBuilder}}
+\doxysubsubsection{\texorpdfstring{\_shaderStages}{\_shaderStages}}
+{\footnotesize\ttfamily \label{class_pipeline_builder_a67aa642c13dc5c0a1eb901bd2d47051d} 
+std\+::vector$<$Vk\+Pipeline\+Shader\+Stage\+Create\+Info$>$ Pipeline\+Builder\+::\+\_\+shader\+Stages}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{vk__pipelines_8h}{vk\+\_\+pipelines.\+h}}\item 
+src/\mbox{\hyperlink{vk__pipelines_8cpp}{vk\+\_\+pipelines.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,35 @@
+\doxysection{src/sdlwindow.cpp File Reference}
+\hypertarget{sdlwindow_8cpp}{}\label{sdlwindow_8cpp}\index{src/sdlwindow.cpp@{src/sdlwindow.cpp}}
+{\ttfamily \#include "{}sdlwindow.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+SDL\+\_\+\+Window \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{sdlwindow_8cpp_a1401ba9ca8c6175e8fdc6d93e47cb95e}{SDLWindow\+Init}} (const char \texorpdfstring{$\ast$}{*}name, uint32\+\_\+t width, uint32\+\_\+t height, SDL\+\_\+\+Window\+Flags flags)
+\item 
+Vk\+Surface\+KHR \mbox{\hyperlink{sdlwindow_8cpp_a10e1c95e7f89d859fd74424be088ecbd}{SDLVulkan\+Create\+Surface}} (Vk\+Instance instance, SDL\+\_\+\+Window \texorpdfstring{$\ast$}{*}window)
+\item 
+int32\+\_\+t \mbox{\hyperlink{sdlwindow_8cpp_a29e07fbf5140e3630cbc65a79503994e}{SDLHandle\+Events}} (std\+::function$<$ void(SDL\+\_\+\+Event \texorpdfstring{$\ast$}{*}event)$>$ event\+Handler\+Lambda)
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{sdlwindow_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{sdlwindow_8cpp_a29e07fbf5140e3630cbc65a79503994e}\index{sdlwindow.cpp@{sdlwindow.cpp}!SDLHandleEvents@{SDLHandleEvents}}
+\index{SDLHandleEvents@{SDLHandleEvents}!sdlwindow.cpp@{sdlwindow.cpp}}
+\doxysubsubsection{\texorpdfstring{SDLHandleEvents()}{SDLHandleEvents()}}
+{\footnotesize\ttfamily \label{sdlwindow_8cpp_a29e07fbf5140e3630cbc65a79503994e} 
+int32\+\_\+t SDLHandle\+Events (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(SDL\+\_\+\+Event \texorpdfstring{$\ast$}{*}event)$>$}]{event\+Handler\+Lambda}{}\end{DoxyParamCaption})}
+
+\Hypertarget{sdlwindow_8cpp_a10e1c95e7f89d859fd74424be088ecbd}\index{sdlwindow.cpp@{sdlwindow.cpp}!SDLVulkanCreateSurface@{SDLVulkanCreateSurface}}
+\index{SDLVulkanCreateSurface@{SDLVulkanCreateSurface}!sdlwindow.cpp@{sdlwindow.cpp}}
+\doxysubsubsection{\texorpdfstring{SDLVulkanCreateSurface()}{SDLVulkanCreateSurface()}}
+{\footnotesize\ttfamily \label{sdlwindow_8cpp_a10e1c95e7f89d859fd74424be088ecbd} 
+Vk\+Surface\+KHR SDLVulkan\+Create\+Surface (\begin{DoxyParamCaption}\item[{Vk\+Instance}]{instance}{, }\item[{SDL\+\_\+\+Window \texorpdfstring{$\ast$}{*}}]{window}{}\end{DoxyParamCaption})}
+
+\Hypertarget{sdlwindow_8cpp_a1401ba9ca8c6175e8fdc6d93e47cb95e}\index{sdlwindow.cpp@{sdlwindow.cpp}!SDLWindowInit@{SDLWindowInit}}
+\index{SDLWindowInit@{SDLWindowInit}!sdlwindow.cpp@{sdlwindow.cpp}}
+\doxysubsubsection{\texorpdfstring{SDLWindowInit()}{SDLWindowInit()}}
+{\footnotesize\ttfamily \label{sdlwindow_8cpp_a1401ba9ca8c6175e8fdc6d93e47cb95e} 
+SDL\+\_\+\+Window \texorpdfstring{$\ast$}{*} SDLWindow\+Init (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{name}{, }\item[{uint32\+\_\+t}]{width}{, }\item[{uint32\+\_\+t}]{height}{, }\item[{SDL\+\_\+\+Window\+Flags}]{flags}{}\end{DoxyParamCaption})}
+

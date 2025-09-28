@@ -1,0 +1,60 @@
+\doxysection{Descriptor\+Layout\+Builder Struct Reference}
+\hypertarget{struct_descriptor_layout_builder}{}\label{struct_descriptor_layout_builder}\index{DescriptorLayoutBuilder@{DescriptorLayoutBuilder}}
+
+
+{\ttfamily \#include $<$vk\+\_\+descriptors.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{struct_descriptor_layout_builder_abde443384779ef3c73b8b576f49ce2f3}{add\+\_\+binding}} (uint32\+\_\+t binding, Vk\+Descriptor\+Type type)
+\item 
+void \mbox{\hyperlink{struct_descriptor_layout_builder_a458ab671e6690342e749cd8f71bb41bc}{clear}} ()
+\item 
+Vk\+Descriptor\+Set\+Layout \mbox{\hyperlink{struct_descriptor_layout_builder_a547e124e00d940af9bbc33d143c55c8f}{build}} (Vk\+Device device, Vk\+Shader\+Stage\+Flags shader\+Stages, void \texorpdfstring{$\ast$}{*}p\+Next=nullptr, Vk\+Descriptor\+Set\+Layout\+Create\+Flags flags=0)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ Vk\+Descriptor\+Set\+Layout\+Binding $>$ \mbox{\hyperlink{struct_descriptor_layout_builder_a84964bc1535f1164c65c682d8abc1ae6}{bindings}}
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{struct_descriptor_layout_builder_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_descriptor_layout_builder_abde443384779ef3c73b8b576f49ce2f3}\index{DescriptorLayoutBuilder@{DescriptorLayoutBuilder}!add\_binding@{add\_binding}}
+\index{add\_binding@{add\_binding}!DescriptorLayoutBuilder@{DescriptorLayoutBuilder}}
+\doxysubsubsection{\texorpdfstring{add\_binding()}{add\_binding()}}
+{\footnotesize\ttfamily \label{struct_descriptor_layout_builder_abde443384779ef3c73b8b576f49ce2f3} 
+void Descriptor\+Layout\+Builder\+::add\+\_\+binding (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{binding}{, }\item[{Vk\+Descriptor\+Type}]{type}{}\end{DoxyParamCaption})}
+
+\Hypertarget{struct_descriptor_layout_builder_a547e124e00d940af9bbc33d143c55c8f}\index{DescriptorLayoutBuilder@{DescriptorLayoutBuilder}!build@{build}}
+\index{build@{build}!DescriptorLayoutBuilder@{DescriptorLayoutBuilder}}
+\doxysubsubsection{\texorpdfstring{build()}{build()}}
+{\footnotesize\ttfamily \label{struct_descriptor_layout_builder_a547e124e00d940af9bbc33d143c55c8f} 
+Vk\+Descriptor\+Set\+Layout Descriptor\+Layout\+Builder\+::build (\begin{DoxyParamCaption}\item[{Vk\+Device}]{device}{, }\item[{Vk\+Shader\+Stage\+Flags}]{shader\+Stages}{, }\item[{void \texorpdfstring{$\ast$}{*}}]{p\+Next}{ = {\ttfamily nullptr}, }\item[{Vk\+Descriptor\+Set\+Layout\+Create\+Flags}]{flags}{ = {\ttfamily 0}}\end{DoxyParamCaption})}
+
+\Hypertarget{struct_descriptor_layout_builder_a458ab671e6690342e749cd8f71bb41bc}\index{DescriptorLayoutBuilder@{DescriptorLayoutBuilder}!clear@{clear}}
+\index{clear@{clear}!DescriptorLayoutBuilder@{DescriptorLayoutBuilder}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily \label{struct_descriptor_layout_builder_a458ab671e6690342e749cd8f71bb41bc} 
+void Descriptor\+Layout\+Builder\+::clear (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\label{doc-variable-members}
+\Hypertarget{struct_descriptor_layout_builder_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_descriptor_layout_builder_a84964bc1535f1164c65c682d8abc1ae6}\index{DescriptorLayoutBuilder@{DescriptorLayoutBuilder}!bindings@{bindings}}
+\index{bindings@{bindings}!DescriptorLayoutBuilder@{DescriptorLayoutBuilder}}
+\doxysubsubsection{\texorpdfstring{bindings}{bindings}}
+{\footnotesize\ttfamily \label{struct_descriptor_layout_builder_a84964bc1535f1164c65c682d8abc1ae6} 
+std\+::vector$<$Vk\+Descriptor\+Set\+Layout\+Binding$>$ Descriptor\+Layout\+Builder\+::bindings}
+
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{vk__descriptors_8h}{vk\+\_\+descriptors.\+h}}\item 
+src/\mbox{\hyperlink{vk__descriptors_8cpp}{vk\+\_\+descriptors.\+cpp}}\end{DoxyCompactItemize}

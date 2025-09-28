@@ -1,0 +1,26 @@
+var annotated_dup =
+[
+    [ "AllocatedBuffer", "struct_allocated_buffer.html", "struct_allocated_buffer" ],
+    [ "AllocatedImage", "struct_allocated_image.html", "struct_allocated_image" ],
+    [ "Camera", "class_camera.html", null ],
+    [ "ComputeEffect", "struct_compute_effect.html", "struct_compute_effect" ],
+    [ "ComputePushConstants", "struct_compute_push_constants.html", "struct_compute_push_constants" ],
+    [ "DeletionQueue", "struct_deletion_queue.html", "struct_deletion_queue" ],
+    [ "DescriptorAllocator", "struct_descriptor_allocator.html", "struct_descriptor_allocator" ],
+    [ "DescriptorLayoutBuilder", "struct_descriptor_layout_builder.html", "struct_descriptor_layout_builder" ],
+    [ "FrameData", "struct_frame_data.html", "struct_frame_data" ],
+    [ "GeoSurface", "struct_geo_surface.html", "struct_geo_surface" ],
+    [ "GPUDrawPushConstants", "struct_g_p_u_draw_push_constants.html", "struct_g_p_u_draw_push_constants" ],
+    [ "GPUMeshBuffers", "struct_g_p_u_mesh_buffers.html", "struct_g_p_u_mesh_buffers" ],
+    [ "InstancedRenderer", "struct_instanced_renderer.html", "struct_instanced_renderer" ],
+    [ "MeshAsset", "struct_mesh_asset.html", "struct_mesh_asset" ],
+    [ "PipelineBuilder", "class_pipeline_builder.html", "class_pipeline_builder" ],
+    [ "QuadInstance", "struct_quad_instance.html", "struct_quad_instance" ],
+    [ "Vertex", "struct_vertex.html", "struct_vertex" ],
+    [ "VertexInputDescription", "struct_vertex_input_description.html", "struct_vertex_input_description" ],
+    [ "VulkanBuffer", "struct_vulkan_buffer.html", "struct_vulkan_buffer" ],
+    [ "VulkanContext", "struct_vulkan_context.html", "struct_vulkan_context" ],
+    [ "VulkanEngine", "class_vulkan_engine.html", "class_vulkan_engine" ],
+    [ "VulkanPipeline", "struct_vulkan_pipeline.html", "struct_vulkan_pipeline" ],
+    [ "VulkanSwapchain", "struct_vulkan_swapchain.html", "struct_vulkan_swapchain" ]
+];

@@ -1,0 +1,18 @@
+\doxysection{imguiloader.\+h}
+\hypertarget{imguiloader_8h_source}{}\label{imguiloader_8h_source}\index{src/imguiloader.h@{src/imguiloader.h}}
+\mbox{\hyperlink{imguiloader_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{vulkanrender_8h}{vulkanrender.h}}"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{sdlwindow_8h}{sdlwindow.h}}"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}imgui.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}imgui\_impl\_sdl2.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}imgui\_impl\_vulkan.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ VkDescriptorPool\ \mbox{\hyperlink{imguiloader_8h_a9c6941213c194abc14df9e18ff9a93bb}{ImGuiSDLVulkanStartup}}(SDL\_Window*\ window,\ \mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext);}
+\DoxyCodeLine{00011\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{imguiloader_8h_a96faf07feb853456dcc6140937aa1dac}{ImGuiSDLVulkanDraw}}(std::function<\textcolor{keywordtype}{void}(\textcolor{keywordtype}{void})>\ imguiWindowsLambda);}
+\DoxyCodeLine{00012\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{imguiloader_8h_a4966d72505fcfbd4a12ba8a073719d2a}{ImGuiSDLVulkanShutdown}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ VkDescriptorPool\ imguiPool);}
+
+\end{DoxyCode}

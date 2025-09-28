@@ -1,0 +1,79 @@
+\doxysection{vk\+\_\+types.\+h}
+\hypertarget{vk__types_8h_source}{}\label{vk__types_8h_source}\index{src/vk\_types.h@{src/vk\_types.h}}
+\mbox{\hyperlink{vk__types_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ vulkan\_guide.h\ :\ Include\ file\ for\ standard\ system\ include\ files,}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ or\ project\ specific\ include\ files.}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <optional>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <span>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <deque>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <vulkan/vulkan.h>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <vulkan/vk\_enum\_string\_helper.h>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <vk\_mem\_alloc.h>}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <fmt/core.h>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <glm/mat4x4.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <glm/vec4.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_vertex}{Vertex}}\ \{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ glm::vec3\ \mbox{\hyperlink{struct_vertex_a030819fdc241743bbd3e180a6b132ed3}{position}};}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_vertex_a3c6b70cc0df673dab20ae012fa7a4ce3}{uv\_x}};}
+\DoxyCodeLine{00027\ \ \ \ \ glm::vec3\ \mbox{\hyperlink{struct_vertex_a3aa35fe84025ecf1acccb5f65f5577fd}{normal}};}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_vertex_a8dfaf04a6d2a62045fee28010aeb92eb}{uv\_y}};}
+\DoxyCodeLine{00029\ \ \ \ \ glm::vec4\ \mbox{\hyperlink{struct_vertex_aa7ecd21578677765699b8831e0011696}{color}};}
+\DoxyCodeLine{00030\ \};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ push\ constants\ for\ our\ mesh\ object\ draws}}
+\DoxyCodeLine{00035\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_g_p_u_draw_push_constants}{GPUDrawPushConstants}}\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ glm::mat4\ \mbox{\hyperlink{struct_g_p_u_draw_push_constants_ac7769ead4f8c948c6a727ec202a6a625}{worldMatrix}};}
+\DoxyCodeLine{00037\ \ \ \ \ VkDeviceAddress\ \mbox{\hyperlink{struct_g_p_u_draw_push_constants_a3d87824455c363095cd2bed7ebcb7f95}{vertexBuffer}};}
+\DoxyCodeLine{00038\ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_allocated_buffer}{AllocatedBuffer}}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ VkBuffer\ \mbox{\hyperlink{struct_allocated_buffer_afd80ecc9bf0b9e9fbe2cd70c81def540}{buffer}};}
+\DoxyCodeLine{00043\ \ \ \ \ VmaAllocation\ \mbox{\hyperlink{struct_allocated_buffer_aad4979df72f7e827fd80171e42bfb463}{allocation}};}
+\DoxyCodeLine{00044\ \ \ \ \ VmaAllocationInfo\ \mbox{\hyperlink{struct_allocated_buffer_ae8f702ce1eb0772813fdb282bbcf5083}{info}};}
+\DoxyCodeLine{00045\ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{comment}{//\ holds\ the\ resources\ needed\ for\ a\ mesh}}
+\DoxyCodeLine{00048\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_g_p_u_mesh_buffers}{GPUMeshBuffers}}\ \{}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \mbox{\hyperlink{struct_allocated_buffer}{AllocatedBuffer}}\ \mbox{\hyperlink{struct_g_p_u_mesh_buffers_a36072bc102efd91d9cb0a2e2a91fb731}{indexBuffer}};}
+\DoxyCodeLine{00051\ \ \ \ \ \mbox{\hyperlink{struct_allocated_buffer}{AllocatedBuffer}}\ \mbox{\hyperlink{struct_g_p_u_mesh_buffers_a1492235568eb70ea34448e73fe799334}{vertexBuffer}};}
+\DoxyCodeLine{00052\ \ \ \ \ VkDeviceAddress\ \mbox{\hyperlink{struct_g_p_u_mesh_buffers_a07320f9b017b3298c541cecad2ca9756}{vertexBufferAddress}};}
+\DoxyCodeLine{00053\ \};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_allocated_image}{AllocatedImage}}\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ VkImage\ \mbox{\hyperlink{struct_allocated_image_a13e4a58bd70b09a3743df9effc0dc9f6}{image}};}
+\DoxyCodeLine{00058\ \ \ \ \ VkImageView\ \mbox{\hyperlink{struct_allocated_image_ad124234921b26ec7e9b0cc5f603d5726}{imageView}};}
+\DoxyCodeLine{00059\ \ \ \ \ VmaAllocation\ \mbox{\hyperlink{struct_allocated_image_a6374bbe549aabc16f21c58b717329028}{allocation}};}
+\DoxyCodeLine{00060\ \ \ \ \ VkExtent3D\ \mbox{\hyperlink{struct_allocated_image_a3c0016e1c5c44bb21f336486da7c9d66}{imageExtent}};}
+\DoxyCodeLine{00061\ \ \ \ \ VkFormat\ \mbox{\hyperlink{struct_allocated_image_ae4ccf662c664f3b9bdafa7459b746d8b}{imageFormat}};}
+\DoxyCodeLine{00062\ \};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#define\ VK\_CHECK(x)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ VkResult\ err\ =\ x;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (err)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ fmt::println("{}Detected\ Vulkan\ error:\ \{\}"{},\ string\_VkResult(err));\ \(\backslash\)}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ abort();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+
+\end{DoxyCode}

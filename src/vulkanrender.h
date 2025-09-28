@@ -82,6 +82,70 @@ typedef struct {
     std::vector<std::optional<VulkanBuffer>> buffers;
 } VulkanContext;
 
+/**
+ *****************************************************************************************************
+ * Pipeline description structures *******************************************************************
+ *****************************************************************************************************
+ */
+
+typedef enum {
+    VULKAN_FORMAT_R32G32_SFLOAT = VK_FORMAT_R32G32_SFLOAT,
+    VULKAN_FORMAT_R32G32B32_SFLOAT = VK_FORMAT_R32G32B32_SFLOAT,
+    VULKAN_FORMAT_R32G32B32A32_SFLOAT = VK_FORMAT_R32G32B32A32_SFLOAT
+} VulkanFormat;
+
+typedef enum {
+    VULKAN_RATE_PER_VERTEX = VK_VERTEX_INPUT_RATE_VERTEX,
+    VULKAN_RATE_PER_INSTANCE = VK_VERTEX_INPUT_RATE_INSTANCE
+} VertexRate;
+
+typedef struct {
+    uint32_t location;
+    VulkanFormat format;
+    uint32_t offset;
+    VertexRate rate; // dispatch rate per vertex or per instance
+} VertexInputEntry;
+
+typedef enum {
+    VULKAN_STAGE_NONE = 0,
+    VULKAN_STAGE_VERTEX = VK_SHADER_STAGE_VERTEX_BIT,
+    VULKAN_STAGE_FRAGMENT = VK_SHADER_STAGE_FRAGMENT_BIT
+} VulkanStage;
+
+typedef struct {
+    uint32_t offset;
+    uint32_t size;
+    std::vector<VulkanStage> stages;
+} VulkanPushConstantEntry;
+
+typedef enum {
+    VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+} VulkanDescriptorSetType;
+
+typedef struct {
+    uint32_t binding;
+    VulkanDescriptorSetType type;
+    uint32_t count;
+    std::vector<VulkanStage> stages;
+} VulkanDescriptorSetEntryBinding;
+
+typedef struct {
+    uint32_t set;
+    std::vector<VulkanDescriptorSetEntryBinding> bindings;
+} VulkanDescriptorSetEntry;
+
+typedef struct {
+    uint32_t perVertexStride;
+	uint32_t perInstanceStride;
+    std::vector<VertexInputEntry> vertexInputs;
+    std::vector<VulkanPushConstantEntry> pushConstants;
+    std::vector<VulkanDescriptorSetEntry> descriptorSets;
+} PipelineDescription;
+
+/**
+ *****************************************************************************************************
+ */
+
 void VulkanInit(VulkanContext* vkContext, std::function<VkSurfaceKHR(VulkanContext* vkContext)> createSurface);
 void VulkanShutdown(VulkanContext* vkContext);
 void VulkanDraw(VulkanContext* vkContext);
@@ -125,3 +189,8 @@ void VulkanCreateDescriptorSetLayoutBinding(
     VkShaderStageFlags stageFlags);
 
 void VulkanUpdateVertexBuffer(VulkanContext* vkContext, int32_t bufferId, const void* vertexData, VkDeviceSize size);
+
+int32_t VulkanSetupPipeline(VulkanContext* vkContext, const char* shaderBasename, PipelineDescription* pipelineDesc);
+void PrintPipelineDescription(const PipelineDescription& pd);
+std::vector<VulkanPushConstantEntry> VulkanProducePushConstants(const std::string& vert_spv, const std::string& frag_spv);
+std::vector<VulkanDescriptorSetEntry> VulkanProduceDescriptorSet(const std::string& vert_spv, const std::string& frag_spv);

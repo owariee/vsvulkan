@@ -1,0 +1,56 @@
+\doxysection{src/vk\+\_\+engine.cpp File Reference}
+\hypertarget{vk__engine_8cpp}{}\label{vk__engine_8cpp}\index{src/vk\_engine.cpp@{src/vk\_engine.cpp}}
+{\ttfamily \#include "{}vk\+\_\+engine.\+h"{}}\newline
+{\ttfamily \#include $<$SDL.\+h$>$}\newline
+{\ttfamily \#include $<$SDL\+\_\+vulkan.\+h$>$}\newline
+{\ttfamily \#include $<$vk\+\_\+initializers.\+h$>$}\newline
+{\ttfamily \#include $<$vk\+\_\+types.\+h$>$}\newline
+{\ttfamily \#include "{}Vk\+Bootstrap.\+h"{}}\newline
+{\ttfamily \#include "{}vk\+\_\+images.\+h"{}}\newline
+{\ttfamily \#include $<$chrono$>$}\newline
+{\ttfamily \#include $<$thread$>$}\newline
+{\ttfamily \#include "{}vk\+\_\+mem\+\_\+alloc.\+h"{}}\newline
+{\ttfamily \#include "{}imgui.\+h"{}}\newline
+{\ttfamily \#include "{}imgui\+\_\+impl\+\_\+sdl2.\+h"{}}\newline
+{\ttfamily \#include "{}imgui\+\_\+impl\+\_\+vulkan.\+h"{}}\newline
+{\ttfamily \#include $<$glm/gtx/transform.\+hpp$>$}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{vk__engine_8cpp_abea80547807da765ebe9fce1c6dd6a8d}{VMA\+\_\+\+IMPLEMENTATION}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_vulkan_engine}{Vulkan\+Engine}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{vk__engine_8cpp_a3180bc6bf9f297afa593d69886a475fb}{loaded\+Engine}} = nullptr
+\item 
+constexpr bool \mbox{\hyperlink{vk__engine_8cpp_a0f2bcd236403cd740db7ed89ec4e392f}{b\+Use\+Validation\+Layers}} = false
+\end{DoxyCompactItemize}
+
+
+\label{doc-define-members}
+\Hypertarget{vk__engine_8cpp_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{vk__engine_8cpp_abea80547807da765ebe9fce1c6dd6a8d}\index{vk\_engine.cpp@{vk\_engine.cpp}!VMA\_IMPLEMENTATION@{VMA\_IMPLEMENTATION}}
+\index{VMA\_IMPLEMENTATION@{VMA\_IMPLEMENTATION}!vk\_engine.cpp@{vk\_engine.cpp}}
+\doxysubsubsection{\texorpdfstring{VMA\_IMPLEMENTATION}{VMA\_IMPLEMENTATION}}
+{\footnotesize\ttfamily \label{vk__engine_8cpp_abea80547807da765ebe9fce1c6dd6a8d} 
+\#define VMA\+\_\+\+IMPLEMENTATION}
+
+
+
+\label{doc-var-members}
+\Hypertarget{vk__engine_8cpp_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{vk__engine_8cpp_a0f2bcd236403cd740db7ed89ec4e392f}\index{vk\_engine.cpp@{vk\_engine.cpp}!bUseValidationLayers@{bUseValidationLayers}}
+\index{bUseValidationLayers@{bUseValidationLayers}!vk\_engine.cpp@{vk\_engine.cpp}}
+\doxysubsubsection{\texorpdfstring{bUseValidationLayers}{bUseValidationLayers}}
+{\footnotesize\ttfamily \label{vk__engine_8cpp_a0f2bcd236403cd740db7ed89ec4e392f} 
+bool b\+Use\+Validation\+Layers = false\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+\Hypertarget{vk__engine_8cpp_a3180bc6bf9f297afa593d69886a475fb}\index{vk\_engine.cpp@{vk\_engine.cpp}!loadedEngine@{loadedEngine}}
+\index{loadedEngine@{loadedEngine}!vk\_engine.cpp@{vk\_engine.cpp}}
+\doxysubsubsection{\texorpdfstring{loadedEngine}{loadedEngine}}
+{\footnotesize\ttfamily \label{vk__engine_8cpp_a3180bc6bf9f297afa593d69886a475fb} 
+\mbox{\hyperlink{class_vulkan_engine}{Vulkan\+Engine}}\texorpdfstring{$\ast$}{*} loaded\+Engine = nullptr}
+

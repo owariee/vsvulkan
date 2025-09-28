@@ -1,0 +1,38 @@
+\doxysection{src/imguiloader.cpp File Reference}
+\hypertarget{imguiloader_8cpp}{}\label{imguiloader_8cpp}\index{src/imguiloader.cpp@{src/imguiloader.cpp}}
+{\ttfamily \#include "{}imguiloader.\+h"{}}\newline
+{\ttfamily \#include "{}imgui.\+h"{}}\newline
+{\ttfamily \#include "{}imgui\+\_\+impl\+\_\+sdl2.\+h"{}}\newline
+{\ttfamily \#include "{}imgui\+\_\+impl\+\_\+vulkan.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Vk\+Descriptor\+Pool \mbox{\hyperlink{imguiloader_8cpp_a9c6941213c194abc14df9e18ff9a93bb}{Im\+Gui\+SDLVulkan\+Startup}} (SDL\+\_\+\+Window \texorpdfstring{$\ast$}{*}window, \mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context)
+\item 
+void \mbox{\hyperlink{imguiloader_8cpp_a96faf07feb853456dcc6140937aa1dac}{Im\+Gui\+SDLVulkan\+Draw}} (std\+::function$<$ void(void)$>$ imgui\+Windows\+Lambda)
+\item 
+void \mbox{\hyperlink{imguiloader_8cpp_a4966d72505fcfbd4a12ba8a073719d2a}{Im\+Gui\+SDLVulkan\+Shutdown}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context, Vk\+Descriptor\+Pool imgui\+Pool)
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{imguiloader_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{imguiloader_8cpp_a96faf07feb853456dcc6140937aa1dac}\index{imguiloader.cpp@{imguiloader.cpp}!ImGuiSDLVulkanDraw@{ImGuiSDLVulkanDraw}}
+\index{ImGuiSDLVulkanDraw@{ImGuiSDLVulkanDraw}!imguiloader.cpp@{imguiloader.cpp}}
+\doxysubsubsection{\texorpdfstring{ImGuiSDLVulkanDraw()}{ImGuiSDLVulkanDraw()}}
+{\footnotesize\ttfamily \label{imguiloader_8cpp_a96faf07feb853456dcc6140937aa1dac} 
+void Im\+Gui\+SDLVulkan\+Draw (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(void)$>$}]{imgui\+Windows\+Lambda}{}\end{DoxyParamCaption})}
+
+\Hypertarget{imguiloader_8cpp_a4966d72505fcfbd4a12ba8a073719d2a}\index{imguiloader.cpp@{imguiloader.cpp}!ImGuiSDLVulkanShutdown@{ImGuiSDLVulkanShutdown}}
+\index{ImGuiSDLVulkanShutdown@{ImGuiSDLVulkanShutdown}!imguiloader.cpp@{imguiloader.cpp}}
+\doxysubsubsection{\texorpdfstring{ImGuiSDLVulkanShutdown()}{ImGuiSDLVulkanShutdown()}}
+{\footnotesize\ttfamily \label{imguiloader_8cpp_a4966d72505fcfbd4a12ba8a073719d2a} 
+void Im\+Gui\+SDLVulkan\+Shutdown (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}}]{vk\+Context}{, }\item[{Vk\+Descriptor\+Pool}]{imgui\+Pool}{}\end{DoxyParamCaption})}
+
+\Hypertarget{imguiloader_8cpp_a9c6941213c194abc14df9e18ff9a93bb}\index{imguiloader.cpp@{imguiloader.cpp}!ImGuiSDLVulkanStartup@{ImGuiSDLVulkanStartup}}
+\index{ImGuiSDLVulkanStartup@{ImGuiSDLVulkanStartup}!imguiloader.cpp@{imguiloader.cpp}}
+\doxysubsubsection{\texorpdfstring{ImGuiSDLVulkanStartup()}{ImGuiSDLVulkanStartup()}}
+{\footnotesize\ttfamily \label{imguiloader_8cpp_a9c6941213c194abc14df9e18ff9a93bb} 
+Vk\+Descriptor\+Pool Im\+Gui\+SDLVulkan\+Startup (\begin{DoxyParamCaption}\item[{SDL\+\_\+\+Window \texorpdfstring{$\ast$}{*}}]{window}{, }\item[{\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}}]{vk\+Context}{}\end{DoxyParamCaption})}
+

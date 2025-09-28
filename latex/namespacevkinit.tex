@@ -1,0 +1,186 @@
+\doxysection{vkinit Namespace Reference}
+\hypertarget{namespacevkinit}{}\label{namespacevkinit}\index{vkinit@{vkinit}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Vk\+Command\+Pool\+Create\+Info \mbox{\hyperlink{namespacevkinit_a2dc4390430bfe97d405c4740fd1b63ba}{command\+\_\+pool\+\_\+create\+\_\+info}} (uint32\+\_\+t queue\+Family\+Index, Vk\+Command\+Pool\+Create\+Flags flags=0)
+\item 
+Vk\+Command\+Buffer\+Allocate\+Info \mbox{\hyperlink{namespacevkinit_ad57b01b70b47cee3f7810d51827b22be}{command\+\_\+buffer\+\_\+allocate\+\_\+info}} (Vk\+Command\+Pool pool, uint32\+\_\+t count=1)
+\item 
+Vk\+Command\+Buffer\+Begin\+Info \mbox{\hyperlink{namespacevkinit_a2841d73272c0d6d5e5abac26226ba604}{command\+\_\+buffer\+\_\+begin\+\_\+info}} (Vk\+Command\+Buffer\+Usage\+Flags flags=0)
+\item 
+Vk\+Command\+Buffer\+Submit\+Info \mbox{\hyperlink{namespacevkinit_af4eb2a0396d8dac30e46b08543ec10cb}{command\+\_\+buffer\+\_\+submit\+\_\+info}} (Vk\+Command\+Buffer cmd)
+\item 
+Vk\+Fence\+Create\+Info \mbox{\hyperlink{namespacevkinit_aedb03e454895356a96035eba26fc0534}{fence\+\_\+create\+\_\+info}} (Vk\+Fence\+Create\+Flags flags=0)
+\item 
+Vk\+Semaphore\+Create\+Info \mbox{\hyperlink{namespacevkinit_a87bdf69780bb8337529ff7d447f1cc03}{semaphore\+\_\+create\+\_\+info}} (Vk\+Semaphore\+Create\+Flags flags=0)
+\item 
+Vk\+Submit\+Info2 \mbox{\hyperlink{namespacevkinit_a20d1a3398636ba2092c56519a0bd09f9}{submit\+\_\+info}} (Vk\+Command\+Buffer\+Submit\+Info \texorpdfstring{$\ast$}{*}cmd, Vk\+Semaphore\+Submit\+Info \texorpdfstring{$\ast$}{*}signal\+Semaphore\+Info, Vk\+Semaphore\+Submit\+Info \texorpdfstring{$\ast$}{*}wait\+Semaphore\+Info)
+\item 
+Vk\+Present\+Info\+KHR \mbox{\hyperlink{namespacevkinit_a41694793a95a95826ff7af1a9b617d19}{present\+\_\+info}} ()
+\item 
+Vk\+Rendering\+Attachment\+Info \mbox{\hyperlink{namespacevkinit_a2e61ce21ec4215b93e9fe14f0da38e30}{attachment\+\_\+info}} (Vk\+Image\+View view, Vk\+Clear\+Value \texorpdfstring{$\ast$}{*}clear, Vk\+Image\+Layout layout)
+\item 
+Vk\+Rendering\+Attachment\+Info \mbox{\hyperlink{namespacevkinit_a8b8d99350113fafdad391aec6bea9898}{depth\+\_\+attachment\+\_\+info}} (Vk\+Image\+View view, Vk\+Image\+Layout layout)
+\item 
+Vk\+Rendering\+Info \mbox{\hyperlink{namespacevkinit_a1ffa52d3652b5152aa09d3da9bd58ce3}{rendering\+\_\+info}} (Vk\+Extent2D render\+Extent, Vk\+Rendering\+Attachment\+Info \texorpdfstring{$\ast$}{*}color\+Attachment, Vk\+Rendering\+Attachment\+Info \texorpdfstring{$\ast$}{*}depth\+Attachment)
+\item 
+Vk\+Image\+Subresource\+Range \mbox{\hyperlink{namespacevkinit_ae8fc3b7262d0a609341a1f0a97929199}{image\+\_\+subresource\+\_\+range}} (Vk\+Image\+Aspect\+Flags aspect\+Mask)
+\item 
+Vk\+Semaphore\+Submit\+Info \mbox{\hyperlink{namespacevkinit_a304e0fcbb9945735691acf748cb545cb}{semaphore\+\_\+submit\+\_\+info}} (Vk\+Pipeline\+Stage\+Flags2 stage\+Mask, Vk\+Semaphore semaphore)
+\item 
+Vk\+Descriptor\+Set\+Layout\+Binding \mbox{\hyperlink{namespacevkinit_a50ec61ce2859e847e2940c55a9dc8192}{descriptorset\+\_\+layout\+\_\+binding}} (Vk\+Descriptor\+Type type, Vk\+Shader\+Stage\+Flags stage\+Flags, uint32\+\_\+t binding)
+\item 
+Vk\+Descriptor\+Set\+Layout\+Create\+Info \mbox{\hyperlink{namespacevkinit_a3bc73727fa83f7aec46556f776b2d79b}{descriptorset\+\_\+layout\+\_\+create\+\_\+info}} (Vk\+Descriptor\+Set\+Layout\+Binding \texorpdfstring{$\ast$}{*}bindings, uint32\+\_\+t binding\+Count)
+\item 
+Vk\+Write\+Descriptor\+Set \mbox{\hyperlink{namespacevkinit_a43b2d9be58a8f99abc1447e4fd774d30}{write\+\_\+descriptor\+\_\+image}} (Vk\+Descriptor\+Type type, Vk\+Descriptor\+Set dst\+Set, Vk\+Descriptor\+Image\+Info \texorpdfstring{$\ast$}{*}image\+Info, uint32\+\_\+t binding)
+\item 
+Vk\+Write\+Descriptor\+Set \mbox{\hyperlink{namespacevkinit_a7915ae752fde86d7b4e0b8f8665b4267}{write\+\_\+descriptor\+\_\+buffer}} (Vk\+Descriptor\+Type type, Vk\+Descriptor\+Set dst\+Set, Vk\+Descriptor\+Buffer\+Info \texorpdfstring{$\ast$}{*}buffer\+Info, uint32\+\_\+t binding)
+\item 
+Vk\+Descriptor\+Buffer\+Info \mbox{\hyperlink{namespacevkinit_a01989b96e324b611b62e9f7e9b7f72b1}{buffer\+\_\+info}} (Vk\+Buffer buffer, Vk\+Device\+Size offset, Vk\+Device\+Size range)
+\item 
+Vk\+Image\+Create\+Info \mbox{\hyperlink{namespacevkinit_a55069c4f274743b93c3eee0861028213}{image\+\_\+create\+\_\+info}} (Vk\+Format format, Vk\+Image\+Usage\+Flags usage\+Flags, Vk\+Extent3D extent)
+\item 
+Vk\+Image\+View\+Create\+Info \mbox{\hyperlink{namespacevkinit_a0fac723ba0a10d94bdebda62e2b17573}{imageview\+\_\+create\+\_\+info}} (Vk\+Format format, Vk\+Image image, Vk\+Image\+Aspect\+Flags aspect\+Flags)
+\item 
+Vk\+Pipeline\+Layout\+Create\+Info \mbox{\hyperlink{namespacevkinit_ad4ce88b34394aa084c9cb57a937e6399}{pipeline\+\_\+layout\+\_\+create\+\_\+info}} ()
+\item 
+Vk\+Pipeline\+Shader\+Stage\+Create\+Info \mbox{\hyperlink{namespacevkinit_ae512e4a82b3dc0064eaf34164154da27}{pipeline\+\_\+shader\+\_\+stage\+\_\+create\+\_\+info}} (Vk\+Shader\+Stage\+Flag\+Bits stage, Vk\+Shader\+Module shader\+Module, const char \texorpdfstring{$\ast$}{*}entry="{}main"{})
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{namespacevkinit_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacevkinit_a2e61ce21ec4215b93e9fe14f0da38e30}\index{vkinit@{vkinit}!attachment\_info@{attachment\_info}}
+\index{attachment\_info@{attachment\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{attachment\_info()}{attachment\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a2e61ce21ec4215b93e9fe14f0da38e30} 
+Vk\+Rendering\+Attachment\+Info vkinit\+::attachment\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Image\+View}]{view}{, }\item[{Vk\+Clear\+Value \texorpdfstring{$\ast$}{*}}]{clear}{, }\item[{Vk\+Image\+Layout}]{layout}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a01989b96e324b611b62e9f7e9b7f72b1}\index{vkinit@{vkinit}!buffer\_info@{buffer\_info}}
+\index{buffer\_info@{buffer\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{buffer\_info()}{buffer\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a01989b96e324b611b62e9f7e9b7f72b1} 
+Vk\+Descriptor\+Buffer\+Info vkinit\+::buffer\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Buffer}]{buffer}{, }\item[{Vk\+Device\+Size}]{offset}{, }\item[{Vk\+Device\+Size}]{range}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_ad57b01b70b47cee3f7810d51827b22be}\index{vkinit@{vkinit}!command\_buffer\_allocate\_info@{command\_buffer\_allocate\_info}}
+\index{command\_buffer\_allocate\_info@{command\_buffer\_allocate\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{command\_buffer\_allocate\_info()}{command\_buffer\_allocate\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_ad57b01b70b47cee3f7810d51827b22be} 
+Vk\+Command\+Buffer\+Allocate\+Info vkinit\+::command\+\_\+buffer\+\_\+allocate\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Command\+Pool}]{pool}{, }\item[{uint32\+\_\+t}]{count}{ = {\ttfamily 1}}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a2841d73272c0d6d5e5abac26226ba604}\index{vkinit@{vkinit}!command\_buffer\_begin\_info@{command\_buffer\_begin\_info}}
+\index{command\_buffer\_begin\_info@{command\_buffer\_begin\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{command\_buffer\_begin\_info()}{command\_buffer\_begin\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a2841d73272c0d6d5e5abac26226ba604} 
+Vk\+Command\+Buffer\+Begin\+Info vkinit\+::command\+\_\+buffer\+\_\+begin\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Command\+Buffer\+Usage\+Flags}]{flags}{ = {\ttfamily 0}}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_af4eb2a0396d8dac30e46b08543ec10cb}\index{vkinit@{vkinit}!command\_buffer\_submit\_info@{command\_buffer\_submit\_info}}
+\index{command\_buffer\_submit\_info@{command\_buffer\_submit\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{command\_buffer\_submit\_info()}{command\_buffer\_submit\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_af4eb2a0396d8dac30e46b08543ec10cb} 
+Vk\+Command\+Buffer\+Submit\+Info vkinit\+::command\+\_\+buffer\+\_\+submit\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Command\+Buffer}]{cmd}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a2dc4390430bfe97d405c4740fd1b63ba}\index{vkinit@{vkinit}!command\_pool\_create\_info@{command\_pool\_create\_info}}
+\index{command\_pool\_create\_info@{command\_pool\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{command\_pool\_create\_info()}{command\_pool\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a2dc4390430bfe97d405c4740fd1b63ba} 
+Vk\+Command\+Pool\+Create\+Info vkinit\+::command\+\_\+pool\+\_\+create\+\_\+info (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{queue\+Family\+Index}{, }\item[{Vk\+Command\+Pool\+Create\+Flags}]{flags}{ = {\ttfamily 0}}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a8b8d99350113fafdad391aec6bea9898}\index{vkinit@{vkinit}!depth\_attachment\_info@{depth\_attachment\_info}}
+\index{depth\_attachment\_info@{depth\_attachment\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{depth\_attachment\_info()}{depth\_attachment\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a8b8d99350113fafdad391aec6bea9898} 
+Vk\+Rendering\+Attachment\+Info vkinit\+::depth\+\_\+attachment\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Image\+View}]{view}{, }\item[{Vk\+Image\+Layout}]{layout}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a50ec61ce2859e847e2940c55a9dc8192}\index{vkinit@{vkinit}!descriptorset\_layout\_binding@{descriptorset\_layout\_binding}}
+\index{descriptorset\_layout\_binding@{descriptorset\_layout\_binding}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{descriptorset\_layout\_binding()}{descriptorset\_layout\_binding()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a50ec61ce2859e847e2940c55a9dc8192} 
+Vk\+Descriptor\+Set\+Layout\+Binding vkinit\+::descriptorset\+\_\+layout\+\_\+binding (\begin{DoxyParamCaption}\item[{Vk\+Descriptor\+Type}]{type}{, }\item[{Vk\+Shader\+Stage\+Flags}]{stage\+Flags}{, }\item[{uint32\+\_\+t}]{binding}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a3bc73727fa83f7aec46556f776b2d79b}\index{vkinit@{vkinit}!descriptorset\_layout\_create\_info@{descriptorset\_layout\_create\_info}}
+\index{descriptorset\_layout\_create\_info@{descriptorset\_layout\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{descriptorset\_layout\_create\_info()}{descriptorset\_layout\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a3bc73727fa83f7aec46556f776b2d79b} 
+Vk\+Descriptor\+Set\+Layout\+Create\+Info vkinit\+::descriptorset\+\_\+layout\+\_\+create\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Descriptor\+Set\+Layout\+Binding \texorpdfstring{$\ast$}{*}}]{bindings}{, }\item[{uint32\+\_\+t}]{binding\+Count}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_aedb03e454895356a96035eba26fc0534}\index{vkinit@{vkinit}!fence\_create\_info@{fence\_create\_info}}
+\index{fence\_create\_info@{fence\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{fence\_create\_info()}{fence\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_aedb03e454895356a96035eba26fc0534} 
+Vk\+Fence\+Create\+Info vkinit\+::fence\+\_\+create\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Fence\+Create\+Flags}]{flags}{ = {\ttfamily 0}}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a55069c4f274743b93c3eee0861028213}\index{vkinit@{vkinit}!image\_create\_info@{image\_create\_info}}
+\index{image\_create\_info@{image\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{image\_create\_info()}{image\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a55069c4f274743b93c3eee0861028213} 
+Vk\+Image\+Create\+Info vkinit\+::image\+\_\+create\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Format}]{format}{, }\item[{Vk\+Image\+Usage\+Flags}]{usage\+Flags}{, }\item[{Vk\+Extent3D}]{extent}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_ae8fc3b7262d0a609341a1f0a97929199}\index{vkinit@{vkinit}!image\_subresource\_range@{image\_subresource\_range}}
+\index{image\_subresource\_range@{image\_subresource\_range}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{image\_subresource\_range()}{image\_subresource\_range()}}
+{\footnotesize\ttfamily \label{namespacevkinit_ae8fc3b7262d0a609341a1f0a97929199} 
+Vk\+Image\+Subresource\+Range vkinit\+::image\+\_\+subresource\+\_\+range (\begin{DoxyParamCaption}\item[{Vk\+Image\+Aspect\+Flags}]{aspect\+Mask}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a0fac723ba0a10d94bdebda62e2b17573}\index{vkinit@{vkinit}!imageview\_create\_info@{imageview\_create\_info}}
+\index{imageview\_create\_info@{imageview\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{imageview\_create\_info()}{imageview\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a0fac723ba0a10d94bdebda62e2b17573} 
+Vk\+Image\+View\+Create\+Info vkinit\+::imageview\+\_\+create\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Format}]{format}{, }\item[{Vk\+Image}]{image}{, }\item[{Vk\+Image\+Aspect\+Flags}]{aspect\+Flags}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_ad4ce88b34394aa084c9cb57a937e6399}\index{vkinit@{vkinit}!pipeline\_layout\_create\_info@{pipeline\_layout\_create\_info}}
+\index{pipeline\_layout\_create\_info@{pipeline\_layout\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{pipeline\_layout\_create\_info()}{pipeline\_layout\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_ad4ce88b34394aa084c9cb57a937e6399} 
+Vk\+Pipeline\+Layout\+Create\+Info vkinit\+::pipeline\+\_\+layout\+\_\+create\+\_\+info (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_ae512e4a82b3dc0064eaf34164154da27}\index{vkinit@{vkinit}!pipeline\_shader\_stage\_create\_info@{pipeline\_shader\_stage\_create\_info}}
+\index{pipeline\_shader\_stage\_create\_info@{pipeline\_shader\_stage\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{pipeline\_shader\_stage\_create\_info()}{pipeline\_shader\_stage\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_ae512e4a82b3dc0064eaf34164154da27} 
+Vk\+Pipeline\+Shader\+Stage\+Create\+Info vkinit\+::pipeline\+\_\+shader\+\_\+stage\+\_\+create\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Shader\+Stage\+Flag\+Bits}]{stage}{, }\item[{Vk\+Shader\+Module}]{shader\+Module}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{entry}{ = {\ttfamily "{}main"{}}}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a41694793a95a95826ff7af1a9b617d19}\index{vkinit@{vkinit}!present\_info@{present\_info}}
+\index{present\_info@{present\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{present\_info()}{present\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a41694793a95a95826ff7af1a9b617d19} 
+Vk\+Present\+Info\+KHR vkinit\+::present\+\_\+info (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a1ffa52d3652b5152aa09d3da9bd58ce3}\index{vkinit@{vkinit}!rendering\_info@{rendering\_info}}
+\index{rendering\_info@{rendering\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{rendering\_info()}{rendering\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a1ffa52d3652b5152aa09d3da9bd58ce3} 
+Vk\+Rendering\+Info vkinit\+::rendering\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Extent2D}]{render\+Extent}{, }\item[{Vk\+Rendering\+Attachment\+Info \texorpdfstring{$\ast$}{*}}]{color\+Attachment}{, }\item[{Vk\+Rendering\+Attachment\+Info \texorpdfstring{$\ast$}{*}}]{depth\+Attachment}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a87bdf69780bb8337529ff7d447f1cc03}\index{vkinit@{vkinit}!semaphore\_create\_info@{semaphore\_create\_info}}
+\index{semaphore\_create\_info@{semaphore\_create\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{semaphore\_create\_info()}{semaphore\_create\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a87bdf69780bb8337529ff7d447f1cc03} 
+Vk\+Semaphore\+Create\+Info vkinit\+::semaphore\+\_\+create\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Semaphore\+Create\+Flags}]{flags}{ = {\ttfamily 0}}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a304e0fcbb9945735691acf748cb545cb}\index{vkinit@{vkinit}!semaphore\_submit\_info@{semaphore\_submit\_info}}
+\index{semaphore\_submit\_info@{semaphore\_submit\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{semaphore\_submit\_info()}{semaphore\_submit\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a304e0fcbb9945735691acf748cb545cb} 
+Vk\+Semaphore\+Submit\+Info vkinit\+::semaphore\+\_\+submit\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Pipeline\+Stage\+Flags2}]{stage\+Mask}{, }\item[{Vk\+Semaphore}]{semaphore}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a20d1a3398636ba2092c56519a0bd09f9}\index{vkinit@{vkinit}!submit\_info@{submit\_info}}
+\index{submit\_info@{submit\_info}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{submit\_info()}{submit\_info()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a20d1a3398636ba2092c56519a0bd09f9} 
+Vk\+Submit\+Info2 vkinit\+::submit\+\_\+info (\begin{DoxyParamCaption}\item[{Vk\+Command\+Buffer\+Submit\+Info \texorpdfstring{$\ast$}{*}}]{cmd}{, }\item[{Vk\+Semaphore\+Submit\+Info \texorpdfstring{$\ast$}{*}}]{signal\+Semaphore\+Info}{, }\item[{Vk\+Semaphore\+Submit\+Info \texorpdfstring{$\ast$}{*}}]{wait\+Semaphore\+Info}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a7915ae752fde86d7b4e0b8f8665b4267}\index{vkinit@{vkinit}!write\_descriptor\_buffer@{write\_descriptor\_buffer}}
+\index{write\_descriptor\_buffer@{write\_descriptor\_buffer}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{write\_descriptor\_buffer()}{write\_descriptor\_buffer()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a7915ae752fde86d7b4e0b8f8665b4267} 
+Vk\+Write\+Descriptor\+Set vkinit\+::write\+\_\+descriptor\+\_\+buffer (\begin{DoxyParamCaption}\item[{Vk\+Descriptor\+Type}]{type}{, }\item[{Vk\+Descriptor\+Set}]{dst\+Set}{, }\item[{Vk\+Descriptor\+Buffer\+Info \texorpdfstring{$\ast$}{*}}]{buffer\+Info}{, }\item[{uint32\+\_\+t}]{binding}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacevkinit_a43b2d9be58a8f99abc1447e4fd774d30}\index{vkinit@{vkinit}!write\_descriptor\_image@{write\_descriptor\_image}}
+\index{write\_descriptor\_image@{write\_descriptor\_image}!vkinit@{vkinit}}
+\doxysubsubsection{\texorpdfstring{write\_descriptor\_image()}{write\_descriptor\_image()}}
+{\footnotesize\ttfamily \label{namespacevkinit_a43b2d9be58a8f99abc1447e4fd774d30} 
+Vk\+Write\+Descriptor\+Set vkinit\+::write\+\_\+descriptor\+\_\+image (\begin{DoxyParamCaption}\item[{Vk\+Descriptor\+Type}]{type}{, }\item[{Vk\+Descriptor\+Set}]{dst\+Set}{, }\item[{Vk\+Descriptor\+Image\+Info \texorpdfstring{$\ast$}{*}}]{image\+Info}{, }\item[{uint32\+\_\+t}]{binding}{}\end{DoxyParamCaption})}
+

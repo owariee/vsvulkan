@@ -50,3 +50,7 @@ target_sources(imgui PRIVATE
 target_link_libraries(imgui PUBLIC Vulkan::Vulkan SDL2::SDL2)
 
 target_include_directories(stb_image INTERFACE stb_image)
+
+add_library(spirv_reflect STATIC SPIRV-Reflect/spirv_reflect.c)
+target_include_directories(spirv_reflect PUBLIC SPIRV-Reflect)
+#target_link_libraries(spirv_reflect PUBLIC Vulkan::Vulkan)

@@ -1,0 +1,51 @@
+\doxysection{Deletion\+Queue Struct Reference}
+\hypertarget{struct_deletion_queue}{}\label{struct_deletion_queue}\index{DeletionQueue@{DeletionQueue}}
+
+
+{\ttfamily \#include $<$vk\+\_\+engine.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{struct_deletion_queue_a0295d7e726c90e226e46bf5ec26d5214}{push\+\_\+function}} (std\+::function$<$ void()$>$ \&\&function)
+\item 
+void \mbox{\hyperlink{struct_deletion_queue_ad8258e84b869dbf3800178a61cc51cb3}{flush}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::deque$<$ std\+::function$<$ void()$>$ $>$ \mbox{\hyperlink{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8}{deletors}}
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{struct_deletion_queue_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_deletion_queue_ad8258e84b869dbf3800178a61cc51cb3}\index{DeletionQueue@{DeletionQueue}!flush@{flush}}
+\index{flush@{flush}!DeletionQueue@{DeletionQueue}}
+\doxysubsubsection{\texorpdfstring{flush()}{flush()}}
+{\footnotesize\ttfamily \label{struct_deletion_queue_ad8258e84b869dbf3800178a61cc51cb3} 
+void Deletion\+Queue\+::flush (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{struct_deletion_queue_a0295d7e726c90e226e46bf5ec26d5214}\index{DeletionQueue@{DeletionQueue}!push\_function@{push\_function}}
+\index{push\_function@{push\_function}!DeletionQueue@{DeletionQueue}}
+\doxysubsubsection{\texorpdfstring{push\_function()}{push\_function()}}
+{\footnotesize\ttfamily \label{struct_deletion_queue_a0295d7e726c90e226e46bf5ec26d5214} 
+void Deletion\+Queue\+::push\+\_\+function (\begin{DoxyParamCaption}\item[{std\+::function$<$ void()$>$ \&\&}]{function}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\label{doc-variable-members}
+\Hypertarget{struct_deletion_queue_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8}\index{DeletionQueue@{DeletionQueue}!deletors@{deletors}}
+\index{deletors@{deletors}!DeletionQueue@{DeletionQueue}}
+\doxysubsubsection{\texorpdfstring{deletors}{deletors}}
+{\footnotesize\ttfamily \label{struct_deletion_queue_a2781e3877aacfbbee0294daf2a0d36b8} 
+std\+::deque$<$std\+::function$<$void()$>$ $>$ Deletion\+Queue\+::deletors}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{vk__engine_8h}{vk\+\_\+engine.\+h}}\end{DoxyCompactItemize}

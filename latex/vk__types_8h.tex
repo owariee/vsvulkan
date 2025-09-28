@@ -1,0 +1,56 @@
+\doxysection{src/vk\+\_\+types.h File Reference}
+\hypertarget{vk__types_8h}{}\label{vk__types_8h}\index{src/vk\_types.h@{src/vk\_types.h}}
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include $<$optional$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$span$>$}\newline
+{\ttfamily \#include $<$array$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$deque$>$}\newline
+{\ttfamily \#include $<$vulkan/vulkan.\+h$>$}\newline
+{\ttfamily \#include $<$vulkan/vk\+\_\+enum\+\_\+string\+\_\+helper.\+h$>$}\newline
+{\ttfamily \#include $<$vk\+\_\+mem\+\_\+alloc.\+h$>$}\newline
+{\ttfamily \#include $<$fmt/core.\+h$>$}\newline
+{\ttfamily \#include $<$glm/mat4x4.\+hpp$>$}\newline
+{\ttfamily \#include $<$glm/vec4.\+hpp$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_vertex}{Vertex}}
+\item 
+struct \mbox{\hyperlink{struct_g_p_u_draw_push_constants}{GPUDraw\+Push\+Constants}}
+\item 
+struct \mbox{\hyperlink{struct_allocated_buffer}{Allocated\+Buffer}}
+\item 
+struct \mbox{\hyperlink{struct_g_p_u_mesh_buffers}{GPUMesh\+Buffers}}
+\item 
+struct \mbox{\hyperlink{struct_allocated_image}{Allocated\+Image}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{vk__types_8h_a3d55e176cc77828a9adaa05ac4413b99}{VK\+\_\+\+CHECK}}(x)
+\end{DoxyCompactItemize}
+
+
+\label{doc-define-members}
+\Hypertarget{vk__types_8h_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{vk__types_8h_a3d55e176cc77828a9adaa05ac4413b99}\index{vk\_types.h@{vk\_types.h}!VK\_CHECK@{VK\_CHECK}}
+\index{VK\_CHECK@{VK\_CHECK}!vk\_types.h@{vk\_types.h}}
+\doxysubsubsection{\texorpdfstring{VK\_CHECK}{VK\_CHECK}}
+{\footnotesize\ttfamily \label{vk__types_8h_a3d55e176cc77828a9adaa05ac4413b99} 
+\#define VK\+\_\+\+CHECK(\begin{DoxyParamCaption}\item[{}]{x}{}\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{do}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ VkResult\ err\ =\ x;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ if\ (err)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ fmt::println(\textcolor{stringliteral}{"{}Detected\ Vulkan\ error:\ \{\}"{}},\ string\_VkResult(err));\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ abort();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \textcolor{keywordflow}{while}\ (0)}
+
+\end{DoxyCode}
