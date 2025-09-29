@@ -6,6 +6,11 @@ Vulkan rendering module implementation.
 
 
 {\ttfamily \#include "{}vulkanrender.\+h"{}}\newline
+{\ttfamily \#include $<$spirv\+\_\+reflect.\+h$>$}\newline
+{\ttfamily \#include $<$stdexcept$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
 \doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -77,7 +82,7 @@ static Vk\+Shader\+Module \mbox{\hyperlink{vulkanrender_8cpp_a6f37b506c8713de460
 \begin{DoxyCompactList}\small\item\em Load shader module from file. \end{DoxyCompactList}\item 
 static Vk\+Pipeline\+Shader\+Stage\+Create\+Info \mbox{\hyperlink{vulkanrender_8cpp_a989be972b60eb850d7a2fdc15b97874d}{Vulkan\+Create\+Shader\+Stage}} (Vk\+Device device, const char \texorpdfstring{$\ast$}{*}file\+Path, Vk\+Shader\+Stage\+Flag\+Bits stage, Vk\+Shader\+Module \texorpdfstring{$\ast$}{*}shader\+Module\+Out)
 \begin{DoxyCompactList}\small\item\em Create shader stage. \end{DoxyCompactList}\item 
-int32\+\_\+t \mbox{\hyperlink{vulkanrender_8cpp_a08886d88b9de590bbba4d6b3bf71ef9a}{Vulkan\+Create\+Graphics\+Pipeline}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context, const char \texorpdfstring{$\ast$}{*}shader\+Base\+Name, std\+::function$<$ void(\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description)$>$ vertex\+Input\+Description\+Lambda)
+static int32\+\_\+t \mbox{\hyperlink{vulkanrender_8cpp_ae051a6b921da6602135ec5f8fa1ad829}{Vulkan\+Create\+Graphics\+Pipeline}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context, const char \texorpdfstring{$\ast$}{*}shader\+Base\+Name, std\+::function$<$ void(\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description)$>$ vertex\+Input\+Description\+Lambda)
 \begin{DoxyCompactList}\small\item\em Create pipeline from 2 shaders. \end{DoxyCompactList}\item 
 static void \mbox{\hyperlink{vulkanrender_8cpp_a78483f4a055f19eb908f14b76eb2f3f2}{Vulkan\+Delete\+Pipelines}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context)
 \begin{DoxyCompactList}\small\item\em Delete all available pipelines. \end{DoxyCompactList}\item 
@@ -93,14 +98,40 @@ void \mbox{\hyperlink{vulkanrender_8cpp_a9597f77aab2d4f3b47a4aa36aec497f9}{Vulka
 \begin{DoxyCompactList}\small\item\em Update vertex buffer. \end{DoxyCompactList}\item 
 int32\+\_\+t \mbox{\hyperlink{vulkanrender_8cpp_a4ed7d71d4c4f0869f1680dd5e6e7d7ac}{Create\+Index\+Buffer}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context, const void \texorpdfstring{$\ast$}{*}index\+Data, Vk\+Device\+Size size)
 \begin{DoxyCompactList}\small\item\em Create index buffer. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{vulkanrender_8cpp_a855070ecd52ecca745a2d84fd5a1cf4a}{Vulkan\+Create\+Vertex\+Attribute}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, uint32\+\_\+t binding, uint32\+\_\+t location, Vk\+Format format, uint32\+\_\+t offset)
+static void \mbox{\hyperlink{vulkanrender_8cpp_a507decebf3db6ecaa244968be2119792}{Vulkan\+Create\+Vertex\+Attribute}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, uint32\+\_\+t binding, uint32\+\_\+t location, Vk\+Format format, uint32\+\_\+t offset)
 \begin{DoxyCompactList}\small\item\em Creates an attribute description. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{vulkanrender_8cpp_a1561ed9a525bb7c26ab677b00d290d8d}{Vulkan\+Create\+Vertex\+Binding}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, uint32\+\_\+t binding, uint32\+\_\+t stride, Vk\+Vertex\+Input\+Rate input\+Rate)
+static void \mbox{\hyperlink{vulkanrender_8cpp_a24e1995b2fd71347838ae38f3c6fea84}{Vulkan\+Create\+Vertex\+Binding}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, uint32\+\_\+t binding, uint32\+\_\+t stride, Vk\+Vertex\+Input\+Rate input\+Rate)
 \begin{DoxyCompactList}\small\item\em Creates an binding description. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{vulkanrender_8cpp_ab1721972318e7e714458ba9028f0e6dd}{Vulkan\+Create\+Push\+Constant}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, Vk\+Shader\+Stage\+Flags stage\+Flags, uint32\+\_\+t offset, uint32\+\_\+t size)
+static void \mbox{\hyperlink{vulkanrender_8cpp_a841c18c9a8da1ac6314e17903e94a429}{Vulkan\+Create\+Push\+Constant}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, Vk\+Shader\+Stage\+Flags stage\+Flags, uint32\+\_\+t offset, uint32\+\_\+t size)
 \begin{DoxyCompactList}\small\item\em Creates an push constant. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{vulkanrender_8cpp_a0c34dbe290e893fd9d2a127f6675b1e6}{Vulkan\+Create\+Descriptor\+Set\+Layout\+Binding}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, uint32\+\_\+t binding, Vk\+Descriptor\+Type descriptor\+Type, uint32\+\_\+t descriptor\+Count, Vk\+Shader\+Stage\+Flags stage\+Flags)
+static void \mbox{\hyperlink{vulkanrender_8cpp_a89a24f7144403f8173dbeb63ecef6dd2}{Vulkan\+Create\+Descriptor\+Set\+Layout\+Binding}} (\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description, uint32\+\_\+t binding, Vk\+Descriptor\+Type descriptor\+Type, uint32\+\_\+t descriptor\+Count, Vk\+Shader\+Stage\+Flags stage\+Flags)
 \begin{DoxyCompactList}\small\item\em Creates a descriptor set layout binding. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}} \mbox{\hyperlink{vulkanrender_8cpp_a7d035a70c5fb68440679d0b39cfd6b1d}{To\+Vulkan\+Stage}} (Spv\+Reflect\+Shader\+Stage\+Flag\+Bits stage)
+\begin{DoxyCompactList}\small\item\em Convert SPIR-\/V state into \doxylink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type}} \mbox{\hyperlink{vulkanrender_8cpp_af47736f2aec9ab289d45b80b21be15c4}{To\+Descriptor\+Type}} (Spv\+Reflect\+Descriptor\+Type t)
+\begin{DoxyCompactList}\small\item\em Convert SPIR-\/V state into \doxylink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type}. \end{DoxyCompactList}\item 
+static std\+::vector$<$ uint32\+\_\+t $>$ \mbox{\hyperlink{vulkanrender_8cpp_ade8f5cc6a63bf27b5b733063573bb523}{Load\+SPV}} (const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Load SPIR-\/V binary from file. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{vulkanrender_8cpp_a406885375823f11e053804b0ba529907}{Reflect\+Push\+Constants\+Module}} (const std\+::string \&spv\+\_\+path, std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{struct_vulkan_push_constant_entry}{Vulkan\+Push\+Constant\+Entry}} $>$ \&merged\+PCs)
+\begin{DoxyCompactList}\small\item\em Reflect push constants from a single SPIR-\/V module and merge into existing push constants. \end{DoxyCompactList}\item 
+static std\+::vector$<$ \mbox{\hyperlink{struct_vulkan_push_constant_entry}{Vulkan\+Push\+Constant\+Entry}} $>$ \mbox{\hyperlink{vulkanrender_8cpp_a933b089ad1fb9f1faea66ba63de20e5f}{Vulkan\+Produce\+Push\+Constants}} (const std\+::string \&vert\+\_\+spv, const std\+::string \&frag\+\_\+spv)
+\begin{DoxyCompactList}\small\item\em Produce a combined push constant layout from vertex and fragment SPIR-\/V modules. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{vulkanrender_8cpp_a24f69fca2f5cc2aa5e019010ddc5b484}{Reflect\+SPVModule}} (const std\+::string \&spv\+\_\+path, std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{struct_vulkan_descriptor_set_entry}{Vulkan\+Descriptor\+Set\+Entry}} $>$ \&merged\+Sets, \mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}} stage)
+\begin{DoxyCompactList}\small\item\em Reflect descriptor sets from a single SPIR-\/V module and merge into existing sets. \end{DoxyCompactList}\item 
+static std\+::vector$<$ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry}{Vulkan\+Descriptor\+Set\+Entry}} $>$ \mbox{\hyperlink{vulkanrender_8cpp_a920cb5f1ff4c306676528a4814ec9d12}{Vulkan\+Produce\+Descriptor\+Set}} (const std\+::string \&vert\+\_\+spv, const std\+::string \&frag\+\_\+spv)
+\begin{DoxyCompactList}\small\item\em Produce a combined descriptor set layout from vertex and fragment SPIR-\/V modules. \end{DoxyCompactList}\item 
+static const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{vulkanrender_8cpp_a00d014dea2b7ab9f2c3391af762e66b0}{Vulkan\+Format\+To\+String}} (\mbox{\hyperlink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183d}{Vulkan\+Format}} f)
+\begin{DoxyCompactList}\small\item\em Convert \doxylink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183d}{Vulkan\+Format} to string for debugging. \end{DoxyCompactList}\item 
+static const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{vulkanrender_8cpp_a98eb50f37a16b7a78c11cd0735087ec6}{Vertex\+Rate\+To\+String}} (\mbox{\hyperlink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bd}{Vertex\+Rate}} r)
+\begin{DoxyCompactList}\small\item\em Convert \doxylink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bd}{Vertex\+Rate} to string for debugging. \end{DoxyCompactList}\item 
+static const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{vulkanrender_8cpp_ab2b19d31b9ec32760c14fafe33585a5f}{Vulkan\+Stage\+To\+String}} (\mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}} s)
+\begin{DoxyCompactList}\small\item\em Convert \doxylink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage} to string for debugging. \end{DoxyCompactList}\item 
+static const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{vulkanrender_8cpp_a71658c46fbcfbe91e0cd7630170063d9}{Descriptor\+Type\+To\+String}} (\mbox{\hyperlink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type}} t)
+\begin{DoxyCompactList}\small\item\em Convert Descriptor\+Type to string for debugging. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{vulkanrender_8cpp_ab3f83fd1aa7a8f26e7f6aa4a683bc514}{Print\+Pipeline\+Description}} (const \mbox{\hyperlink{struct_pipeline_description}{Pipeline\+Description}} \&pd)
+\begin{DoxyCompactList}\small\item\em Print the contents of a \doxylink{struct_pipeline_description}{Pipeline\+Description} for debugging. \end{DoxyCompactList}\item 
+int32\+\_\+t \mbox{\hyperlink{vulkanrender_8cpp_ae10eea2bc605fe9f08ea7b644892a7d7}{Vulkan\+Setup\+Pipeline}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context, const char \texorpdfstring{$\ast$}{*}shader\+Basename, \mbox{\hyperlink{struct_pipeline_description}{Pipeline\+Description}} \texorpdfstring{$\ast$}{*}pipeline\+Desc)
+\begin{DoxyCompactList}\small\item\em Setup a pipeline with a given shader base name. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{vulkanrender_8cpp_a974917ae24bed252b5daea18004d4481}{Vulkan\+Draw}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context)
 \begin{DoxyCompactList}\small\item\em Main draw function to be called every frame. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{vulkanrender_8cpp_a2bb55417a01c7a6290f3924810bddeda}{Vulkan\+Init}} (\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context, std\+::function$<$ Vk\+Surface\+KHR(\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}vk\+Context)$>$ create\+Surface)
@@ -159,6 +190,19 @@ Create index buffer.
 \begin{DoxyReturn}{Returns}
 int32\+\_\+t Index of the created buffer, or -\/1 on failure. 
 \end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_a71658c46fbcfbe91e0cd7630170063d9}\index{vulkanrender.cpp@{vulkanrender.cpp}!DescriptorTypeToString@{DescriptorTypeToString}}
+\index{DescriptorTypeToString@{DescriptorTypeToString}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{DescriptorTypeToString()}{DescriptorTypeToString()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a71658c46fbcfbe91e0cd7630170063d9} 
+const char \texorpdfstring{$\ast$}{*} Descriptor\+Type\+To\+String (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type}}}]{t}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert Descriptor\+Type to string for debugging. 
+
+\begin{DoxyReturn}{Returns}
+const char\texorpdfstring{$\ast$}{*} The string representation of the descriptor type. 
+\end{DoxyReturn}
 \Hypertarget{vulkanrender_8cpp_aecb3c98eda669075e9fbdb13df5ad828}\index{vulkanrender.cpp@{vulkanrender.cpp}!GetSurfaceExtent@{GetSurfaceExtent}}
 \index{GetSurfaceExtent@{GetSurfaceExtent}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{GetSurfaceExtent()}{GetSurfaceExtent()}}
@@ -171,6 +215,104 @@ Determines the appropriate swapchain extent based on surface capabilities.
 
 \begin{DoxyReturn}{Returns}
 Vk\+Extent2D The determined swapchain extent. 
+\end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_ade8f5cc6a63bf27b5b733063573bb523}\index{vulkanrender.cpp@{vulkanrender.cpp}!LoadSPV@{LoadSPV}}
+\index{LoadSPV@{LoadSPV}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{LoadSPV()}{LoadSPV()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_ade8f5cc6a63bf27b5b733063573bb523} 
+std\+::vector$<$ uint32\+\_\+t $>$ Load\+SPV (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Load SPIR-\/V binary from file. 
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$uint32\+\_\+t$>$ The loaded SPIR-\/V binary data. 
+\end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_ab3f83fd1aa7a8f26e7f6aa4a683bc514}\index{vulkanrender.cpp@{vulkanrender.cpp}!PrintPipelineDescription@{PrintPipelineDescription}}
+\index{PrintPipelineDescription@{PrintPipelineDescription}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{PrintPipelineDescription()}{PrintPipelineDescription()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_ab3f83fd1aa7a8f26e7f6aa4a683bc514} 
+void Print\+Pipeline\+Description (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_pipeline_description}{Pipeline\+Description}} \&}]{pd}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Print the contents of a \doxylink{struct_pipeline_description}{Pipeline\+Description} for debugging. 
+
+\Hypertarget{vulkanrender_8cpp_a406885375823f11e053804b0ba529907}\index{vulkanrender.cpp@{vulkanrender.cpp}!ReflectPushConstantsModule@{ReflectPushConstantsModule}}
+\index{ReflectPushConstantsModule@{ReflectPushConstantsModule}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{ReflectPushConstantsModule()}{ReflectPushConstantsModule()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a406885375823f11e053804b0ba529907} 
+void Reflect\+Push\+Constants\+Module (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{spv\+\_\+path}{, }\item[{std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{struct_vulkan_push_constant_entry}{Vulkan\+Push\+Constant\+Entry}} $>$ \&}]{merged\+PCs}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Reflect push constants from a single SPIR-\/V module and merge into existing push constants. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em spv\+\_\+path} & Path to the SPIR-\/V file. \\
+\hline
+{\em merged\+PCs} & The map of merged push constants to update. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{vulkanrender_8cpp_a24f69fca2f5cc2aa5e019010ddc5b484}\index{vulkanrender.cpp@{vulkanrender.cpp}!ReflectSPVModule@{ReflectSPVModule}}
+\index{ReflectSPVModule@{ReflectSPVModule}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{ReflectSPVModule()}{ReflectSPVModule()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a24f69fca2f5cc2aa5e019010ddc5b484} 
+void Reflect\+SPVModule (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{spv\+\_\+path}{, }\item[{std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{struct_vulkan_descriptor_set_entry}{Vulkan\+Descriptor\+Set\+Entry}} $>$ \&}]{merged\+Sets}{, }\item[{\mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}}}]{stage}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Reflect descriptor sets from a single SPIR-\/V module and merge into existing sets. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em spv\+\_\+path} & Path to the SPIR-\/V file. \\
+\hline
+{\em merged\+Sets} & The map of merged descriptor sets to update. \\
+\hline
+{\em stage} & The shader stage (vertex or fragment). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{vulkanrender_8cpp_af47736f2aec9ab289d45b80b21be15c4}\index{vulkanrender.cpp@{vulkanrender.cpp}!ToDescriptorType@{ToDescriptorType}}
+\index{ToDescriptorType@{ToDescriptorType}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{ToDescriptorType()}{ToDescriptorType()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_af47736f2aec9ab289d45b80b21be15c4} 
+\mbox{\hyperlink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type}} To\+Descriptor\+Type (\begin{DoxyParamCaption}\item[{Spv\+Reflect\+Descriptor\+Type}]{t}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert SPIR-\/V state into \doxylink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type}. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type} The corresponding \doxylink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{Vulkan\+Descriptor\+Set\+Type} value. 
+\end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_a7d035a70c5fb68440679d0b39cfd6b1d}\index{vulkanrender.cpp@{vulkanrender.cpp}!ToVulkanStage@{ToVulkanStage}}
+\index{ToVulkanStage@{ToVulkanStage}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{ToVulkanStage()}{ToVulkanStage()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a7d035a70c5fb68440679d0b39cfd6b1d} 
+\mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}} To\+Vulkan\+Stage (\begin{DoxyParamCaption}\item[{Spv\+Reflect\+Shader\+Stage\+Flag\+Bits}]{stage}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert SPIR-\/V state into \doxylink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage} The corresponding \doxylink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage} value. 
+\end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_a98eb50f37a16b7a78c11cd0735087ec6}\index{vulkanrender.cpp@{vulkanrender.cpp}!VertexRateToString@{VertexRateToString}}
+\index{VertexRateToString@{VertexRateToString}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{VertexRateToString()}{VertexRateToString()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a98eb50f37a16b7a78c11cd0735087ec6} 
+const char \texorpdfstring{$\ast$}{*} Vertex\+Rate\+To\+String (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bd}{Vertex\+Rate}}}]{r}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert \doxylink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bd}{Vertex\+Rate} to string for debugging. 
+
+\begin{DoxyReturn}{Returns}
+const char\texorpdfstring{$\ast$}{*} The string representation of the vertex rate. 
 \end{DoxyReturn}
 \Hypertarget{vulkanrender_8cpp_a6b3e2de21553e03e5af66a9d20691aad}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanAcquireNextImage@{VulkanAcquireNextImage}}
 \index{VulkanAcquireNextImage@{VulkanAcquireNextImage}!vulkanrender.cpp@{vulkanrender.cpp}}
@@ -237,11 +379,11 @@ Creates a command pool for allocating command buffers.
 \begin{DoxyReturn}{Returns}
 Vk\+Command\+Pool The created command pool. 
 \end{DoxyReturn}
-\Hypertarget{vulkanrender_8cpp_a0c34dbe290e893fd9d2a127f6675b1e6}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateDescriptorSetLayoutBinding@{VulkanCreateDescriptorSetLayoutBinding}}
+\Hypertarget{vulkanrender_8cpp_a89a24f7144403f8173dbeb63ecef6dd2}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateDescriptorSetLayoutBinding@{VulkanCreateDescriptorSetLayoutBinding}}
 \index{VulkanCreateDescriptorSetLayoutBinding@{VulkanCreateDescriptorSetLayoutBinding}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanCreateDescriptorSetLayoutBinding()}{VulkanCreateDescriptorSetLayoutBinding()}}
-{\footnotesize\ttfamily \label{vulkanrender_8cpp_a0c34dbe290e893fd9d2a127f6675b1e6} 
-void Vulkan\+Create\+Descriptor\+Set\+Layout\+Binding (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{uint32\+\_\+t}]{binding}{, }\item[{Vk\+Descriptor\+Type}]{descriptor\+Type}{, }\item[{uint32\+\_\+t}]{descriptor\+Count}{, }\item[{Vk\+Shader\+Stage\+Flags}]{stage\+Flags}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a89a24f7144403f8173dbeb63ecef6dd2} 
+void Vulkan\+Create\+Descriptor\+Set\+Layout\+Binding (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{uint32\+\_\+t}]{binding}{, }\item[{Vk\+Descriptor\+Type}]{descriptor\+Type}{, }\item[{uint32\+\_\+t}]{descriptor\+Count}{, }\item[{Vk\+Shader\+Stage\+Flags}]{stage\+Flags}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
 
 
@@ -283,11 +425,11 @@ void Vulkan\+Create\+Framebuffers (\begin{DoxyParamCaption}\item[{Vk\+Device}]{d
 
 Creates framebuffers for all swapchain image views. 
 
-\Hypertarget{vulkanrender_8cpp_a08886d88b9de590bbba4d6b3bf71ef9a}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateGraphicsPipeline@{VulkanCreateGraphicsPipeline}}
+\Hypertarget{vulkanrender_8cpp_ae051a6b921da6602135ec5f8fa1ad829}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateGraphicsPipeline@{VulkanCreateGraphicsPipeline}}
 \index{VulkanCreateGraphicsPipeline@{VulkanCreateGraphicsPipeline}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanCreateGraphicsPipeline()}{VulkanCreateGraphicsPipeline()}}
-{\footnotesize\ttfamily \label{vulkanrender_8cpp_a08886d88b9de590bbba4d6b3bf71ef9a} 
-int32\+\_\+t Vulkan\+Create\+Graphics\+Pipeline (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}}]{vk\+Context}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{shader\+Base\+Name}{, }\item[{std\+::function$<$ void(\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description)$>$}]{vertex\+Input\+Description\+Lambda}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_ae051a6b921da6602135ec5f8fa1ad829} 
+int32\+\_\+t Vulkan\+Create\+Graphics\+Pipeline (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}}]{vk\+Context}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{shader\+Base\+Name}{, }\item[{std\+::function$<$ void(\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}vertex\+Input\+Description)$>$}]{vertex\+Input\+Description\+Lambda}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
 
 
@@ -348,11 +490,11 @@ Creates a logical device from the selected physical device.
 \begin{DoxyReturn}{Returns}
 Vk\+Device The created logical device. 
 \end{DoxyReturn}
-\Hypertarget{vulkanrender_8cpp_ab1721972318e7e714458ba9028f0e6dd}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreatePushConstant@{VulkanCreatePushConstant}}
+\Hypertarget{vulkanrender_8cpp_a841c18c9a8da1ac6314e17903e94a429}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreatePushConstant@{VulkanCreatePushConstant}}
 \index{VulkanCreatePushConstant@{VulkanCreatePushConstant}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanCreatePushConstant()}{VulkanCreatePushConstant()}}
-{\footnotesize\ttfamily \label{vulkanrender_8cpp_ab1721972318e7e714458ba9028f0e6dd} 
-void Vulkan\+Create\+Push\+Constant (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{Vk\+Shader\+Stage\+Flags}]{stage\+Flags}{, }\item[{uint32\+\_\+t}]{offset}{, }\item[{uint32\+\_\+t}]{size}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a841c18c9a8da1ac6314e17903e94a429} 
+void Vulkan\+Create\+Push\+Constant (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{Vk\+Shader\+Stage\+Flags}]{stage\+Flags}{, }\item[{uint32\+\_\+t}]{offset}{, }\item[{uint32\+\_\+t}]{size}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
 
 
@@ -430,21 +572,21 @@ Creates a swapchain for presenting images to the surface.
 \begin{DoxyReturn}{Returns}
 Vk\+Swapchain\+KHR The created swapchain. 
 \end{DoxyReturn}
-\Hypertarget{vulkanrender_8cpp_a855070ecd52ecca745a2d84fd5a1cf4a}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateVertexAttribute@{VulkanCreateVertexAttribute}}
+\Hypertarget{vulkanrender_8cpp_a507decebf3db6ecaa244968be2119792}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateVertexAttribute@{VulkanCreateVertexAttribute}}
 \index{VulkanCreateVertexAttribute@{VulkanCreateVertexAttribute}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanCreateVertexAttribute()}{VulkanCreateVertexAttribute()}}
-{\footnotesize\ttfamily \label{vulkanrender_8cpp_a855070ecd52ecca745a2d84fd5a1cf4a} 
-void Vulkan\+Create\+Vertex\+Attribute (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{uint32\+\_\+t}]{binding}{, }\item[{uint32\+\_\+t}]{location}{, }\item[{Vk\+Format}]{format}{, }\item[{uint32\+\_\+t}]{offset}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a507decebf3db6ecaa244968be2119792} 
+void Vulkan\+Create\+Vertex\+Attribute (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{uint32\+\_\+t}]{binding}{, }\item[{uint32\+\_\+t}]{location}{, }\item[{Vk\+Format}]{format}{, }\item[{uint32\+\_\+t}]{offset}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
 
 
 Creates an attribute description. 
 
-\Hypertarget{vulkanrender_8cpp_a1561ed9a525bb7c26ab677b00d290d8d}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateVertexBinding@{VulkanCreateVertexBinding}}
+\Hypertarget{vulkanrender_8cpp_a24e1995b2fd71347838ae38f3c6fea84}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanCreateVertexBinding@{VulkanCreateVertexBinding}}
 \index{VulkanCreateVertexBinding@{VulkanCreateVertexBinding}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanCreateVertexBinding()}{VulkanCreateVertexBinding()}}
-{\footnotesize\ttfamily \label{vulkanrender_8cpp_a1561ed9a525bb7c26ab677b00d290d8d} 
-void Vulkan\+Create\+Vertex\+Binding (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{uint32\+\_\+t}]{binding}{, }\item[{uint32\+\_\+t}]{stride}{, }\item[{Vk\+Vertex\+Input\+Rate}]{input\+Rate}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a24e1995b2fd71347838ae38f3c6fea84} 
+void Vulkan\+Create\+Vertex\+Binding (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vertex_input_description}{Vertex\+Input\+Description}} \texorpdfstring{$\ast$}{*}}]{vertex\+Input\+Description}{, }\item[{uint32\+\_\+t}]{binding}{, }\item[{uint32\+\_\+t}]{stride}{, }\item[{Vk\+Vertex\+Input\+Rate}]{input\+Rate}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
 
 
@@ -563,6 +705,19 @@ void Vulkan\+Draw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vulkan
 
 Main draw function to be called every frame. 
 
+\Hypertarget{vulkanrender_8cpp_a00d014dea2b7ab9f2c3391af762e66b0}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanFormatToString@{VulkanFormatToString}}
+\index{VulkanFormatToString@{VulkanFormatToString}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{VulkanFormatToString()}{VulkanFormatToString()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a00d014dea2b7ab9f2c3391af762e66b0} 
+const char \texorpdfstring{$\ast$}{*} Vulkan\+Format\+To\+String (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183d}{Vulkan\+Format}}}]{f}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert \doxylink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183d}{Vulkan\+Format} to string for debugging. 
+
+\begin{DoxyReturn}{Returns}
+const char\texorpdfstring{$\ast$}{*} The string representation of the format. 
+\end{DoxyReturn}
 \Hypertarget{vulkanrender_8cpp_aebc5203c78fecebb868596aae7a90651}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanGetGraphicsQueue@{VulkanGetGraphicsQueue}}
 \index{VulkanGetGraphicsQueue@{VulkanGetGraphicsQueue}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanGetGraphicsQueue()}{VulkanGetGraphicsQueue()}}
@@ -625,6 +780,46 @@ Load shader module from file.
 \begin{DoxyReturn}{Returns}
 Vk\+Shader\+Module The created shader module. 
 \end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_a920cb5f1ff4c306676528a4814ec9d12}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanProduceDescriptorSet@{VulkanProduceDescriptorSet}}
+\index{VulkanProduceDescriptorSet@{VulkanProduceDescriptorSet}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{VulkanProduceDescriptorSet()}{VulkanProduceDescriptorSet()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a920cb5f1ff4c306676528a4814ec9d12} 
+std\+::vector$<$ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry}{Vulkan\+Descriptor\+Set\+Entry}} $>$ Vulkan\+Produce\+Descriptor\+Set (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{vert\+\_\+spv}{, }\item[{const std\+::string \&}]{frag\+\_\+spv}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Produce a combined descriptor set layout from vertex and fragment SPIR-\/V modules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vert\+\_\+spv} & Path to the vertex shader SPIR-\/V file. \\
+\hline
+{\em frag\+\_\+spv} & Path to the fragment shader SPIR-\/V file. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+Vulkan\+Descriptor\+Set\+Entry$>$ The combined descriptor set layout entries. 
+\end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_a933b089ad1fb9f1faea66ba63de20e5f}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanProducePushConstants@{VulkanProducePushConstants}}
+\index{VulkanProducePushConstants@{VulkanProducePushConstants}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{VulkanProducePushConstants()}{VulkanProducePushConstants()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_a933b089ad1fb9f1faea66ba63de20e5f} 
+std\+::vector$<$ \mbox{\hyperlink{struct_vulkan_push_constant_entry}{Vulkan\+Push\+Constant\+Entry}} $>$ Vulkan\+Produce\+Push\+Constants (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{vert\+\_\+spv}{, }\item[{const std\+::string \&}]{frag\+\_\+spv}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Produce a combined push constant layout from vertex and fragment SPIR-\/V modules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vert\+\_\+spv} & Path to the vertex shader SPIR-\/V file. \\
+\hline
+{\em frag\+\_\+spv} & Path to the fragment shader SPIR-\/V file. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+Vulkan\+Push\+Constant\+Entry$>$ The combined push constant layout entries. 
+\end{DoxyReturn}
 \Hypertarget{vulkanrender_8cpp_a7aa9448dd366e42dcb31a30b768cbbc8}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanQueuePresent@{VulkanQueuePresent}}
 \index{VulkanQueuePresent@{VulkanQueuePresent}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanQueuePresent()}{VulkanQueuePresent()}}
@@ -683,6 +878,19 @@ Selects first physical device (GPU) from the available devices.
 \begin{DoxyReturn}{Returns}
 Vk\+Physical\+Device The selected physical device. 
 \end{DoxyReturn}
+\Hypertarget{vulkanrender_8cpp_ae10eea2bc605fe9f08ea7b644892a7d7}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanSetupPipeline@{VulkanSetupPipeline}}
+\index{VulkanSetupPipeline@{VulkanSetupPipeline}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{VulkanSetupPipeline()}{VulkanSetupPipeline()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_ae10eea2bc605fe9f08ea7b644892a7d7} 
+int32\+\_\+t Vulkan\+Setup\+Pipeline (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vulkan_context}{Vulkan\+Context}} \texorpdfstring{$\ast$}{*}}]{vk\+Context}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{shader\+Basename}{, }\item[{\mbox{\hyperlink{struct_pipeline_description}{Pipeline\+Description}} \texorpdfstring{$\ast$}{*}}]{pipeline\+Desc}{}\end{DoxyParamCaption})}
+
+
+
+Setup a pipeline with a given shader base name. 
+
+\begin{DoxyReturn}{Returns}
+int32\+\_\+t Index of the created pipeline, or -\/1 on failure. 
+\end{DoxyReturn}
 \Hypertarget{vulkanrender_8cpp_a318c1b57647d7ba05ed88a48c2a88040}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanShutdown@{VulkanShutdown}}
 \index{VulkanShutdown@{VulkanShutdown}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanShutdown()}{VulkanShutdown()}}
@@ -693,6 +901,19 @@ void Vulkan\+Shutdown (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vu
 
 Shuts down the Vulkan context and releases all resources. 
 
+\Hypertarget{vulkanrender_8cpp_ab2b19d31b9ec32760c14fafe33585a5f}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanStageToString@{VulkanStageToString}}
+\index{VulkanStageToString@{VulkanStageToString}!vulkanrender.cpp@{vulkanrender.cpp}}
+\doxysubsubsection{\texorpdfstring{VulkanStageToString()}{VulkanStageToString()}}
+{\footnotesize\ttfamily \label{vulkanrender_8cpp_ab2b19d31b9ec32760c14fafe33585a5f} 
+const char \texorpdfstring{$\ast$}{*} Vulkan\+Stage\+To\+String (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage}}}]{s}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert \doxylink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{Vulkan\+Stage} to string for debugging. 
+
+\begin{DoxyReturn}{Returns}
+const char\texorpdfstring{$\ast$}{*} The string representation of the stage. 
+\end{DoxyReturn}
 \Hypertarget{vulkanrender_8cpp_af60b454bbbb4d3e5033a9c011b4a9a24}\index{vulkanrender.cpp@{vulkanrender.cpp}!VulkanSubmitCommandBuffer@{VulkanSubmitCommandBuffer}}
 \index{VulkanSubmitCommandBuffer@{VulkanSubmitCommandBuffer}!vulkanrender.cpp@{vulkanrender.cpp}}
 \doxysubsubsection{\texorpdfstring{VulkanSubmitCommandBuffer()}{VulkanSubmitCommandBuffer()}}

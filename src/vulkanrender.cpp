@@ -689,7 +689,7 @@ static VkPipelineShaderStageCreateInfo VulkanCreateShaderStage(VkDevice device, 
  * @note The vertex input description is provided via a lambda function.
  * @return int32_t 0 on success, -1 on failure.
  */
-int32_t VulkanCreateGraphicsPipeline(
+static int32_t VulkanCreateGraphicsPipeline(
     VulkanContext* vkContext,
     const char* shaderBaseName,
     std::function<void(VertexInputDescription* vertexInputDescription)> vertexInputDescriptionLambda)
@@ -997,7 +997,7 @@ void VulkanUpdateVertexBuffer(VulkanContext* vkContext, int32_t bufferId, const 
  * @brief Create index buffer.
  * @return int32_t Index of the created buffer, or -1 on failure.
  */
-int32_t CreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDeviceSize size) {
+int32_t VulkanCreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDeviceSize size) {
     VkDeviceMemory outMemory;
     VkBufferCreateInfo bufferInfo = {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
@@ -1059,7 +1059,7 @@ int32_t CreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDev
 /**
  * @brief Creates an attribute description.
  */
-void VulkanCreateVertexAttribute(
+static void VulkanCreateVertexAttribute(
     VertexInputDescription* vertexInputDescription,
     uint32_t binding,
     uint32_t location,
@@ -1077,7 +1077,7 @@ void VulkanCreateVertexAttribute(
 /**
  * @brief Creates an binding description.
  */
-void VulkanCreateVertexBinding(
+static void VulkanCreateVertexBinding(
     VertexInputDescription* vertexInputDescription,
     uint32_t binding,
     uint32_t stride,
@@ -1093,7 +1093,7 @@ void VulkanCreateVertexBinding(
 /**
  * @brief Creates an push constant.
  */
-void VulkanCreatePushConstant(
+static void VulkanCreatePushConstant(
     VertexInputDescription* vertexInputDescription,
     VkShaderStageFlags stageFlags,
     uint32_t offset,
@@ -1109,7 +1109,7 @@ void VulkanCreatePushConstant(
 /**
  * @brief Creates a descriptor set layout binding.
  */
-void VulkanCreateDescriptorSetLayoutBinding(
+static void VulkanCreateDescriptorSetLayoutBinding(
     VertexInputDescription* vertexInputDescription,
     uint32_t binding,
     VkDescriptorType descriptorType,
@@ -1123,49 +1123,6 @@ void VulkanCreateDescriptorSetLayoutBinding(
     layoutBinding.stageFlags = stageFlags;           // e.g. VK_SHADER_STAGE_VERTEX_BIT
     layoutBinding.pImmutableSamplers = nullptr;      // only used for immutable samplers
     vertexInputDescription->layoutBinding.push_back(layoutBinding);
-}
-
-
-/**
- * @brief Setup a pipeline with a given shader base name.
- * @return int32_t Index of the created pipeline, or -1 on failure.
- */
-int32_t VulkanSetupPipeline(VulkanContext* vkContext, const char *shaderBasename, PipelineDescription *pipelineDesc) {
-    auto vertexInputDescLambda = [=](VertexInputDescription* vertexInputDesc) {
-        VulkanCreateVertexBinding(vertexInputDesc, 0, pipelineDesc->perVertexStride, VK_VERTEX_INPUT_RATE_VERTEX);
-        VulkanCreateVertexBinding(vertexInputDesc, 1, pipelineDesc->perInstanceStride, VK_VERTEX_INPUT_RATE_INSTANCE);
-
-        // setup vertex attributes
-        for (const auto& input : pipelineDesc->vertexInputs) {
-            VulkanCreateVertexAttribute(vertexInputDesc, input.rate == VULKAN_RATE_PER_VERTEX ? 0 : 1, input.location, (VkFormat)input.format, input.offset);
-        }
-
-		// setup push constants
-        for (const auto& pc : pipelineDesc->pushConstants) {
-            for(const auto& stage : pc.stages) {
-                if (stage != VULKAN_STAGE_VERTEX && stage != VULKAN_STAGE_FRAGMENT) {
-                    fprintf(stderr, "Unsupported push constant stage %d\n", stage);
-                    continue;
-                }
-                VulkanCreatePushConstant(vertexInputDesc, stage, pc.offset, pc.size);
-			}
-		}
-
-		// setup descriptor set layouts
-        for (const auto& ds : pipelineDesc->descriptorSets) {
-            for (const auto& binding : ds.bindings) {
-                for (const auto& stage : binding.stages) {
-                    if (stage != VULKAN_STAGE_VERTEX && stage != VULKAN_STAGE_FRAGMENT) {
-                        fprintf(stderr, "Unsupported descriptor set layout binding stage %d\n", stage);
-                        continue;
-                    }
-                    VulkanCreateDescriptorSetLayoutBinding(vertexInputDesc, binding.binding, (VkDescriptorType)binding.type, binding.count, stage);
-                }
-            }
-		}
-    };
-
-    return VulkanCreateGraphicsPipeline(vkContext, shaderBasename, vertexInputDescLambda);
 }
 
 /**
@@ -1209,11 +1166,12 @@ static std::vector<uint32_t> LoadSPV(const std::string& path) {
     return buffer;
 }
 
-// Reflect push constants from a single module and merge
-void ReflectPushConstantsModule(
-    const std::string& spv_path,
-    std::unordered_map<uint32_t, VulkanPushConstantEntry>& mergedPCs
-) {
+/**
+ * @brief Reflect push constants from a single SPIR-V module and merge into existing push constants.
+ * @param spv_path Path to the SPIR-V file.
+ * @param mergedPCs The map of merged push constants to update.
+ */
+static void ReflectPushConstantsModule(const std::string& spv_path, std::unordered_map<uint32_t, VulkanPushConstantEntry>& mergedPCs) {
     auto spirv = LoadSPV(spv_path);
     SpvReflectShaderModule module;
     if (spvReflectCreateShaderModule(spirv.size() * sizeof(uint32_t), spirv.data(), &module) != SPV_REFLECT_RESULT_SUCCESS)
@@ -1242,11 +1200,13 @@ void ReflectPushConstantsModule(
     spvReflectDestroyShaderModule(&module);
 }
 
-// Merge vertex + fragment push constants
-std::vector<VulkanPushConstantEntry> VulkanProducePushConstants(
-    const std::string& vert_spv,
-    const std::string& frag_spv
-) {
+/**
+ * @brief Produce a combined push constant layout from vertex and fragment SPIR-V modules.
+ * @param vert_spv Path to the vertex shader SPIR-V file.
+ * @param frag_spv Path to the fragment shader SPIR-V file.
+ * @return std::vector<VulkanPushConstantEntry> The combined push constant layout entries.
+ */
+static std::vector<VulkanPushConstantEntry> VulkanProducePushConstants(const std::string& vert_spv, const std::string& frag_spv) {
     std::unordered_map<uint32_t, VulkanPushConstantEntry> mergedPCs;
 
     ReflectPushConstantsModule(vert_spv, mergedPCs);
@@ -1261,8 +1221,13 @@ std::vector<VulkanPushConstantEntry> VulkanProducePushConstants(
     return pcs;
 }
 
-// Reflect a single SPIR-V module and populate descriptor set info
-void ReflectSPVModule(const std::string& spv_path, std::unordered_map<uint32_t, VulkanDescriptorSetEntry>& mergedSets, VulkanStage stage) {
+/**
+ * @brief Reflect descriptor sets from a single SPIR-V module and merge into existing sets.
+ * @param spv_path Path to the SPIR-V file.
+ * @param mergedSets The map of merged descriptor sets to update.
+ * @param stage The shader stage (vertex or fragment).
+ */
+static void ReflectSPVModule(const std::string& spv_path, std::unordered_map<uint32_t, VulkanDescriptorSetEntry>& mergedSets, VulkanStage stage) {
     auto spirv = LoadSPV(spv_path);
     SpvReflectShaderModule module;
     if (spvReflectCreateShaderModule(spirv.size() * sizeof(uint32_t), spirv.data(), &module) != SPV_REFLECT_RESULT_SUCCESS)
@@ -1300,8 +1265,13 @@ void ReflectSPVModule(const std::string& spv_path, std::unordered_map<uint32_t, 
     spvReflectDestroyShaderModule(&module);
 }
 
-// Merge vertex and fragment SPIR-V reflection
-std::vector<VulkanDescriptorSetEntry> VulkanProduceDescriptorSet(const std::string& vert_spv, const std::string& frag_spv) {
+/**
+ * @brief Produce a combined descriptor set layout from vertex and fragment SPIR-V modules.
+ * @param vert_spv Path to the vertex shader SPIR-V file.
+ * @param frag_spv Path to the fragment shader SPIR-V file.
+ * @return std::vector<VulkanDescriptorSetEntry> The combined descriptor set layout entries.
+ */
+static std::vector<VulkanDescriptorSetEntry> VulkanProduceDescriptorSet(const std::string& vert_spv, const std::string& frag_spv) {
     std::unordered_map<uint32_t, VulkanDescriptorSetEntry> mergedSets;
 
     ReflectSPVModule(vert_spv, mergedSets, VULKAN_STAGE_VERTEX);
@@ -1315,7 +1285,11 @@ std::vector<VulkanDescriptorSetEntry> VulkanProduceDescriptorSet(const std::stri
     return sets;
 }
 
-inline const char* VulkanFormatToString(VulkanFormat f) {
+/**
+ * @brief Convert VulkanFormat to string for debugging.
+ * @return const char* The string representation of the format.
+ */
+static inline const char* VulkanFormatToString(VulkanFormat f) {
     switch (f) {
     case VULKAN_FORMAT_R32G32_SFLOAT:       return "R32G32_SFLOAT";
     case VULKAN_FORMAT_R32G32B32_SFLOAT:    return "R32G32B32_SFLOAT";
@@ -1324,7 +1298,11 @@ inline const char* VulkanFormatToString(VulkanFormat f) {
     }
 }
 
-inline const char* VertexRateToString(VertexRate r) {
+/**
+ * @brief Convert VertexRate to string for debugging.
+ * @return const char* The string representation of the vertex rate.
+ */
+static inline const char* VertexRateToString(VertexRate r) {
     switch (r) {
     case VULKAN_RATE_PER_VERTEX: return "PER_VERTEX";
     case VULKAN_RATE_PER_INSTANCE: return "PER_INSTANCE";
@@ -1332,7 +1310,11 @@ inline const char* VertexRateToString(VertexRate r) {
     }
 }
 
-inline const char* VulkanStageToString(VulkanStage s) {
+/**
+ * @brief Convert VulkanStage to string for debugging.
+ * @return const char* The string representation of the stage.
+ */
+static inline const char* VulkanStageToString(VulkanStage s) {
     switch (s) {
     case VULKAN_STAGE_NONE: return "NONE";
     case VULKAN_STAGE_VERTEX: return "VERTEX";
@@ -1341,14 +1323,21 @@ inline const char* VulkanStageToString(VulkanStage s) {
     }
 }
 
-inline const char* DescriptorTypeToString(VulkanDescriptorSetType t) {
+/**
+ * @brief Convert DescriptorType to string for debugging.
+ * @return const char* The string representation of the descriptor type.
+ */
+static inline const char* DescriptorTypeToString(VulkanDescriptorSetType t) {
     switch (t) {
     case VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER: return "UNIFORM_BUFFER";
     default: return "UNKNOWN_DESCRIPTOR";
     }
 }
 
-void PrintPipelineDescription(const PipelineDescription& pd) {
+/**
+ * @brief Print the contents of a PipelineDescription for debugging.
+ */
+static void PrintPipelineDescription(const PipelineDescription& pd) {
     std::cout << "PipelineDescription {\n";
     std::cout << "  perVertexStride: " << pd.perVertexStride << "\n";
     std::cout << "  perInstanceStride: " << pd.perInstanceStride << "\n";
@@ -1384,6 +1373,163 @@ void PrintPipelineDescription(const PipelineDescription& pd) {
     }
 
     std::cout << "}\n";
+}
+
+/**
+ * @brief Get the size in bytes of a given VkFormat.
+ * @return uint32_t Size in bytes, or 0 if unknown format.
+ */
+static uint32_t VulkanFormatSize(VkFormat fmt) {
+    switch (fmt) {
+    case VK_FORMAT_R32_SFLOAT: return 4;
+    case VK_FORMAT_R32G32_SFLOAT: return 8;
+    case VK_FORMAT_R32G32B32_SFLOAT: return 12;
+    case VK_FORMAT_R32G32B32A32_SFLOAT: return 16;
+    default: return 0;
+    }
+}
+
+/**
+ * @brief Fill vertex formats in PipelineDescription by reflecting SPIR-V vertex shader.
+ */
+static void VulkanFillVertexFormats(const std::string& vert_spv_path, PipelineDescription* pipelineDesc) {
+    auto spirv = LoadSPV(vert_spv_path);
+
+    SpvReflectShaderModule module;
+    if (spvReflectCreateShaderModule(spirv.size() * sizeof(uint32_t), spirv.data(), &module) != SPV_REFLECT_RESULT_SUCCESS)
+        throw std::runtime_error("Failed to create SPIRV reflection module");
+
+    uint32_t inputCount = 0;
+    spvReflectEnumerateInputVariables(&module, &inputCount, nullptr);
+    std::vector<SpvReflectInterfaceVariable*> inputs(inputCount);
+    spvReflectEnumerateInputVariables(&module, &inputCount, inputs.data());
+
+    // Match by location
+    for (auto* var : inputs) {
+        uint32_t loc = var->location;
+        if (loc < pipelineDesc->vertexInputs.size()) {
+            pipelineDesc->vertexInputs[loc].format = static_cast<VulkanFormat>(var->format);
+            // optional: override location in case you didn't set it
+            pipelineDesc->vertexInputs[loc].location = loc;
+        }
+    }
+
+    spvReflectDestroyShaderModule(&module);
+}
+
+/**
+ * @brief Get the count of vertex input attributes in a SPIR-V vertex shader.
+ * @return uint32_t The number of vertex input attributes.
+ */
+static uint32_t VulkanGetVertexInputCount(const std::string& vert_spv_path) {
+    // Load SPIR-V binary
+    auto spirv = LoadSPV(vert_spv_path); // your function to read SPV into vector<uint32_t>
+
+    // Create reflection module
+    SpvReflectShaderModule module;
+    if (spvReflectCreateShaderModule(spirv.size() * sizeof(uint32_t), spirv.data(), &module) != SPV_REFLECT_RESULT_SUCCESS)
+        throw std::runtime_error("Failed to create SPIRV reflection module");
+
+    // Get input variable count
+    uint32_t inputCount = 0;
+    spvReflectEnumerateInputVariables(&module, &inputCount, nullptr);
+
+    spvReflectDestroyShaderModule(&module);
+
+    return inputCount;
+}
+
+/**
+ * @brief Setup a pipeline with a given shader base name.
+ * @return int32_t Index of the created pipeline, or -1 on failure.
+ */
+int32_t VulkanSetupPipeline(VulkanContext* vkContext, const char* shaderBasename, PipelineDescription* pipelineDesc, uint8_t instancedBitmap) {
+    PipelineDescription pipeDescPlaceholder = {};
+    uint32_t bindingIndex = 0, offsetPerVertex = 0, offsetPerInstance = 0, *offset = &offsetPerVertex, vertexInputDesired = 0;
+    char vertShaderPath[256];
+    char fragShaderPath[256];
+    snprintf(vertShaderPath, sizeof(vertShaderPath), "../shaders/%s.vert.spv", shaderBasename);
+    snprintf(fragShaderPath, sizeof(fragShaderPath), "../shaders/%s.frag.spv", shaderBasename);
+
+    if (pipelineDesc == NULL) {
+		pipelineDesc = &pipeDescPlaceholder;
+	}
+
+    pipelineDesc->pushConstants = VulkanProducePushConstants(vertShaderPath, fragShaderPath);
+    pipelineDesc->descriptorSets = VulkanProduceDescriptorSet(vertShaderPath, fragShaderPath);
+
+	vertexInputDesired = VulkanGetVertexInputCount(vertShaderPath);
+
+    if (pipelineDesc->vertexInputs.size() < vertexInputDesired) {
+        pipelineDesc->vertexInputs.resize(vertexInputDesired);
+	}
+
+    VulkanFillVertexFormats(vertShaderPath, pipelineDesc);
+
+    for (; bindingIndex < pipelineDesc->vertexInputs.size(); bindingIndex++) {
+        pipelineDesc->vertexInputs[bindingIndex].location = bindingIndex;
+
+        if (instancedBitmap & 1 << bindingIndex) {
+            pipelineDesc->vertexInputs[bindingIndex].rate = VULKAN_RATE_PER_INSTANCE;
+        }
+
+        if (pipelineDesc->vertexInputs[bindingIndex].rate != VULKAN_RATE_PER_INSTANCE) {
+			pipelineDesc->vertexInputs[bindingIndex].rate = VULKAN_RATE_PER_VERTEX;
+        }
+        
+        if (pipelineDesc->vertexInputs[bindingIndex].rate == VULKAN_RATE_PER_VERTEX) {
+            offset = &offsetPerVertex;
+        }
+        else if (pipelineDesc->vertexInputs[bindingIndex].rate == VULKAN_RATE_PER_INSTANCE) {
+            offset = &offsetPerInstance;
+        }
+
+		pipelineDesc->vertexInputs[bindingIndex].offset = *offset;
+		*offset += VulkanFormatSize((VkFormat)pipelineDesc->vertexInputs[bindingIndex].format);
+    }
+
+	pipelineDesc->perVertexStride = offsetPerVertex;
+	pipelineDesc->perInstanceStride = offsetPerInstance;
+
+    PrintPipelineDescription(*pipelineDesc);
+
+    auto vertexInputDescLambda = [=](VertexInputDescription* vertexInputDesc) {
+        
+
+        VulkanCreateVertexBinding(vertexInputDesc, 0, pipelineDesc->perVertexStride, VK_VERTEX_INPUT_RATE_VERTEX);
+        if (pipelineDesc->perInstanceStride) VulkanCreateVertexBinding(vertexInputDesc, 1, pipelineDesc->perInstanceStride, VK_VERTEX_INPUT_RATE_INSTANCE);
+
+        // setup vertex attributes
+        for (const auto& input : pipelineDesc->vertexInputs) {
+            VulkanCreateVertexAttribute(vertexInputDesc, input.rate == VULKAN_RATE_PER_VERTEX ? 0 : 1, input.location, (VkFormat)input.format, input.offset);
+        }
+
+        // setup push constants
+        for (const auto& pc : pipelineDesc->pushConstants) {
+            for (const auto& stage : pc.stages) {
+                if (stage != VULKAN_STAGE_VERTEX && stage != VULKAN_STAGE_FRAGMENT) {
+                    fprintf(stderr, "Unsupported push constant stage %d\n", stage);
+                    continue;
+                }
+                VulkanCreatePushConstant(vertexInputDesc, stage, pc.offset, pc.size);
+            }
+        }
+
+        // setup descriptor set layouts
+        for (const auto& ds : pipelineDesc->descriptorSets) {
+            for (const auto& binding : ds.bindings) {
+                for (const auto& stage : binding.stages) {
+                    if (stage != VULKAN_STAGE_VERTEX && stage != VULKAN_STAGE_FRAGMENT) {
+                        fprintf(stderr, "Unsupported descriptor set layout binding stage %d\n", stage);
+                        continue;
+                    }
+                    VulkanCreateDescriptorSetLayoutBinding(vertexInputDesc, binding.binding, (VkDescriptorType)binding.type, binding.count, stage);
+                }
+            }
+        }
+        };
+
+    return VulkanCreateGraphicsPipeline(vkContext, shaderBasename, vertexInputDescLambda);
 }
 
 /**

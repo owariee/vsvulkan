@@ -86,48 +86,109 @@
 \DoxyCodeLine{00082\ \ \ \ \ std::vector<std::optional<VulkanBuffer>>\ \mbox{\hyperlink{struct_vulkan_context_a6378f678b31f5dfe46c9eb4842d2abe2}{buffers}};}
 \DoxyCodeLine{00083\ \}\ \mbox{\hyperlink{struct_vulkan_context}{VulkanContext}};}
 \DoxyCodeLine{00084\ }
-\DoxyCodeLine{00085\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a2bb55417a01c7a6290f3924810bddeda}{VulkanInit}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ std::function<VkSurfaceKHR(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext)>\ createSurface);}
-\DoxyCodeLine{00086\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a318c1b57647d7ba05ed88a48c2a88040}{VulkanShutdown}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext);}
-\DoxyCodeLine{00087\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a974917ae24bed252b5daea18004d4481}{VulkanDraw}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext);}
-\DoxyCodeLine{00088\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_aaeae770242332e3929d26839f54d9722}{VulkanBindCommandBuffers}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ std::function<\textcolor{keywordtype}{void}(VkExtent2D\ surfaceSize,\ VkCommandBuffer\ commandBuffer)>\ commandsLambda);}
-\DoxyCodeLine{00089\ }
-\DoxyCodeLine{00090\ int32\_t\ \mbox{\hyperlink{vulkanrender_8h_a08886d88b9de590bbba4d6b3bf71ef9a}{VulkanCreateGraphicsPipeline}}(}
-\DoxyCodeLine{00091\ \ \ \ \ \mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,}
-\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ shaderBaseName,}
-\DoxyCodeLine{00093\ \ \ \ \ std::function<\textcolor{keywordtype}{void}(\mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription)>\ vertexInputDescriptionLambda);}
-\DoxyCodeLine{00094\ }
-\DoxyCodeLine{00095\ int32\_t\ \mbox{\hyperlink{vulkanrender_8h_aa37dd90535d194a689f4da80b8278da2}{VulkanCreateVertexBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ vertexData,\ VkDeviceSize\ size);}
-\DoxyCodeLine{00096\ int32\_t\ \mbox{\hyperlink{vulkanrender_8h_a4ed7d71d4c4f0869f1680dd5e6e7d7ac}{CreateIndexBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ indexData,\ VkDeviceSize\ size);}
-\DoxyCodeLine{00097\ }
-\DoxyCodeLine{00098\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a855070ecd52ecca745a2d84fd5a1cf4a}{VulkanCreateVertexAttribute}}(}
-\DoxyCodeLine{00099\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
-\DoxyCodeLine{00100\ \ \ \ \ uint32\_t\ binding,}
-\DoxyCodeLine{00101\ \ \ \ \ uint32\_t\ location,}
-\DoxyCodeLine{00102\ \ \ \ \ VkFormat\ format,}
-\DoxyCodeLine{00103\ \ \ \ \ uint32\_t\ offset);}
-\DoxyCodeLine{00104\ }
-\DoxyCodeLine{00105\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a1561ed9a525bb7c26ab677b00d290d8d}{VulkanCreateVertexBinding}}(}
-\DoxyCodeLine{00106\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
-\DoxyCodeLine{00107\ \ \ \ \ uint32\_t\ binding,}
-\DoxyCodeLine{00108\ \ \ \ \ uint32\_t\ stride,}
-\DoxyCodeLine{00109\ \ \ \ \ VkVertexInputRate\ inputRate);}
-\DoxyCodeLine{00110\ }
-\DoxyCodeLine{00111\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a3217acc9533924f0e36f28c310dbdf1f}{VulkanDeleteBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ uint32\_t\ index);}
-\DoxyCodeLine{00112\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_ab16b70eddff3b4e586bb82859fa0a088}{VulkanDeletePipeline}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ uint32\_t\ index);}
-\DoxyCodeLine{00113\ }
-\DoxyCodeLine{00114\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_ab1721972318e7e714458ba9028f0e6dd}{VulkanCreatePushConstant}}(}
-\DoxyCodeLine{00115\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
-\DoxyCodeLine{00116\ \ \ \ \ VkShaderStageFlags\ stageFlags,}
-\DoxyCodeLine{00117\ \ \ \ \ uint32\_t\ offset,}
-\DoxyCodeLine{00118\ \ \ \ \ uint32\_t\ size);}
-\DoxyCodeLine{00119\ }
-\DoxyCodeLine{00120\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a0c34dbe290e893fd9d2a127f6675b1e6}{VulkanCreateDescriptorSetLayoutBinding}}(}
-\DoxyCodeLine{00121\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
-\DoxyCodeLine{00122\ \ \ \ \ uint32\_t\ binding,}
-\DoxyCodeLine{00123\ \ \ \ \ VkDescriptorType\ descriptorType,}
-\DoxyCodeLine{00124\ \ \ \ \ uint32\_t\ descriptorCount,}
-\DoxyCodeLine{00125\ \ \ \ \ VkShaderStageFlags\ stageFlags);}
-\DoxyCodeLine{00126\ }
-\DoxyCodeLine{00127\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a9597f77aab2d4f3b47a4aa36aec497f9}{VulkanUpdateVertexBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ int32\_t\ bufferId,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ vertexData,\ VkDeviceSize\ size);}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00092\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183dadbb69c68ac639b8478aa5f1fecced0ce}{VULKAN\_FORMAT\_R32G32\_SFLOAT}}\ =\ VK\_FORMAT\_R32G32\_SFLOAT,}
+\DoxyCodeLine{00093\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183da5a076856314e35ee360bc96f76037729}{VULKAN\_FORMAT\_R32G32B32\_SFLOAT}}\ =\ VK\_FORMAT\_R32G32B32\_SFLOAT,}
+\DoxyCodeLine{00094\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183da21ff203ce3c02f1f7af0b382f46e1e9c}{VULKAN\_FORMAT\_R32G32B32A32\_SFLOAT}}\ =\ VK\_FORMAT\_R32G32B32A32\_SFLOAT}
+\DoxyCodeLine{00095\ \}\ \mbox{\hyperlink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183d}{VulkanFormat}};}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bda7436cb6178f53aafd8da9e30761e982f}{VULKAN\_RATE\_PER\_VERTEX}}\ =\ VK\_VERTEX\_INPUT\_RATE\_VERTEX,}
+\DoxyCodeLine{00099\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bdacbceb29580cddb2a5a8ec83ac3877653}{VULKAN\_RATE\_PER\_INSTANCE}}\ =\ VK\_VERTEX\_INPUT\_RATE\_INSTANCE}
+\DoxyCodeLine{00100\ \}\ \mbox{\hyperlink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bd}{VertexRate}};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{00103\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_vertex_input_entry_a207631c3ebcc6f4c8c273498c88aa87a}{location}};}
+\DoxyCodeLine{00104\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_adfaf6a422be66e1daca7ca55415c183d}{VulkanFormat}}\ \mbox{\hyperlink{struct_vertex_input_entry_a9a1a54ac2971f224776dfab60b8f8925}{format}};}
+\DoxyCodeLine{00105\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_vertex_input_entry_ad8f71a55bacb42441048d62295939277}{offset}};}
+\DoxyCodeLine{00106\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_af1d39d85f1fb8250ac116236739a34bd}{VertexRate}}\ \mbox{\hyperlink{struct_vertex_input_entry_a6a3f1788c04d7a93a8a94212c1e916f9}{rate}};\ \textcolor{comment}{//\ dispatch\ rate\ per\ vertex\ or\ per\ instance}}
+\DoxyCodeLine{00107\ \}\ \mbox{\hyperlink{struct_vertex_input_entry}{VertexInputEntry}};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783aa4d77553a64b3f8c0ce97a2af1a1bdb7}{VULKAN\_STAGE\_NONE}}\ =\ 0,}
+\DoxyCodeLine{00111\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783ac9c56ef487fdb443dda28e8743cdc316}{VULKAN\_STAGE\_VERTEX}}\ =\ VK\_SHADER\_STAGE\_VERTEX\_BIT,}
+\DoxyCodeLine{00112\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783acb8874defab934350ec6a0c9ac2148d1}{VULKAN\_STAGE\_FRAGMENT}}\ =\ VK\_SHADER\_STAGE\_FRAGMENT\_BIT}
+\DoxyCodeLine{00113\ \}\ \mbox{\hyperlink{vulkanrender_8h_aca0a113e5e446155fec0b9b7c2496783}{VulkanStage}};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{00116\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_vulkan_push_constant_entry_a357c7081924a4677a5fc784b4ea7eed5}{offset}};}
+\DoxyCodeLine{00117\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_vulkan_push_constant_entry_a48c9fc2f7f0330b23d32faad449cbb3c}{size}};}
+\DoxyCodeLine{00118\ \ \ \ \ std::vector<VulkanStage>\ \mbox{\hyperlink{struct_vulkan_push_constant_entry_a7d3c17e96cedac4fe4d2ba24b45d0e53}{stages}};}
+\DoxyCodeLine{00119\ \}\ \mbox{\hyperlink{struct_vulkan_push_constant_entry}{VulkanPushConstantEntry}};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9aeadfa4363ce8d3c4dcc3a7167f2a3b6cfe}{VULKAN\_DESCRIPTOR\_TYPE\_UNIFORM\_BUFFER}}\ =\ VK\_DESCRIPTOR\_TYPE\_UNIFORM\_BUFFER,}
+\DoxyCodeLine{00123\ \}\ \mbox{\hyperlink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{VulkanDescriptorSetType}};}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{00126\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry_binding_aee6812e97d891b4e3efa31250569d214}{binding}};}
+\DoxyCodeLine{00127\ \ \ \ \ \mbox{\hyperlink{vulkanrender_8h_a1a94f91eef8612ff4c6a4004e5cce9ae}{VulkanDescriptorSetType}}\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry_binding_af03e5bfc9d5b2ff5c739547e3a404012}{type}};}
+\DoxyCodeLine{00128\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry_binding_aacee35d9258ca83730c58fe9f8265205}{count}};}
+\DoxyCodeLine{00129\ \ \ \ \ std::vector<VulkanStage>\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry_binding_a0d2215144c7397a30160b537d8e6a6b3}{stages}};}
+\DoxyCodeLine{00130\ \}\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry_binding}{VulkanDescriptorSetEntryBinding}};}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{00133\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry_acf4973c53d82a53b0d9600ad09276497}{set}};}
+\DoxyCodeLine{00134\ \ \ \ \ std::vector<VulkanDescriptorSetEntryBinding>\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry_af61b919249d97030e677636d09db9fab}{bindings}};}
+\DoxyCodeLine{00135\ \}\ \mbox{\hyperlink{struct_vulkan_descriptor_set_entry}{VulkanDescriptorSetEntry}};}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{00138\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_pipeline_description_a347f470a9c49aa86269baaf45fe33f92}{perVertexStride}};}
+\DoxyCodeLine{00139\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_pipeline_description_aaf582f4874b52239e93e32332c4fe978}{perInstanceStride}};}
+\DoxyCodeLine{00140\ \ \ \ \ std::vector<VertexInputEntry>\ \mbox{\hyperlink{struct_pipeline_description_aef51d94bc7d787b01948cba4ae73a8bb}{vertexInputs}};}
+\DoxyCodeLine{00141\ \ \ \ \ std::vector<VulkanPushConstantEntry>\ \mbox{\hyperlink{struct_pipeline_description_a1e4364f285960607fc426b1c65d4f10c}{pushConstants}};}
+\DoxyCodeLine{00142\ \ \ \ \ std::vector<VulkanDescriptorSetEntry>\ \mbox{\hyperlink{struct_pipeline_description_a27a83b13d7bfe37e04f9d6f6ea885a54}{descriptorSets}};}
+\DoxyCodeLine{00143\ \}\ \mbox{\hyperlink{struct_pipeline_description}{PipelineDescription}};}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a2bb55417a01c7a6290f3924810bddeda}{VulkanInit}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ std::function<VkSurfaceKHR(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext)>\ createSurface);}
+\DoxyCodeLine{00150\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a318c1b57647d7ba05ed88a48c2a88040}{VulkanShutdown}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext);}
+\DoxyCodeLine{00151\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a974917ae24bed252b5daea18004d4481}{VulkanDraw}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext);}
+\DoxyCodeLine{00152\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_aaeae770242332e3929d26839f54d9722}{VulkanBindCommandBuffers}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ std::function<\textcolor{keywordtype}{void}(VkExtent2D\ surfaceSize,\ VkCommandBuffer\ commandBuffer)>\ commandsLambda);}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ int32\_t\ \mbox{\hyperlink{vulkanrender_8h_a08886d88b9de590bbba4d6b3bf71ef9a}{VulkanCreateGraphicsPipeline}}(}
+\DoxyCodeLine{00155\ \ \ \ \ \mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ shaderBaseName,}
+\DoxyCodeLine{00157\ \ \ \ \ std::function<\textcolor{keywordtype}{void}(\mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription)>\ vertexInputDescriptionLambda);}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ int32\_t\ \mbox{\hyperlink{vulkanrender_8h_aa37dd90535d194a689f4da80b8278da2}{VulkanCreateVertexBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ vertexData,\ VkDeviceSize\ size);}
+\DoxyCodeLine{00160\ int32\_t\ \mbox{\hyperlink{vulkanrender_8h_a4ed7d71d4c4f0869f1680dd5e6e7d7ac}{CreateIndexBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ indexData,\ VkDeviceSize\ size);}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a855070ecd52ecca745a2d84fd5a1cf4a}{VulkanCreateVertexAttribute}}(}
+\DoxyCodeLine{00163\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
+\DoxyCodeLine{00164\ \ \ \ \ uint32\_t\ binding,}
+\DoxyCodeLine{00165\ \ \ \ \ uint32\_t\ location,}
+\DoxyCodeLine{00166\ \ \ \ \ VkFormat\ format,}
+\DoxyCodeLine{00167\ \ \ \ \ uint32\_t\ offset);}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a1561ed9a525bb7c26ab677b00d290d8d}{VulkanCreateVertexBinding}}(}
+\DoxyCodeLine{00170\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
+\DoxyCodeLine{00171\ \ \ \ \ uint32\_t\ binding,}
+\DoxyCodeLine{00172\ \ \ \ \ uint32\_t\ stride,}
+\DoxyCodeLine{00173\ \ \ \ \ VkVertexInputRate\ inputRate);}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a3217acc9533924f0e36f28c310dbdf1f}{VulkanDeleteBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ uint32\_t\ index);}
+\DoxyCodeLine{00176\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_ab16b70eddff3b4e586bb82859fa0a088}{VulkanDeletePipeline}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ uint32\_t\ index);}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_ab1721972318e7e714458ba9028f0e6dd}{VulkanCreatePushConstant}}(}
+\DoxyCodeLine{00179\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
+\DoxyCodeLine{00180\ \ \ \ \ VkShaderStageFlags\ stageFlags,}
+\DoxyCodeLine{00181\ \ \ \ \ uint32\_t\ offset,}
+\DoxyCodeLine{00182\ \ \ \ \ uint32\_t\ size);}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a0c34dbe290e893fd9d2a127f6675b1e6}{VulkanCreateDescriptorSetLayoutBinding}}(}
+\DoxyCodeLine{00185\ \ \ \ \ \mbox{\hyperlink{struct_vertex_input_description}{VertexInputDescription}}*\ vertexInputDescription,}
+\DoxyCodeLine{00186\ \ \ \ \ uint32\_t\ binding,}
+\DoxyCodeLine{00187\ \ \ \ \ VkDescriptorType\ descriptorType,}
+\DoxyCodeLine{00188\ \ \ \ \ uint32\_t\ descriptorCount,}
+\DoxyCodeLine{00189\ \ \ \ \ VkShaderStageFlags\ stageFlags);}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a9597f77aab2d4f3b47a4aa36aec497f9}{VulkanUpdateVertexBuffer}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ int32\_t\ bufferId,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ vertexData,\ VkDeviceSize\ size);}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ int32\_t\ \mbox{\hyperlink{vulkanrender_8h_ae10eea2bc605fe9f08ea7b644892a7d7}{VulkanSetupPipeline}}(\mbox{\hyperlink{struct_vulkan_context}{VulkanContext}}*\ vkContext,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ shaderBasename,\ \mbox{\hyperlink{struct_pipeline_description}{PipelineDescription}}*\ pipelineDesc);}
+\DoxyCodeLine{00194\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{vulkanrender_8h_a0d2ea97a68bb142ebdff6a8b1c8060ed}{PrintPipelineDescription}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_pipeline_description}{PipelineDescription}}\&\ pd);}
+\DoxyCodeLine{00195\ std::vector<VulkanPushConstantEntry>\ \mbox{\hyperlink{vulkanrender_8h_a6363320c6a8c33cf49e0fbff7b69ea48}{VulkanProducePushConstants}}(\textcolor{keyword}{const}\ std::string\&\ vert\_spv,\ \textcolor{keyword}{const}\ std::string\&\ frag\_spv);}
+\DoxyCodeLine{00196\ std::vector<VulkanDescriptorSetEntry>\ \mbox{\hyperlink{vulkanrender_8h_a9e305a6c80c424e6ebd150b731be60e0}{VulkanProduceDescriptorSet}}(\textcolor{keyword}{const}\ std::string\&\ vert\_spv,\ \textcolor{keyword}{const}\ std::string\&\ frag\_spv);}
 
 \end{DoxyCode}

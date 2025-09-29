@@ -1,13 +1,6 @@
 var searchData=
 [
-  ['ratio_0',['ratio',['../struct_descriptor_allocator_1_1_pool_size_ratio.html#a637dfec791d056803ac8d7f7d399c458',1,'DescriptorAllocator::PoolSizeRatio']]],
-  ['rectangle_1',['rectangle',['../class_vulkan_engine.html#a61857cc8e56755ee8ecfb895e6df832f',1,'VulkanEngine']]],
-  ['rendererinstanced_2',['RendererInstanced',['../initial_8cpp.html#a6520e3f989dd4976f07a00b9d9a3d95f',1,'initial.cpp']]],
-  ['rendererinstancedcmd_3',['RendererInstancedCmd',['../initial_8cpp.html#a9e6e65db7b7c19d30dfe89669931865f',1,'initial.cpp']]],
-  ['rendererinstancedend_4',['RendererInstancedEnd',['../initial_8cpp.html#a6a6027525e6a9376fa79b384981fd44a',1,'initial.cpp']]],
-  ['rendererinstancedstart_5',['RendererInstancedStart',['../initial_8cpp.html#a34c330a442e3aaef977688c12c0973a0',1,'initial.cpp']]],
-  ['renderfinishedsemaphores_6',['renderFinishedSemaphores',['../struct_vulkan_context.html#af9261e615c154b57cef82bb3970234cd',1,'VulkanContext']]],
-  ['rendering_5finfo_7',['rendering_info',['../namespacevkinit.html#a1ffa52d3652b5152aa09d3da9bd58ce3',1,'vkinit']]],
-  ['renderpass_8',['renderPass',['../struct_vulkan_context.html#aabadc666dd7fb46f85151c8aacebe4fb',1,'VulkanContext']]],
-  ['run_9',['run',['../class_vulkan_engine.html#a3ddaa008322d233c76969ba0a72b1aa5',1,'VulkanEngine']]]
+  ['quadinstance_0',['QuadInstance',['../struct_quad_instance.html',1,'']]],
+  ['quads_1',['quads',['../struct_instanced_renderer.html#a99a9acfbf7e5d62b3fb1ccc79ba9005d',1,'InstancedRenderer']]],
+  ['queuefamilyindex_2',['queueFamilyIndex',['../struct_vulkan_context.html#a539b5650b639ad171d96139caab8aa89',1,'VulkanContext']]]
 ];

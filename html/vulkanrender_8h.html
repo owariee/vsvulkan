@@ -110,11 +110,32 @@ Classes</h2></td></tr>
 <tr class="memitem:VulkanPipeline" id="r_VulkanPipeline"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vulkan_pipeline.html">VulkanPipeline</a></td></tr>
 <tr class="memitem:VulkanSwapchain" id="r_VulkanSwapchain"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vulkan_swapchain.html">VulkanSwapchain</a></td></tr>
 <tr class="memitem:VulkanContext" id="r_VulkanContext"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vulkan_context.html">VulkanContext</a></td></tr>
+<tr class="memitem:VertexInputEntry" id="r_VertexInputEntry"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex_input_entry.html">VertexInputEntry</a></td></tr>
+<tr class="memitem:VulkanPushConstantEntry" id="r_VulkanPushConstantEntry"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vulkan_push_constant_entry.html">VulkanPushConstantEntry</a></td></tr>
+<tr class="memitem:VulkanDescriptorSetEntryBinding" id="r_VulkanDescriptorSetEntryBinding"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vulkan_descriptor_set_entry_binding.html">VulkanDescriptorSetEntryBinding</a></td></tr>
+<tr class="memitem:VulkanDescriptorSetEntry" id="r_VulkanDescriptorSetEntry"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vulkan_descriptor_set_entry.html">VulkanDescriptorSetEntry</a></td></tr>
+<tr class="memitem:PipelineDescription" id="r_PipelineDescription"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pipeline_description.html">PipelineDescription</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a36907d6bb408c5190bbee74ccf4a5769" id="r_a36907d6bb408c5190bbee74ccf4a5769"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36907d6bb408c5190bbee74ccf4a5769">CHECK_VULKAN_RESULT</a>(res)</td></tr>
 <tr class="memitem:a9b6220e29e2fa78788d69857502c892f" id="r_a9b6220e29e2fa78788d69857502c892f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b6220e29e2fa78788d69857502c892f">VK_REQUIRED_IMAGE_COUNT</a>&#160;&#160;&#160;4</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:adfaf6a422be66e1daca7ca55415c183d" id="r_adfaf6a422be66e1daca7ca55415c183d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfaf6a422be66e1daca7ca55415c183d">VulkanFormat</a> { <a class="el" href="#adfaf6a422be66e1daca7ca55415c183dadbb69c68ac639b8478aa5f1fecced0ce">VULKAN_FORMAT_R32G32_SFLOAT</a> = VK_FORMAT_R32G32_SFLOAT
+, <a class="el" href="#adfaf6a422be66e1daca7ca55415c183da5a076856314e35ee360bc96f76037729">VULKAN_FORMAT_R32G32B32_SFLOAT</a> = VK_FORMAT_R32G32B32_SFLOAT
+, <a class="el" href="#adfaf6a422be66e1daca7ca55415c183da21ff203ce3c02f1f7af0b382f46e1e9c">VULKAN_FORMAT_R32G32B32A32_SFLOAT</a> = VK_FORMAT_R32G32B32A32_SFLOAT
+ }</td></tr>
+<tr class="memitem:af1d39d85f1fb8250ac116236739a34bd" id="r_af1d39d85f1fb8250ac116236739a34bd"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1d39d85f1fb8250ac116236739a34bd">VertexRate</a> { <a class="el" href="#af1d39d85f1fb8250ac116236739a34bda7436cb6178f53aafd8da9e30761e982f">VULKAN_RATE_PER_VERTEX</a> = VK_VERTEX_INPUT_RATE_VERTEX
+, <a class="el" href="#af1d39d85f1fb8250ac116236739a34bdacbceb29580cddb2a5a8ec83ac3877653">VULKAN_RATE_PER_INSTANCE</a> = VK_VERTEX_INPUT_RATE_INSTANCE
+ }</td></tr>
+<tr class="memitem:aca0a113e5e446155fec0b9b7c2496783" id="r_aca0a113e5e446155fec0b9b7c2496783"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca0a113e5e446155fec0b9b7c2496783">VulkanStage</a> { <a class="el" href="#aca0a113e5e446155fec0b9b7c2496783aa4d77553a64b3f8c0ce97a2af1a1bdb7">VULKAN_STAGE_NONE</a> = 0
+, <a class="el" href="#aca0a113e5e446155fec0b9b7c2496783ac9c56ef487fdb443dda28e8743cdc316">VULKAN_STAGE_VERTEX</a> = VK_SHADER_STAGE_VERTEX_BIT
+, <a class="el" href="#aca0a113e5e446155fec0b9b7c2496783acb8874defab934350ec6a0c9ac2148d1">VULKAN_STAGE_FRAGMENT</a> = VK_SHADER_STAGE_FRAGMENT_BIT
+ }</td></tr>
+<tr class="memitem:a1a94f91eef8612ff4c6a4004e5cce9ae" id="r_a1a94f91eef8612ff4c6a4004e5cce9ae"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a94f91eef8612ff4c6a4004e5cce9ae">VulkanDescriptorSetType</a> { <a class="el" href="#a1a94f91eef8612ff4c6a4004e5cce9aeadfa4363ce8d3c4dcc3a7167f2a3b6cfe">VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER</a> = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+ }</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -127,25 +148,25 @@ Functions</h2></td></tr>
 <tr class="memitem:aaeae770242332e3929d26839f54d9722" id="r_aaeae770242332e3929d26839f54d9722"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaeae770242332e3929d26839f54d9722">VulkanBindCommandBuffers</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, std::function&lt; void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)&gt; commandsLambda)</td></tr>
 <tr class="memdesc:aaeae770242332e3929d26839f54d9722"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bind a new set of commands and records multiple command buffers for rendering.  <br /></td></tr>
 <tr class="memitem:a08886d88b9de590bbba4d6b3bf71ef9a" id="r_a08886d88b9de590bbba4d6b3bf71ef9a"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08886d88b9de590bbba4d6b3bf71ef9a">VulkanCreateGraphicsPipeline</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, const char *shaderBaseName, std::function&lt; void(<a class="el" href="struct_vertex_input_description.html">VertexInputDescription</a> *vertexInputDescription)&gt; vertexInputDescriptionLambda)</td></tr>
-<tr class="memdesc:a08886d88b9de590bbba4d6b3bf71ef9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create pipeline from 2 shaders.  <br /></td></tr>
 <tr class="memitem:aa37dd90535d194a689f4da80b8278da2" id="r_aa37dd90535d194a689f4da80b8278da2"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa37dd90535d194a689f4da80b8278da2">VulkanCreateVertexBuffer</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, const void *vertexData, VkDeviceSize size)</td></tr>
 <tr class="memdesc:aa37dd90535d194a689f4da80b8278da2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create vertex buffer.  <br /></td></tr>
 <tr class="memitem:a4ed7d71d4c4f0869f1680dd5e6e7d7ac" id="r_a4ed7d71d4c4f0869f1680dd5e6e7d7ac"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ed7d71d4c4f0869f1680dd5e6e7d7ac">CreateIndexBuffer</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, const void *indexData, VkDeviceSize size)</td></tr>
 <tr class="memdesc:a4ed7d71d4c4f0869f1680dd5e6e7d7ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create index buffer.  <br /></td></tr>
 <tr class="memitem:a855070ecd52ecca745a2d84fd5a1cf4a" id="r_a855070ecd52ecca745a2d84fd5a1cf4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a855070ecd52ecca745a2d84fd5a1cf4a">VulkanCreateVertexAttribute</a> (<a class="el" href="struct_vertex_input_description.html">VertexInputDescription</a> *vertexInputDescription, uint32_t binding, uint32_t location, VkFormat format, uint32_t offset)</td></tr>
-<tr class="memdesc:a855070ecd52ecca745a2d84fd5a1cf4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an attribute description.  <br /></td></tr>
 <tr class="memitem:a1561ed9a525bb7c26ab677b00d290d8d" id="r_a1561ed9a525bb7c26ab677b00d290d8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1561ed9a525bb7c26ab677b00d290d8d">VulkanCreateVertexBinding</a> (<a class="el" href="struct_vertex_input_description.html">VertexInputDescription</a> *vertexInputDescription, uint32_t binding, uint32_t stride, VkVertexInputRate inputRate)</td></tr>
-<tr class="memdesc:a1561ed9a525bb7c26ab677b00d290d8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an binding description.  <br /></td></tr>
 <tr class="memitem:a3217acc9533924f0e36f28c310dbdf1f" id="r_a3217acc9533924f0e36f28c310dbdf1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3217acc9533924f0e36f28c310dbdf1f">VulkanDeleteBuffer</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, uint32_t index)</td></tr>
 <tr class="memdesc:a3217acc9533924f0e36f28c310dbdf1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a specific buffer by index.  <br /></td></tr>
 <tr class="memitem:ab16b70eddff3b4e586bb82859fa0a088" id="r_ab16b70eddff3b4e586bb82859fa0a088"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab16b70eddff3b4e586bb82859fa0a088">VulkanDeletePipeline</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, uint32_t index)</td></tr>
 <tr class="memdesc:ab16b70eddff3b4e586bb82859fa0a088"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a specific pipeline by index.  <br /></td></tr>
 <tr class="memitem:ab1721972318e7e714458ba9028f0e6dd" id="r_ab1721972318e7e714458ba9028f0e6dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1721972318e7e714458ba9028f0e6dd">VulkanCreatePushConstant</a> (<a class="el" href="struct_vertex_input_description.html">VertexInputDescription</a> *vertexInputDescription, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size)</td></tr>
-<tr class="memdesc:ab1721972318e7e714458ba9028f0e6dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an push constant.  <br /></td></tr>
 <tr class="memitem:a0c34dbe290e893fd9d2a127f6675b1e6" id="r_a0c34dbe290e893fd9d2a127f6675b1e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c34dbe290e893fd9d2a127f6675b1e6">VulkanCreateDescriptorSetLayoutBinding</a> (<a class="el" href="struct_vertex_input_description.html">VertexInputDescription</a> *vertexInputDescription, uint32_t binding, VkDescriptorType descriptorType, uint32_t descriptorCount, VkShaderStageFlags stageFlags)</td></tr>
-<tr class="memdesc:a0c34dbe290e893fd9d2a127f6675b1e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a descriptor set layout binding.  <br /></td></tr>
 <tr class="memitem:a9597f77aab2d4f3b47a4aa36aec497f9" id="r_a9597f77aab2d4f3b47a4aa36aec497f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9597f77aab2d4f3b47a4aa36aec497f9">VulkanUpdateVertexBuffer</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, int32_t bufferId, const void *vertexData, VkDeviceSize size)</td></tr>
 <tr class="memdesc:a9597f77aab2d4f3b47a4aa36aec497f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update vertex buffer.  <br /></td></tr>
+<tr class="memitem:ae10eea2bc605fe9f08ea7b644892a7d7" id="r_ae10eea2bc605fe9f08ea7b644892a7d7"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae10eea2bc605fe9f08ea7b644892a7d7">VulkanSetupPipeline</a> (<a class="el" href="struct_vulkan_context.html">VulkanContext</a> *vkContext, const char *shaderBasename, <a class="el" href="struct_pipeline_description.html">PipelineDescription</a> *pipelineDesc)</td></tr>
+<tr class="memdesc:ae10eea2bc605fe9f08ea7b644892a7d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup a pipeline with a given shader base name.  <br /></td></tr>
+<tr class="memitem:a0d2ea97a68bb142ebdff6a8b1c8060ed" id="r_a0d2ea97a68bb142ebdff6a8b1c8060ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d2ea97a68bb142ebdff6a8b1c8060ed">PrintPipelineDescription</a> (const <a class="el" href="struct_pipeline_description.html">PipelineDescription</a> &amp;pd)</td></tr>
+<tr class="memitem:a6363320c6a8c33cf49e0fbff7b69ea48" id="r_a6363320c6a8c33cf49e0fbff7b69ea48"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="struct_vulkan_push_constant_entry.html">VulkanPushConstantEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6363320c6a8c33cf49e0fbff7b69ea48">VulkanProducePushConstants</a> (const std::string &amp;vert_spv, const std::string &amp;frag_spv)</td></tr>
+<tr class="memitem:a9e305a6c80c424e6ebd150b731be60e0" id="r_a9e305a6c80c424e6ebd150b731be60e0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="struct_vulkan_descriptor_set_entry.html">VulkanDescriptorSetEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e305a6c80c424e6ebd150b731be60e0">VulkanProduceDescriptorSet</a> (const std::string &amp;vert_spv, const std::string &amp;frag_spv)</td></tr>
 </table>
 <a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
 <a id="a36907d6bb408c5190bbee74ccf4a5769" name="a36907d6bb408c5190bbee74ccf4a5769"></a>
@@ -185,6 +206,81 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Enumeration Type Documentation</h2>
+<a id="af1d39d85f1fb8250ac116236739a34bd" name="af1d39d85f1fb8250ac116236739a34bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1d39d85f1fb8250ac116236739a34bd">&#9670;&#160;</a></span>VertexRate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#af1d39d85f1fb8250ac116236739a34bd">VertexRate</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af1d39d85f1fb8250ac116236739a34bda7436cb6178f53aafd8da9e30761e982f" name="af1d39d85f1fb8250ac116236739a34bda7436cb6178f53aafd8da9e30761e982f"></a>VULKAN_RATE_PER_VERTEX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af1d39d85f1fb8250ac116236739a34bdacbceb29580cddb2a5a8ec83ac3877653" name="af1d39d85f1fb8250ac116236739a34bdacbceb29580cddb2a5a8ec83ac3877653"></a>VULKAN_RATE_PER_INSTANCE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a1a94f91eef8612ff4c6a4004e5cce9ae" name="a1a94f91eef8612ff4c6a4004e5cce9ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a94f91eef8612ff4c6a4004e5cce9ae">&#9670;&#160;</a></span>VulkanDescriptorSetType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#a1a94f91eef8612ff4c6a4004e5cce9ae">VulkanDescriptorSetType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1a94f91eef8612ff4c6a4004e5cce9aeadfa4363ce8d3c4dcc3a7167f2a3b6cfe" name="a1a94f91eef8612ff4c6a4004e5cce9aeadfa4363ce8d3c4dcc3a7167f2a3b6cfe"></a>VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="adfaf6a422be66e1daca7ca55415c183d" name="adfaf6a422be66e1daca7ca55415c183d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfaf6a422be66e1daca7ca55415c183d">&#9670;&#160;</a></span>VulkanFormat</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#adfaf6a422be66e1daca7ca55415c183d">VulkanFormat</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pipeline description structures ******************************************************************* </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adfaf6a422be66e1daca7ca55415c183dadbb69c68ac639b8478aa5f1fecced0ce" name="adfaf6a422be66e1daca7ca55415c183dadbb69c68ac639b8478aa5f1fecced0ce"></a>VULKAN_FORMAT_R32G32_SFLOAT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="adfaf6a422be66e1daca7ca55415c183da5a076856314e35ee360bc96f76037729" name="adfaf6a422be66e1daca7ca55415c183da5a076856314e35ee360bc96f76037729"></a>VULKAN_FORMAT_R32G32B32_SFLOAT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="adfaf6a422be66e1daca7ca55415c183da21ff203ce3c02f1f7af0b382f46e1e9c" name="adfaf6a422be66e1daca7ca55415c183da21ff203ce3c02f1f7af0b382f46e1e9c"></a>VULKAN_FORMAT_R32G32B32A32_SFLOAT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="aca0a113e5e446155fec0b9b7c2496783" name="aca0a113e5e446155fec0b9b7c2496783"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca0a113e5e446155fec0b9b7c2496783">&#9670;&#160;</a></span>VulkanStage</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#aca0a113e5e446155fec0b9b7c2496783">VulkanStage</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aca0a113e5e446155fec0b9b7c2496783aa4d77553a64b3f8c0ce97a2af1a1bdb7" name="aca0a113e5e446155fec0b9b7c2496783aa4d77553a64b3f8c0ce97a2af1a1bdb7"></a>VULKAN_STAGE_NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aca0a113e5e446155fec0b9b7c2496783ac9c56ef487fdb443dda28e8743cdc316" name="aca0a113e5e446155fec0b9b7c2496783ac9c56ef487fdb443dda28e8743cdc316"></a>VULKAN_STAGE_VERTEX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aca0a113e5e446155fec0b9b7c2496783acb8874defab934350ec6a0c9ac2148d1" name="aca0a113e5e446155fec0b9b7c2496783acb8874defab934350ec6a0c9ac2148d1"></a>VULKAN_STAGE_FRAGMENT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="a4ed7d71d4c4f0869f1680dd5e6e7d7ac" name="a4ed7d71d4c4f0869f1680dd5e6e7d7ac"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4ed7d71d4c4f0869f1680dd5e6e7d7ac">&#9670;&#160;</a></span>CreateIndexBuffer()</h2>
@@ -212,6 +308,23 @@ Functions</h2></td></tr>
 
 <p>Create index buffer. </p>
 <dl class="section return"><dt>Returns</dt><dd>int32_t Index of the created buffer, or -1 on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a0d2ea97a68bb142ebdff6a8b1c8060ed" name="a0d2ea97a68bb142ebdff6a8b1c8060ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d2ea97a68bb142ebdff6a8b1c8060ed">&#9670;&#160;</a></span>PrintPipelineDescription()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PrintPipelineDescription </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_pipeline_description.html">PipelineDescription</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>pd</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -272,8 +385,6 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Creates a descriptor set layout binding. </p>
-
 </div>
 </div>
 <a id="a08886d88b9de590bbba4d6b3bf71ef9a" name="a08886d88b9de590bbba4d6b3bf71ef9a"></a>
@@ -299,10 +410,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Create pipeline from 2 shaders. </p>
-<dl class="section note"><dt>Note</dt><dd>The vertex input description is provided via a lambda function. </dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>int32_t 0 on success, -1 on failure. </dd></dl>
 
 </div>
 </div>
@@ -334,8 +441,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Creates an push constant. </p>
 
 </div>
 </div>
@@ -373,8 +478,6 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Creates an attribute description. </p>
-
 </div>
 </div>
 <a id="a1561ed9a525bb7c26ab677b00d290d8d" name="a1561ed9a525bb7c26ab677b00d290d8d"></a>
@@ -405,8 +508,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Creates an binding description. </p>
 
 </div>
 </div>
@@ -524,6 +625,77 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Initializes the Vulkan context. </p>
+
+</div>
+</div>
+<a id="a9e305a6c80c424e6ebd150b731be60e0" name="a9e305a6c80c424e6ebd150b731be60e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e305a6c80c424e6ebd150b731be60e0">&#9670;&#160;</a></span>VulkanProduceDescriptorSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="struct_vulkan_descriptor_set_entry.html">VulkanDescriptorSetEntry</a> &gt; VulkanProduceDescriptorSet </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>vert_spv</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>frag_spv</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6363320c6a8c33cf49e0fbff7b69ea48" name="a6363320c6a8c33cf49e0fbff7b69ea48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6363320c6a8c33cf49e0fbff7b69ea48">&#9670;&#160;</a></span>VulkanProducePushConstants()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="struct_vulkan_push_constant_entry.html">VulkanPushConstantEntry</a> &gt; VulkanProducePushConstants </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>vert_spv</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>frag_spv</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae10eea2bc605fe9f08ea7b644892a7d7" name="ae10eea2bc605fe9f08ea7b644892a7d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae10eea2bc605fe9f08ea7b644892a7d7">&#9670;&#160;</a></span>VulkanSetupPipeline()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t VulkanSetupPipeline </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_vulkan_context.html">VulkanContext</a> *</td>          <td class="paramname"><span class="paramname"><em>vkContext</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>shaderBasename</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_pipeline_description.html">PipelineDescription</a> *</td>          <td class="paramname"><span class="paramname"><em>pipelineDesc</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Setup a pipeline with a given shader base name. </p>
+<dl class="section return"><dt>Returns</dt><dd>int32_t Index of the created pipeline, or -1 on failure. </dd></dl>
 
 </div>
 </div>

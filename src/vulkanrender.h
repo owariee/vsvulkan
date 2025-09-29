@@ -151,46 +151,12 @@ void VulkanShutdown(VulkanContext* vkContext);
 void VulkanDraw(VulkanContext* vkContext);
 void VulkanBindCommandBuffers(VulkanContext* vkContext, std::function<void(VkExtent2D surfaceSize, VkCommandBuffer commandBuffer)> commandsLambda);
 
-int32_t VulkanCreateGraphicsPipeline(
-    VulkanContext* vkContext,
-    const char* shaderBaseName,
-    std::function<void(VertexInputDescription* vertexInputDescription)> vertexInputDescriptionLambda);
-
 int32_t VulkanCreateVertexBuffer(VulkanContext* vkContext, const void* vertexData, VkDeviceSize size);
-int32_t CreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDeviceSize size);
-
-void VulkanCreateVertexAttribute(
-    VertexInputDescription* vertexInputDescription,
-    uint32_t binding,
-    uint32_t location,
-    VkFormat format,
-    uint32_t offset);
-
-void VulkanCreateVertexBinding(
-    VertexInputDescription* vertexInputDescription,
-    uint32_t binding,
-    uint32_t stride,
-    VkVertexInputRate inputRate);
+int32_t VulkanCreateIndexBuffer(VulkanContext* vkContext, const void* indexData, VkDeviceSize size);
 
 void VulkanDeleteBuffer(VulkanContext* vkContext, uint32_t index);
 void VulkanDeletePipeline(VulkanContext* vkContext, uint32_t index);
 
-void VulkanCreatePushConstant(
-    VertexInputDescription* vertexInputDescription,
-    VkShaderStageFlags stageFlags,
-    uint32_t offset,
-    uint32_t size);
-
-void VulkanCreateDescriptorSetLayoutBinding(
-    VertexInputDescription* vertexInputDescription,
-    uint32_t binding,
-    VkDescriptorType descriptorType,
-    uint32_t descriptorCount,
-    VkShaderStageFlags stageFlags);
-
 void VulkanUpdateVertexBuffer(VulkanContext* vkContext, int32_t bufferId, const void* vertexData, VkDeviceSize size);
 
-int32_t VulkanSetupPipeline(VulkanContext* vkContext, const char* shaderBasename, PipelineDescription* pipelineDesc);
-void PrintPipelineDescription(const PipelineDescription& pd);
-std::vector<VulkanPushConstantEntry> VulkanProducePushConstants(const std::string& vert_spv, const std::string& frag_spv);
-std::vector<VulkanDescriptorSetEntry> VulkanProduceDescriptorSet(const std::string& vert_spv, const std::string& frag_spv);
+int32_t VulkanSetupPipeline(VulkanContext* vkContext, const char* shaderBasename, PipelineDescription* pipelineDesc, uint8_t instancedBitmap);

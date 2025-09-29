@@ -15,12 +15,17 @@ var annotated_dup =
     [ "InstancedRenderer", "struct_instanced_renderer.html", "struct_instanced_renderer" ],
     [ "MeshAsset", "struct_mesh_asset.html", "struct_mesh_asset" ],
     [ "PipelineBuilder", "class_pipeline_builder.html", "class_pipeline_builder" ],
+    [ "PipelineDescription", "struct_pipeline_description.html", "struct_pipeline_description" ],
     [ "QuadInstance", "struct_quad_instance.html", "struct_quad_instance" ],
     [ "Vertex", "struct_vertex.html", "struct_vertex" ],
     [ "VertexInputDescription", "struct_vertex_input_description.html", "struct_vertex_input_description" ],
+    [ "VertexInputEntry", "struct_vertex_input_entry.html", "struct_vertex_input_entry" ],
     [ "VulkanBuffer", "struct_vulkan_buffer.html", "struct_vulkan_buffer" ],
     [ "VulkanContext", "struct_vulkan_context.html", "struct_vulkan_context" ],
+    [ "VulkanDescriptorSetEntry", "struct_vulkan_descriptor_set_entry.html", "struct_vulkan_descriptor_set_entry" ],
+    [ "VulkanDescriptorSetEntryBinding", "struct_vulkan_descriptor_set_entry_binding.html", "struct_vulkan_descriptor_set_entry_binding" ],
     [ "VulkanEngine", "class_vulkan_engine.html", "class_vulkan_engine" ],
     [ "VulkanPipeline", "struct_vulkan_pipeline.html", "struct_vulkan_pipeline" ],
+    [ "VulkanPushConstantEntry", "struct_vulkan_push_constant_entry.html", "struct_vulkan_push_constant_entry" ],
     [ "VulkanSwapchain", "struct_vulkan_swapchain.html", "struct_vulkan_swapchain" ]
 ];

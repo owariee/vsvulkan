@@ -139,45 +139,46 @@ InstancedRenderer RendererInstanced(VulkanContext* vkContext) {
     uint16_t quadIndices[6] = { 0, 1, 2, 2, 3, 0 };
 
     iRenderer.vertexBufferId = VulkanCreateVertexBuffer(vkContext, quadVertices, sizeof(quadVertices));
-    iRenderer.indexBufferId = CreateIndexBuffer(vkContext, quadIndices, sizeof(quadIndices));
+    iRenderer.indexBufferId = VulkanCreateIndexBuffer(vkContext, quadIndices, sizeof(quadIndices));
 
     // create instanced
     iRenderer.maxQuads = 10000;
     iRenderer.instanceBufferId = VulkanCreateVertexBuffer(vkContext, NULL, 10000 * sizeof(QuadInstance));
 
+    //PipelineDescription pipelineDesc = {
+    //    .perVertexStride = sizeof(Vertex),
+    //    .perInstanceStride = sizeof(QuadInstance),
+    //    .vertexInputs = {
+    //        {.location = 0, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(Vertex, pos),           .rate = VULKAN_RATE_PER_VERTEX },
+    //        {.location = 1, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(QuadInstance, pos),     .rate = VULKAN_RATE_PER_INSTANCE },
+    //        {.location = 2, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(QuadInstance, size),    .rate = VULKAN_RATE_PER_INSTANCE },
+    //        {.location = 3, .format = VULKAN_FORMAT_R32G32B32A32_SFLOAT, .offset = offsetof(QuadInstance, color),   .rate = VULKAN_RATE_PER_INSTANCE }
+    //    },
+    //};
+
+    //PipelineDescription pipelineDesc = {
+    //    .vertexInputs = {
+    //        {.format = VULKAN_FORMAT_R32G32_SFLOAT,       .rate = VULKAN_RATE_PER_VERTEX },
+    //        {.format = VULKAN_FORMAT_R32G32_SFLOAT,       .rate = VULKAN_RATE_PER_INSTANCE },
+    //        {.format = VULKAN_FORMAT_R32G32_SFLOAT,       .rate = VULKAN_RATE_PER_INSTANCE },
+    //        {.format = VULKAN_FORMAT_R32G32B32A32_SFLOAT, .rate = VULKAN_RATE_PER_INSTANCE }
+    //    },
+    //};
+
     PipelineDescription pipelineDesc = {
-        .perVertexStride = sizeof(Vertex),
-        .perInstanceStride = sizeof(QuadInstance),
-        .vertexInputs = {
-            {.location = 0, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(Vertex, pos),           .rate = VULKAN_RATE_PER_VERTEX },
-            {.location = 1, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(QuadInstance, pos),     .rate = VULKAN_RATE_PER_INSTANCE },
-            {.location = 2, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(QuadInstance, size),    .rate = VULKAN_RATE_PER_INSTANCE },
-            {.location = 3, .format = VULKAN_FORMAT_R32G32B32A32_SFLOAT, .offset = offsetof(QuadInstance, color),   .rate = VULKAN_RATE_PER_INSTANCE }
-        },
-        .pushConstants = {
-            {.offset = 0, .size = sizeof(glm::mat4), .stages = { VULKAN_STAGE_VERTEX } }
-        },
-        .descriptorSets = {
-            {
-                .set = 0,
-                .bindings = {
-                    {.binding = 0, .type = VULKAN_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .count = 1, .stages = { VULKAN_STAGE_VERTEX } }
-                }
-            }
-        },
+        //.vertexInputs = {
+        //    { },
+        //    {.rate = VULKAN_RATE_PER_INSTANCE },
+        //    {.rate = VULKAN_RATE_PER_INSTANCE },
+        //    {.rate = VULKAN_RATE_PER_INSTANCE }
+        //},
     };
-
-    PrintPipelineDescription(pipelineDesc);
-
-    PipelineDescription pipelineDescTest = {
-        .pushConstants = VulkanProducePushConstants("../shaders/2d.vert.spv", "../shaders/2d.frag.spv"),
-		.descriptorSets = VulkanProduceDescriptorSet("../shaders/2d.vert.spv", "../shaders/2d.frag.spv"),
-    };
-
-    PrintPipelineDescription(pipelineDescTest);
 
     // create pipeline
-	iRenderer.pipelineIndex = VulkanSetupPipeline(vkContext, "2d", &pipelineDesc);
+	//iRenderer.pipelineIndex = VulkanSetupPipeline(vkContext, "2d", &pipelineDesc);
+    //iRenderer.pipelineIndex = VulkanSetupPipeline(vkContext, "2d", &pipelineDesc, "VIII");
+    //iRenderer.pipelineIndex = VulkanSetupPipeline(vkContext, "2d", &pipelineDesc, 0x2 | 0x4 | 0x8);
+    iRenderer.pipelineIndex = VulkanSetupPipeline(vkContext, "2d", &pipelineDesc, 0xE);
 
     //iRenderer.projection = glm::ortho(0.0f, (float)vkContext->surfaceSize.width, 0.0f, (float)vkContext->surfaceSize.height);
     iRenderer.projection = glm::ortho(-1.0f, (float)vkContext->surfaceSize.width / (float)vkContext->surfaceSize.height, -1.0f, 1.0f);
@@ -261,15 +262,21 @@ int main(int argc, char* argv[]) {
 
     // Create buffers
     int32_t vertexBufferId = VulkanCreateVertexBuffer(&vkContext, rectVertices, sizeof(rectVertices));
-    int32_t indexBufferId = CreateIndexBuffer(&vkContext, rectIndices, sizeof(rectIndices));
+    int32_t indexBufferId = VulkanCreateIndexBuffer(&vkContext, rectIndices, sizeof(rectIndices));
 
     // Create pipeline
-    int32_t pipelineIndex = VulkanCreateGraphicsPipeline(&vkContext, "base",
-        [=](VertexInputDescription* vertexInputDesc) {
-            VulkanCreateVertexBinding(vertexInputDesc, 0, sizeof(VertexPosColor), VK_VERTEX_INPUT_RATE_VERTEX);
-            VulkanCreateVertexAttribute(vertexInputDesc, 0, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(VertexPosColor, pos));
-            VulkanCreateVertexAttribute(vertexInputDesc, 0, 1, VK_FORMAT_R32G32B32_SFLOAT, offsetof(VertexPosColor, color));
-        });
+    //PipelineDescription pipelineDesc = {
+    //    .perVertexStride = sizeof(VertexPosColor),
+    //    .vertexInputs = {
+    //        {.location = 0, .format = VULKAN_FORMAT_R32G32_SFLOAT,       .offset = offsetof(VertexPosColor, pos),   .rate = VULKAN_RATE_PER_VERTEX },
+    //        {.location = 1, .format = VULKAN_FORMAT_R32G32B32_SFLOAT,    .offset = offsetof(VertexPosColor, color), .rate = VULKAN_RATE_PER_VERTEX }
+    //    },
+    //};
+
+ //   PipelineDescription pipelineDesc = {};
+	//int32_t pipelineIndex = VulkanSetupPipeline(&vkContext, "base", &pipelineDesc);
+
+    int32_t pipelineIndex = VulkanSetupPipeline(&vkContext, "base", NULL, NULL);
 
     InstancedRenderer iRenderer = RendererInstanced(&vkContext);
 
@@ -292,17 +299,17 @@ int main(int argc, char* argv[]) {
         });
 
 
-    //float pos = -0.2f;
+    float pos = -0.2f;
 
 	while (1) {
         RendererInstancedStart(&iRenderer);
 
-        //pos += 0.00005f;
+        pos += 0.00005f;
 
-        //iRenderer.quads.push_back({ { pos, -0.5f }, { 0.4f, 0.4f }, {1,0,0,1} }); // example rectangle
-        //iRenderer.quads.push_back({ {  0.3f,  0.0f }, { 0.2f, 0.3f }, {0,1,0,1} }); // another rectangle
-        //iRenderer.quads.push_back({ { -0.6f, -0.5f }, { 0.5f, 0.5f }, {0,0,1,1} }); // example rectangle
-        //iRenderer.quads.push_back({ {  0.0f,  0.0f }, { 0.3f, 0.4f }, {0,1,1,1} }); // another rectangle
+        iRenderer.quads.push_back({ { pos, -0.5f }, { 0.4f, 0.4f }, {1,0,0,1} }); // example rectangle
+        iRenderer.quads.push_back({ {  0.3f,  0.0f }, { 0.2f, 0.3f }, {0,1,0,1} }); // another rectangle
+        iRenderer.quads.push_back({ { -0.6f, -0.5f }, { 0.5f, 0.5f }, {0,0,1,1} }); // example rectangle
+        iRenderer.quads.push_back({ {  0.0f,  0.0f }, { 0.3f, 0.4f }, {0,1,1,1} }); // another rectangle
 
 
         float widthRatio = (float)vkContext.surfaceSize.width / (float)vkContext.surfaceSize.height;

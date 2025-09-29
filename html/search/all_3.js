@@ -19,7 +19,7 @@ var searchData=
   ['computepushconstants_16',['ComputePushConstants',['../struct_compute_push_constants.html',1,'']]],
   ['constantrange_17',['constantRange',['../struct_vertex_input_description.html#a0d61dfab47ad3b4ec9418025ee7959b0',1,'VertexInputDescription']]],
   ['copy_5fimage_5fto_5fimage_18',['copy_image_to_image',['../namespacevkutil.html#aa5a58ee7054941a66d6e4efdbcfe7f82',1,'vkutil']]],
-  ['count_19',['count',['../struct_geo_surface.html#a5bfc701fbd45f395a990f9a0063b8975',1,'GeoSurface']]],
+  ['count_19',['count',['../struct_geo_surface.html#a5bfc701fbd45f395a990f9a0063b8975',1,'GeoSurface::count'],['../struct_vulkan_descriptor_set_entry_binding.html#aacee35d9258ca83730c58fe9f8265205',1,'VulkanDescriptorSetEntryBinding::count']]],
   ['create_5fbuffer_20',['create_buffer',['../class_vulkan_engine.html#a4b0f500e007bea934c26d5372b79906b',1,'VulkanEngine']]],
   ['create_5fswapchain_21',['create_swapchain',['../class_vulkan_engine.html#a6c26027ee4c5718834f384a5f98818ce',1,'VulkanEngine']]],
   ['createindexbuffer_22',['CreateIndexBuffer',['../vulkanrender_8cpp.html#a4ed7d71d4c4f0869f1680dd5e6e7d7ac',1,'CreateIndexBuffer(VulkanContext *vkContext, const void *indexData, VkDeviceSize size):&#160;vulkanrender.cpp'],['../vulkanrender_8h.html#a4ed7d71d4c4f0869f1680dd5e6e7d7ac',1,'CreateIndexBuffer(VulkanContext *vkContext, const void *indexData, VkDeviceSize size):&#160;vulkanrender.cpp']]],
